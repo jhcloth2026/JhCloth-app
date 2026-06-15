@@ -1,30 +1,107 @@
 <!doctype html>
-<html>
+<html lang="es">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JhCloth</title>
+
 <style>
 body{
   background:black;
-color:white;
-text-align:center;
-font-family:Arial;
+  color:white;
+  text-align:center;
+  font-family:Arial;
+  margin:0;
+  padding:0;
+}
+
+h1{
+  font-size:50px;
+  margin-top:20px;
+}
+
+button{
+  padding:10px 20px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  margin:5px;
+}
+
+.like{
+  background:#222;
+  color:white;
 }
 </style>
 </head>
+
 <body>
-<h1 style="font-size:50px;">jhcloth</h1>
-<p>Elegancia.Diciplina.Precencia</p>
-<button style="padding:10px 20px;
-border-radius:10px;">Entrar</button>
+
+<h1>JHCLOTH</h1>
+<p>Elegancia · Disciplina · Presencia</p>
+
+<button>Entrar</button>
+
 <h2>Publicaciones</h2>
 <hr>
+
 <h3>Moda urbana</h3>
-<p>La elegancia no depende del precio, de pende de como te precentas.</p>
-<button>♡me gusta</button>
+<p>La elegancia no depende del precio, depende de cómo te presentas.</p>
+
+<button class="like">♡ Me gusta</button>
+
 <hr>
-<h3>jhcloth</h3>
-<p>Estamos contruyendo una comunidad donde ladiciplina y la precencia importan.</p>
-<button>♡megusta</button>
-<body>
-<html>
+
+<h3>JhCloth</h3>
+<p>Estamos construyendo una comunidad con disciplina y presencia.</p>
+
+<button class="like">♡ Me gusta</button>
+
+<p id="likes">Likes: 0</p>
+
+<!-- 🔥 FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, updateDoc, increment, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
+  authDomain: "jhcloth-app.firebaseapp.com",
+  projectId: "jhcloth-app",
+  storageBucket: "jhcloth-app.firebasestorage.app",
+  messagingSenderId: "683518974253",
+  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const ref = doc(db, "likes", "post1");
+
+async function cargarLikes(){
+  const snap = await getDoc(ref);
+  if(snap.exists()){
+    document.getElementById("likes").innerText =
+      "Likes: " + snap.data().count;
+  }
+}
+cargarLikes();
+
+window.darLike = async function(){
+  try {
+    await updateDoc(ref, {
+      count: increment(1)
+    });
+  } catch {
+    await setDoc(ref, { count: 1 });
+  }
+
+  cargarLikes();
+}
+</script>
+
+</body>
+</html>
 
 
