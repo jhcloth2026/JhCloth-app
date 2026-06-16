@@ -1,107 +1,199 @@
 
+
 <!doctype html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JhCloth</title>
+<title>JhCloth Social</title>
 
 <style>
 body{
-  background:black;
-  color:white;
-  text-align:center;
-  font-family:Arial;
   margin:0;
-  padding:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial;
 }
 
-h1{
-  font-size:50px;
-  margin-top:20px;
+/* HEADER */
+header{
+  text-align:center;
+  padding:15px;
+  border-bottom:1px solid #222;
+}
+
+header h1{
+  margin:0;
+  font-size:40px;
+}
+
+header p{
+  color:#aaa;
+}
+
+/* FEED */
+.feed{
+  max-width:500px;
+  margin:auto;
+  padding:10px;
+}
+
+/* POST */
+.post{
+  background:#111;
+  margin:15px 0;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.post img, .post video{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+  background:black;
+}
+
+.content{
+  padding:10px;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
 }
 
 button{
-  padding:10px 20px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  margin:5px;
-}
-
-.like{
   background:#222;
   color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#333;
+}
+
+.count{
+  text-align:center;
+  color:#aaa;
+  font-size:14px;
+  padding-bottom:10px;
+}
+
+/* CHAT */
+.chat{
+  max-width:500px;
+  margin:20px auto;
+  padding:10px;
+  background:#111;
+  border-radius:15px;
+}
+
+.chat input{
+  width:70%;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+}
+
+.chat button{
+  width:25%;
 }
 </style>
 </head>
 
 <body>
 
+<header>
 <h1>JHCLOTH</h1>
 <p>Elegancia · Disciplina · Presencia</p>
+</header>
 
-<button>Entrar</button>
+<!-- FEED -->
+<div class="feed">
 
-<h2>Publicaciones</h2>
-<hr>
-
+<!-- POST 1 -->
+<div class="post">
+<img src="https://source.unsplash.com/600x400/?fashion,street">
+<div class="content">
 <h3>Moda urbana</h3>
-<p>La elegancia no depende del precio, depende de cómo te presentas.</p>
+<p>La elegancia no depende del precio.</p>
+</div>
 
-<button class="like">♡ Me gusta</button>
+<div class="actions">
+<button onclick="like(this)">❤️ Like</button>
+<button onclick="comment()">💬</button>
+<button onclick="share()">📤</button>
+</div>
+<div class="count">0 likes</div>
+</div>
 
-<hr>
+<!-- POST 2 VIDEO -->
+<div class="post">
+<video controls>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+</video>
 
-<h3>JhCloth</h3>
-<p>Estamos construyendo una comunidad con disciplina y presencia.</p>
+<div class="content">
+<h3>JhCloth Style</h3>
+<p>Disciplina y presencia siempre.</p>
+</div>
 
-<button class="like">♡ Me gusta</button>
+<div class="actions">
+<button onclick="like(this)">❤️ Like</button>
+<button onclick="comment()">💬</button>
+<button onclick="share()">📤</button>
+</div>
+<div class="count">0 likes</div>
+</div>
 
-<p id="likes">Likes: 0</p>
+</div>
 
-<!-- 🔥 FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, increment, getDoc } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!-- CHAT -->
+<div class="chat">
+<h3>Mensajes</h3>
+<div id="chatBox"></div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
-  authDomain: "jhcloth-app.firebaseapp.com",
-  projectId: "jhcloth-app",
-  storageBucket: "jhcloth-app.firebasestorage.app",
-  messagingSenderId: "683518974253",
-  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
-};
+<input id="msg" placeholder="Escribe un mensaje...">
+<button onclick="sendMsg()">Enviar</button>
+</div>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+<script>
 
-const ref = doc(db, "likes", "post1");
-
-async function cargarLikes(){
-  const snap = await getDoc(ref);
-  if(snap.exists()){
-    document.getElementById("likes").innerText =
-      "Likes: " + snap.data().count;
-  }
+// LIKE
+function like(btn){
+  let count = btn.parentElement.nextElementSibling;
+  let num = parseInt(count.innerText);
+  num++;
+  count.innerText = num + " likes";
 }
-cargarLikes();
 
-window.darLike = async function(){
-  try {
-    await updateDoc(ref, {
-      count: increment(1)
-    });
-  } catch {
-    await setDoc(ref, { count: 1 });
+// COMMENT
+function comment(){
+  alert("Comentarios pronto 🔥");
+}
+
+// SHARE
+function share(){
+  alert("Compartido 📤");
+}
+
+// CHAT
+function sendMsg(){
+  let input = document.getElementById("msg");
+  let box = document.getElementById("chatBox");
+
+  if(input.value.trim() !== ""){
+    let p = document.createElement("p");
+    p.innerText = "👤 " + input.value;
+    box.appendChild(p);
+    input.value = "";
   }
-
-  cargarLikes();
 }
 </script>
 
 </body>
 </html>
-
