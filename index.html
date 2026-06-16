@@ -3,157 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JHCLOTH</title>
+<title>JHCLOTH LOGIN</title>
 
 <style>
 body{
   margin:0;
   background:black;
+  color:white;
   font-family:Arial;
-  color:white;
-}
-
-header{
   text-align:center;
+}
+
+.box{
+  margin-top:80px;
+}
+
+input{
+  display:block;
+  margin:10px auto;
   padding:10px;
-  font-weight:bold;
-}
-
-#feed{
-  max-width:500px;
-  margin:auto;
-}
-
-.post{
-  position:relative;
-  margin-bottom:20px;
-}
-
-.post img,
-.post video{
-  width:100%;
-  height:80vh;
-  object-fit:cover;
-  border-radius:15px;
-}
-
-.info{
-  position:absolute;
-  bottom:80px;
-  left:10px;
-}
-
-.info h3{
-  margin:0;
-}
-
-.info p{
-  font-size:13px;
-  color:#ccc;
-}
-
-.actions{
-  position:absolute;
-  right:10px;
-  bottom:100px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.actions button{
-  background:rgba(0,0,0,0.5);
+  width:80%;
+  max-width:300px;
+  border-radius:8px;
   border:none;
+}
+
+button{
+  padding:10px 20px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  background:#222;
   color:white;
-  padding:10px;
-  border-radius:50%;
-  font-size:18px;
+}
+button:hover{
+  background:#333;
+}
+
+#app{
+  display:none;
 }
 </style>
 </head>
 
 <body>
 
-<header>JHCLOTH</header>
+<!-- LOGIN -->
+<div id="login">
+  <h1>JHCLOTH</h1>
 
-<div id="feed"></div>
+  <div class="box">
+    <input id="email" placeholder="Correo">
+    <input id="password" type="password" placeholder="Contraseña">
 
-<script>
+    <button onclick="register()">Registrarse</button>
+    <button onclick="login()">Entrar</button>
+  </div>
+</div>
 
-const data = [
-  {
-    type:"video",
-    url:"https://www.w3schools.com/html/mov_bbb.mp4",
-    title:"JhCloth Style",
-    text:"Disciplina y presencia"
-  },
-  {
-    type:"image",
-    url:"https://source.unsplash.com/600x900/?fashion",
-    title:"Moda urbana",
-    text:"Elegancia real"
-  },
-  {
-    type:"video",
-    url:"https://www.w3schools.com/html/movie.mp4",
-    title:"Nueva colección",
-    text:"Estilo único"
-  }
-];
+<!-- APP -->
+<div id="app">
+  <h2>Bienvenido a JHCLOTH 🔥</h2>
+  <button onclick="logout()">Salir</button>
+</div>
 
-let index = 0;
-const feed = document.getElementById("feed");
+<script type="module">
 
-function createPost(item){
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const div = document.createElement("div");
-  div.className = "post";
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_APP.firebaseapp.com",
+  projectId: "TU_ID",
+  storageBucket: "TU_APP.appspot.com",
+  messagingSenderId: "XXX",
+  appId: "XXX"
+};
 
-  let media = "";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  if(item.type === "video"){
-    media = `<video src="${item.url}" autoplay muted loop></video>`;
+/* ======================
+   REGISTRO
+====================== */
+window.register = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+  .then(() => alert("Usuario creado 🔥"))
+  .catch(err => alert(err.message));
+}
+
+/* ======================
+   LOGIN
+====================== */
+window.login = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+  .catch(err => alert(err.message));
+}
+
+/* ======================
+   LOGOUT
+====================== */
+window.logout = function(){
+  signOut(auth);
+}
+
+/* ======================
+   CAMBIO DE ESTADO
+====================== */
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
   } else {
-    media = `<img src="${item.url}">`;
-  }
-
-  div.innerHTML = `
-    ${media}
-
-    <div class="info">
-      <h3>${item.title}</h3>
-      <p>${item.text}</p>
-    </div>
-
-    <div class="actions">
-      <button onclick="like(this)">❤️</button>
-      <button>💬</button>
-      <button>📤</button>
-    </div>
-  `;
-
-  feed.appendChild(div);
-}
-
-function loadMore(){
-  for(let i=0;i<3;i++){
-    createPost(data[index % data.length]);
-    index++;
-  }
-}
-
-loadMore();
-
-window.addEventListener("scroll", ()=>{
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
-    loadMore();
+    document.getElementById("login").style.display = "block";
+    document.getElementById("app").style.display = "none";
   }
 });
-
-function like(btn){
-  btn.style.transform = "scale(1.3)";
-  setTimeout(()=>btn.style.transform="scale(1)",200);
-}
 
 </script>
 
