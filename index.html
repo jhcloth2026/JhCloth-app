@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JhCloth Social</title>
+<title>JhCloth TikTok Style</title>
 
 <style>
 body{
@@ -15,41 +15,43 @@ body{
 
 header{
   text-align:center;
-  padding:15px;
+  padding:10px;
   border-bottom:1px solid #222;
 }
 
-header h1{ margin:0; font-size:40px; }
-header p{ color:#aaa; }
-
 .feed{
-  max-width:500px;
-  margin:auto;
-  padding:10px;
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
 }
 
 .post{
-  background:#111;
-  margin:15px 0;
-  border-radius:15px;
-  overflow:hidden;
+  height:100vh;
+  scroll-snap-align:start;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
 }
 
 .post img,
 .post video{
   width:100%;
-  height:260px;
+  height:100%;
   object-fit:cover;
 }
 
-.content{
-  padding:10px;
+.info{
+  position:absolute;
+  bottom:60px;
+  left:15px;
+  color:white;
 }
 
-.actions{
-  display:flex;
-  justify-content:space-around;
-  padding:10px;
+.like{
+  position:absolute;
+  right:15px;
+  bottom:100px;
 }
 
 button{
@@ -57,23 +59,7 @@ button{
   color:white;
   border:none;
   padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-button:hover{ background:#333; }
-
-.count{
-  text-align:center;
-  color:#aaa;
-  font-size:14px;
-  padding-bottom:10px;
-}
-
-.loader{
-  text-align:center;
-  padding:20px;
-  color:#aaa;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -82,124 +68,82 @@ button:hover{ background:#333; }
 
 <header>
 <h1>JHCLOTH</h1>
-<p>Elegancia · Disciplina · Presencia</p>
 </header>
 
 <div class="feed" id="feed"></div>
 
-<div class="loader" id="loader">Cargando más contenido...</div>
-
 <script>
-// ======================
-// BASE DE DATOS SIMULADA
-// ======================
-const database = [
-  {
-    type:"image",
-    url:"https://source.unsplash.com/600x400/?fashion,street",
-    title:"Moda urbana",
-    text:"La elegancia no depende del precio."
-  },
+
+// 📦 VIDEOS E IMÁGENES
+const posts = [
   {
     type:"video",
     url:"https://www.w3schools.com/html/mov_bbb.mp4",
     title:"JhCloth Style",
-    text:"Disciplina y presencia siempre."
+    text:"Disciplina y presencia"
   },
   {
     type:"image",
-    url:"https://source.unsplash.com/600x400/?model,style",
+    url:"https://source.unsplash.com/600x900/?fashion",
+    title:"Moda urbana",
+    text:"Elegancia pura"
+  },
+  {
+    type:"video",
+    url:"https://www.w3schools.com/html/movie.mp4",
     title:"Nueva colección",
-    text:"Estilo único JhCloth."
+    text:"Estilo único"
   }
 ];
 
-// ======================
-// CONTROL INFINITO
-// ======================
-let index = 0;
 const feed = document.getElementById("feed");
 
-// ======================
-// CREAR POST
-// ======================
-function createPost(data){
+// 🔥 CREAR POSTS
+posts.forEach(p => {
 
   const div = document.createElement("div");
   div.className = "post";
 
   let media = "";
 
-  if(data.type === "image"){
-    media = `<img src="${data.url}">`;
-  }else{
-    media = `
-      <video controls muted loop>
-        <source src="${data.url}">
-      </video>
-    `;
+  if(p.type === "video"){
+    media = `<video muted loop playsinline>
+              <source src="${p.url}">
+             </video>`;
+  } else {
+    media = `<img src="${p.url}">`;
   }
 
   div.innerHTML = `
     ${media}
-    <div class="content">
-      <h3>${data.title}</h3>
-      <p>${data.text}</p>
+    <div class="info">
+      <h2>${p.title}</h2>
+      <p>${p.text}</p>
     </div>
 
-    <div class="actions">
-      <button onclick="like(this)">❤️ Like</button>
-      <button onclick="share()">📤</button>
+    <div class="like">
+      <button>❤️ Like</button>
     </div>
-
-    <div class="count">0 likes</div>
   `;
 
   feed.appendChild(div);
-}
-
-// ======================
-// CARGAR MÁS CONTENIDO
-// ======================
-function loadMore(){
-  for(let i=0;i<3;i++){
-    const data = database[index % database.length];
-    createPost(data);
-    index++;
-  }
-}
-
-// primera carga
-loadMore();
-
-// ======================
-// SCROLL INFINITO REAL
-// ======================
-window.addEventListener("scroll", () => {
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 100){
-    loadMore();
-  }
 });
 
-// ======================
-// LIKE
-// ======================
-function like(btn){
-  let post = btn.closest(".post");
-  let count = post.querySelector(".count");
+// 🔥 AUTOPLAY TIPO TIKTOK
+const videos = document.querySelectorAll("video");
 
-  let num = parseInt(count.innerText);
-  if(isNaN(num)) num = 0;
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.play();
+    } else {
+      entry.target.pause();
+    }
+  });
+}, { threshold: 0.7 });
 
-  count.innerText = (num + 1) + " likes";
-}
+videos.forEach(v => observer.observe(v));
 
-// ======================
-// SHARE
-// ======================
-function share(){
-  alert("Compartido 📤");
-}
 </script>
 
 </body>
