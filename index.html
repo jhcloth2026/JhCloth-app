@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -13,15 +14,23 @@ body{
   font-family:Arial;
 }
 
+/* HEADER */
 header{
   text-align:center;
   padding:15px;
   border-bottom:1px solid #222;
 }
 
-header h1{ margin:0; font-size:40px; }
-header p{ color:#aaa; }
+header h1{
+  margin:0;
+  font-size:40px;
+}
 
+header p{
+  color:#aaa;
+}
+
+/* FEED */
 .feed{
   max-width:500px;
   margin:auto;
@@ -35,13 +44,16 @@ header p{ color:#aaa; }
   overflow:hidden;
 }
 
-.post img, .post video{
+.post img,
+.post video{
   width:100%;
   height:260px;
   object-fit:cover;
 }
 
-.content{ padding:10px; }
+.content{
+  padding:10px;
+}
 
 .actions{
   display:flex;
@@ -58,7 +70,9 @@ button{
   cursor:pointer;
 }
 
-button:hover{ background:#333; }
+button:hover{
+  background:#333;
+}
 
 .count{
   text-align:center;
@@ -67,6 +81,7 @@ button:hover{ background:#333; }
   padding-bottom:10px;
 }
 
+/* CHAT */
 .chat{
   max-width:500px;
   margin:20px auto;
@@ -95,24 +110,8 @@ button:hover{ background:#333; }
 <p>Elegancia · Disciplina · Presencia</p>
 </header>
 
-<div class="feed">
-
-<!-- POST 1 -->
-<div class="post">
-<img src="https://source.unsplash.com/600x400/?fashion,street">
-
-<div class="content">
-<h3>Moda urbana</h3>
-<p>La elegancia no depende del precio.</p>
-</div>
-
-<div class="actions">
-<button onclick="like(this)">❤️ Like</button>
-<button onclick="share()">📤</button>
-</div>
-
-<div class="count">0 likes</div>
-</div>
+<!-- FEED -->
+<div class="feed" id="feed"></div>
 
 <!-- CHAT -->
 <div class="chat">
@@ -124,6 +123,73 @@ button:hover{ background:#333; }
 </div>
 
 <script>
+// =======================
+// POSTS (IMÁGENES + VIDEOS)
+// =======================
+const posts = [
+  {
+    type: "image",
+    url: "https://source.unsplash.com/600x400/?fashion,street",
+    title: "Moda urbana",
+    text: "La elegancia no depende del precio."
+  },
+  {
+    type: "video",
+    url: "https://www.w3schools.com/html/mov_bbb.mp4",
+    title: "JhCloth Style",
+    text: "Disciplina y presencia siempre."
+  },
+  {
+    type: "image",
+    url: "https://source.unsplash.com/600x400/?model,style",
+    title: "Nueva colección",
+    text: "Estilo único JhCloth."
+  }
+];
+
+// =======================
+// CREAR FEED AUTOMÁTICO
+// =======================
+const feed = document.getElementById("feed");
+
+posts.forEach(post => {
+  const div = document.createElement("div");
+  div.className = "post";
+
+  let media = "";
+
+  if(post.type === "image"){
+    media = `<img src="${post.url}">`;
+  } else {
+    media = `
+      <video controls>
+        <source src="${post.url}">
+      </video>
+    `;
+  }
+
+  div.innerHTML = `
+    ${media}
+
+    <div class="content">
+      <h3>${post.title}</h3>
+      <p>${post.text}</p>
+    </div>
+
+    <div class="actions">
+      <button onclick="like(this)">❤️ Like</button>
+      <button onclick="share()">📤</button>
+    </div>
+
+    <div class="count">0 likes</div>
+  `;
+
+  feed.appendChild(div);
+});
+
+// =======================
+// LIKE
+// =======================
 function like(btn){
   let post = btn.closest(".post");
   let count = post.querySelector(".count");
@@ -134,10 +200,16 @@ function like(btn){
   count.innerText = (num + 1) + " likes";
 }
 
+// =======================
+// SHARE
+// =======================
 function share(){
   alert("Compartido 📤");
 }
 
+// =======================
+// CHAT
+// =======================
 function sendMsg(){
   let input = document.getElementById("msg");
   let box = document.getElementById("chatBox");
