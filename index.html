@@ -348,8 +348,14 @@ button:hover{
 
 <script>
 function like(btn){
-  let count = btn.parentElement.nextElementSibling;
+  let count = btn.parentElement.querySelector(".count");
+  if(!count){
+    count = btn.parentElement.nextElementSibling;
+  }
+
   let num = parseInt(count.innerText);
+  if(isNaN(num)) num = 0;
+
   count.innerText = (num + 1) + " likes";
 }
 
@@ -364,6 +370,11 @@ function share(){
 function sendMsg(){
   let input = document.getElementById("msg");
   let box = document.getElementById("chatBox");
+
+  if(!input || !box){
+    alert("Error: falta msg o chatBox");
+    return;
+  }
 
   if(input.value.trim() !== ""){
     let p = document.createElement("p");
