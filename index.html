@@ -124,8 +124,31 @@ button:hover{
 </div>
 
 <div class="actions">
-<button onclick="like(this)">❤️ Like</button>
-<button onclick="comment()">💬</button>
+function like(btn){
+  let post = btn.closest(".post");
+  let count = post.querySelector(".count");
+
+  let num = parseInt(count.innerText);
+  if(isNaN(num)) num = 0;
+
+  count.innerText = (num + 1) + " likes";
+}
+function sendMsg(){
+  let input = document.getElementById("msg");
+  let box = document.getElementById("chatBox");
+
+  if(!input || !box){
+    alert("Error en chat");
+    return;
+  }
+
+  if(input.value.trim() !== ""){
+    let p = document.createElement("p");
+    p.innerText = "👤 " + input.value;
+    box.appendChild(p);
+    input.value = "";
+  }
+}
 <button onclick="share()">📤</button>
 </div>
 <div class="count">0 likes</div>
