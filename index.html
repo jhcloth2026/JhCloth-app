@@ -346,47 +346,31 @@ button:hover{
 <button onclick="sendMsg()">Enviar</button>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
-authDomain: "jhcloth-app.firebaseapp.com",
-projectId: "jhcloth-app",
-storageBucket: "jhcloth-app.firebasestorage.app",
-messagingSenderId: "683518974253",
-appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4",
-measurementId: "G-G95JWS0LXR"
-};
-
-const app = initializeApp(firebaseConfig);
-console.log("Firebase conectado");
-// LIKE
-window.like = function(btn){
-let count = btn.parentElement.nextElementSibling;
-let num = parseInt(count.innerText);
-num++;
-count.innerText = num + " likes";
+<script>
+function like(btn){
+  let count = btn.parentElement.nextElementSibling;
+  let num = parseInt(count.innerText);
+  count.innerText = (num + 1) + " likes";
 }
 
-window.comment = function(){
-alert("Comentarios pronto 🔥");
+function comment(){
+  alert("Comentarios pronto 🔥");
 }
 
-window.share = function(){
-alert("Compartido 📤");
+function share(){
+  alert("Compartido 📤");
 }
 
-window.sendMsg = function(){
-let input = document.getElementById("msg");
-let box = document.getElementById("chatBox");
+function sendMsg(){
+  let input = document.getElementById("msg");
+  let box = document.getElementById("chatBox");
 
-if(input.value.trim() !== ""){
-let p = document.createElement("p");
-p.innerText = "👤 " + input.value;
-box.appendChild(p);
-input.value = "";
-}
+  if(input.value.trim() !== ""){
+    let p = document.createElement("p");
+    p.innerText = "👤 " + input.value;
+    box.appendChild(p);
+    input.value = "";
+  }
 }
 </script>
 
