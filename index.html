@@ -19,14 +19,8 @@ header{
   border-bottom:1px solid #222;
 }
 
-header h1{
-  margin:0;
-  font-size:40px;
-}
-
-header p{
-  color:#aaa;
-}
+header h1{ margin:0; font-size:40px; }
+header p{ color:#aaa; }
 
 .feed{
   max-width:500px;
@@ -67,9 +61,7 @@ button{
   cursor:pointer;
 }
 
-button:hover{
-  background:#333;
-}
+button:hover{ background:#333; }
 
 .count{
   text-align:center;
@@ -78,23 +70,10 @@ button:hover{
   padding-bottom:10px;
 }
 
-.chat{
-  max-width:500px;
-  margin:20px auto;
-  padding:10px;
-  background:#111;
-  border-radius:15px;
-}
-
-.chat input{
-  width:70%;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-}
-
-.chat button{
-  width:25%;
+.loader{
+  text-align:center;
+  padding:20px;
+  color:#aaa;
 }
 </style>
 </head>
@@ -108,74 +87,64 @@ button:hover{
 
 <div class="feed" id="feed"></div>
 
-<div class="chat">
-<h3>Mensajes</h3>
-<div id="chatBox"></div>
-
-<input id="msg" placeholder="Escribe un mensaje...">
-<button onclick="sendMsg()">Enviar</button>
-</div>
+<div class="loader" id="loader">Cargando más contenido...</div>
 
 <script>
-// =====================
-// POSTS
-// =====================
-const posts = [
+// ======================
+// BASE DE DATOS SIMULADA
+// ======================
+const database = [
   {
-    type: "image",
-    url: "https://source.unsplash.com/600x400/?fashion,street",
-    title: "Moda urbana",
-    text: "La elegancia no depende del precio."
+    type:"image",
+    url:"https://source.unsplash.com/600x400/?fashion,street",
+    title:"Moda urbana",
+    text:"La elegancia no depende del precio."
   },
   {
-    type: "video",
-    url: "https://www.w3schools.com/html/mov_bbb.mp4",
-    title: "JhCloth Style",
-    text: "Disciplina y presencia siempre."
+    type:"video",
+    url:"https://www.w3schools.com/html/mov_bbb.mp4",
+    title:"JhCloth Style",
+    text:"Disciplina y presencia siempre."
   },
   {
-    type: "image",
-    url: "https://source.unsplash.com/600x400/?model,style",
-    title: "Nueva colección",
-    text: "Estilo único JhCloth."
+    type:"image",
+    url:"https://source.unsplash.com/600x400/?model,style",
+    title:"Nueva colección",
+    text:"Estilo único JhCloth."
   }
 ];
 
-// 🔥 “INFINITO” (repite posts)
-let infinitePosts = [];
-
-for(let i = 0; i < 10; i++){
-  infinitePosts = infinitePosts.concat(posts);
-}
-
-// =====================
-// RENDER FEED
-// =====================
+// ======================
+// CONTROL INFINITO
+// ======================
+let index = 0;
 const feed = document.getElementById("feed");
 
-infinitePosts.forEach(post => {
+// ======================
+// CREAR POST
+// ======================
+function createPost(data){
 
   const div = document.createElement("div");
   div.className = "post";
 
   let media = "";
 
-  if(post.type === "image"){
-    media = `<img src="${post.url}">`;
-  } else {
+  if(data.type === "image"){
+    media = `<img src="${data.url}">`;
+  }else{
     media = `
-      <video controls>
-        <source src="${post.url}">
+      <video controls muted loop>
+        <source src="${data.url}">
       </video>
     `;
   }
 
   div.innerHTML = `
     ${media}
-
     <div class="content">
-      <h3>${post.title}</h3>
-      <p>${post.text}</p>
+      <h3>${data.title}</h3>
+      <p>${data.text}</p>
     </div>
 
     <div class="actions">
@@ -187,11 +156,34 @@ infinitePosts.forEach(post => {
   `;
 
   feed.appendChild(div);
+}
+
+// ======================
+// CARGAR MÁS CONTENIDO
+// ======================
+function loadMore(){
+  for(let i=0;i<3;i++){
+    const data = database[index % database.length];
+    createPost(data);
+    index++;
+  }
+}
+
+// primera carga
+loadMore();
+
+// ======================
+// SCROLL INFINITO REAL
+// ======================
+window.addEventListener("scroll", () => {
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 100){
+    loadMore();
+  }
 });
 
-// =====================
+// ======================
 // LIKE
-// =====================
+// ======================
 function like(btn){
   let post = btn.closest(".post");
   let count = post.querySelector(".count");
@@ -202,26 +194,11 @@ function like(btn){
   count.innerText = (num + 1) + " likes";
 }
 
-// =====================
+// ======================
 // SHARE
-// =====================
+// ======================
 function share(){
   alert("Compartido 📤");
-}
-
-// =====================
-// CHAT
-// =====================
-function sendMsg(){
-  let input = document.getElementById("msg");
-  let box = document.getElementById("chatBox");
-
-  if(input.value.trim() !== ""){
-    let p = document.createElement("p");
-    p.innerText = "👤 " + input.value;
-    box.appendChild(p);
-    input.value = "";
-  }
 }
 </script>
 
