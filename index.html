@@ -3,90 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JhCloth TikTok Pro</title>
+<title>JHCLOTH</title>
 
 <style>
 body{
   margin:0;
-  background:black;
+  background:#000;
+  color:#fff;
   font-family:Arial;
-  color:white;
 }
 
 /* HEADER */
 header{
-  position:fixed;
-  top:0;
-  width:100%;
   text-align:center;
-  padding:10px;
-  z-index:10;
-  background:rgba(0,0,0,0.6);
+  padding:15px;
+  border-bottom:1px solid #222;
+}
+header h1{
+  margin:0;
+  font-size:38px;
+}
+header p{
+  color:#aaa;
 }
 
 /* FEED */
-.feed{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
+#feed{
+  max-width:500px;
+  margin:auto;
 }
 
-/* POST FULL SCREEN */
+/* POST */
 .post{
-  height:100vh;
-  scroll-snap-align:start;
-  position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  background:#111;
+  margin:15px 10px;
+  border-radius:15px;
+  overflow:hidden;
+  box-shadow:0 0 10px rgba(255,255,255,0.05);
 }
 
-/* MEDIA */
 .post img,
 .post video{
   width:100%;
-  height:100%;
+  height:420px;
   object-fit:cover;
+  background:black;
 }
 
 /* INFO */
-.info{
-  position:absolute;
-  bottom:80px;
-  left:15px;
-  z-index:5;
+.content{
+  padding:10px;
 }
 
-.info h2{
-  margin:0;
+.content h3{
+  margin:5px 0;
 }
 
-.info p{
-  color:#ccc;
+.content p{
+  color:#aaa;
 }
 
-/* BUTTONS */
+/* BOTONES */
 .actions{
-  position:absolute;
-  right:15px;
-  bottom:120px;
   display:flex;
-  flex-direction:column;
-  gap:10px;
-  z-index:5;
+  justify-content:space-around;
+  padding:10px;
 }
 
 button{
-  background:rgba(0,0,0,0.5);
-  border:1px solid #444;
+  background:#222;
   color:white;
-  padding:8px 10px;
-  border-radius:50px;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
   cursor:pointer;
 }
 
 button:hover{
-  background:#222;
+  background:#333;
+}
+
+/* LIKES */
+.count{
+  text-align:center;
+  color:#aaa;
+  font-size:14px;
+  padding-bottom:10px;
+}
+
+/* LOADING */
+.loader{
+  text-align:center;
+  padding:20px;
+  color:#666;
 }
 </style>
 </head>
@@ -94,98 +103,104 @@ button:hover{
 <body>
 
 <header>
-<h2>JHCLOTH</h2>
+<h1>JHCLOTH</h1>
+<p>Elegancia · Disciplina · Presencia</p>
 </header>
 
-<div class="feed" id="feed"></div>
+<div id="feed"></div>
+
+<div class="loader" id="loader">Cargando más contenido...</div>
 
 <script>
 
-// =====================
-// CONTENIDO
-// =====================
+/* =========================
+   BASE DE CONTENIDO
+========================= */
 const posts = [
-  {
-    type:"video",
-    url:"https://www.w3schools.com/html/mov_bbb.mp4",
-    title:"JhCloth Style",
-    text:"Disciplina y presencia"
-  },
-  {
-    type:"image",
-    url:"https://source.unsplash.com/600x900/?fashion",
-    title:"Moda urbana",
-    text:"Elegancia sin precio"
-  },
-  {
-    type:"video",
-    url:"https://www.w3schools.com/html/movie.mp4",
-    title:"Nueva colección",
-    text:"Estilo único JhCloth"
-  }
+  {type:"image", url:"https://source.unsplash.com/600x800/?fashion,street", title:"Moda urbana", text:"La elegancia no depende del precio."},
+  {type:"video", url:"https://www.w3schools.com/html/mov_bbb.mp4", title:"JhCloth Style", text:"Disciplina y presencia siempre."},
+  {type:"image", url:"https://source.unsplash.com/600x800/?model,fashion", title:"Nueva colección", text:"Estilo único JhCloth."},
+  {type:"video", url:"https://www.w3schools.com/html/movie.mp4", title:"Video fashion", text:"Movimiento y estilo."}
 ];
 
+let index = 0;
 const feed = document.getElementById("feed");
 
-// =====================
-// CREAR POSTS
-// =====================
-posts.forEach((p, i) => {
+/* =========================
+   CREAR POST
+========================= */
+function createPost(data){
 
   const div = document.createElement("div");
   div.className = "post";
 
   let media = "";
 
-  if(p.type === "video"){
-    media = `<video muted loop playsinline>
-               <source src="${p.url}">
-             </video>`;
+  if(data.type === "image"){
+    media = `<img src="${data.url}">`;
   } else {
-    media = `<img src="${p.url}">`;
+    media = `
+      <video autoplay muted loop playsinline>
+        <source src="${data.url}">
+      </video>
+    `;
   }
 
   div.innerHTML = `
     ${media}
 
-    <div class="info">
-      <h2>${p.title}</h2>
-      <p>${p.text}</p>
+    <div class="content">
+      <h3>${data.title}</h3>
+      <p>${data.text}</p>
     </div>
 
     <div class="actions">
-      <button onclick="like(this)">❤️</button>
-      <button>📤</button>
+      <button onclick="like(this)">❤️ Like</button>
+      <button onclick="share()">📤 Share</button>
     </div>
+
+    <div class="count">0 likes</div>
   `;
 
   feed.appendChild(div);
+}
+
+/* =========================
+   CARGAR MÁS (INFINITO)
+========================= */
+function loadMore(){
+  for(let i = 0; i < 5; i++){
+    createPost(posts[index % posts.length]);
+    index++;
+  }
+}
+
+/* primera carga */
+loadMore();
+
+/* scroll infinito real */
+window.addEventListener("scroll", () => {
+  if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
+    loadMore();
+  }
 });
 
-// =====================
-// AUTOPLAY TIPO TIKTOK
-// =====================
-const videos = document.querySelectorAll("video");
-
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting){
-      entry.target.play();
-    } else {
-      entry.target.pause();
-    }
-  });
-}, { threshold: 0.8 });
-
-videos.forEach(v => observer.observe(v));
-
-// =====================
-// LIKE SIMPLE
-// =====================
+/* =========================
+   LIKE
+========================= */
 function like(btn){
-  btn.innerText = "❤️";
-  btn.style.transform = "scale(1.2)";
-  setTimeout(()=>btn.style.transform="scale(1)",200);
+  let post = btn.closest(".post");
+  let count = post.querySelector(".count");
+
+  let num = parseInt(count.innerText);
+  if(isNaN(num)) num = 0;
+
+  count.innerText = (num + 1) + " likes";
+}
+
+/* SHARE */
+function share(){
+  alert("Compartido 📤");
 }
 
 </script>
