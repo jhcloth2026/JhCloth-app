@@ -8,23 +8,16 @@
 <style>
 body{
   margin:0;
-  background:#000;
-  color:#fff;
+  background:black;
   font-family:Arial;
+  color:white;
 }
 
 /* HEADER */
 header{
   text-align:center;
-  padding:15px;
-  border-bottom:1px solid #222;
-}
-header h1{
-  margin:0;
-  font-size:38px;
-}
-header p{
-  color:#aaa;
+  padding:10px;
+  font-weight:bold;
 }
 
 /* FEED */
@@ -35,172 +28,145 @@ header p{
 
 /* POST */
 .post{
-  background:#111;
-  margin:15px 10px;
-  border-radius:15px;
-  overflow:hidden;
-  box-shadow:0 0 10px rgba(255,255,255,0.05);
+  position:relative;
+  margin-bottom:20px;
 }
 
-.post img,
-.post video{
+/* VIDEO FULL */
+.post video,
+.post img{
   width:100%;
-  height:420px;
+  height:80vh;
   object-fit:cover;
-  background:black;
+  border-radius:15px;
 }
 
 /* INFO */
-.content{
-  padding:10px;
+.info{
+  position:absolute;
+  bottom:80px;
+  left:10px;
 }
 
-.content h3{
-  margin:5px 0;
+.info h3{
+  margin:0;
 }
 
-.content p{
-  color:#aaa;
+.info p{
+  font-size:13px;
+  color:#ccc;
 }
 
-/* BOTONES */
+/* BUTTONS */
 .actions{
+  position:absolute;
+  right:10px;
+  bottom:100px;
   display:flex;
-  justify-content:space-around;
-  padding:10px;
+  flex-direction:column;
+  gap:10px;
 }
 
-button{
-  background:#222;
-  color:white;
+.actions button{
+  background:rgba(0,0,0,0.5);
   border:none;
-  padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
+  color:white;
+  padding:10px;
+  border-radius:50%;
+  font-size:18px;
 }
 
-button:hover{
-  background:#333;
-}
-
-/* LIKES */
-.count{
-  text-align:center;
-  color:#aaa;
-  font-size:14px;
-  padding-bottom:10px;
-}
-
-/* LOADING */
+/* LOADER */
 .loader{
   text-align:center;
   padding:20px;
-  color:#666;
+  color:gray;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>JHCLOTH</h1>
-<p>Elegancia · Disciplina · Presencia</p>
-</header>
+<header>JHCLOTH</header>
 
 <div id="feed"></div>
-
-<div class="loader" id="loader">Cargando más contenido...</div>
+<div class="loader">Cargando más videos...</div>
 
 <script>
 
-/* =========================
-   BASE DE CONTENIDO
-========================= */
-const posts = [
-  {type:"image", url:"https://source.unsplash.com/600x800/?fashion,street", title:"Moda urbana", text:"La elegancia no depende del precio."},
-  {type:"video", url:"https://www.w3schools.com/html/mov_bbb.mp4", title:"JhCloth Style", text:"Disciplina y presencia siempre."},
-  {type:"image", url:"https://source.unsplash.com/600x800/?model,fashion", title:"Nueva colección", text:"Estilo único JhCloth."},
-  {type:"video", url:"https://www.w3schools.com/html/movie.mp4", title:"Video fashion", text:"Movimiento y estilo."}
+const data = [
+  {
+    type:"video",
+    url:"https://www.w3schools.com/html/mov_bbb.mp4",
+    title:"JhCloth Style",
+    text:"Disciplina y presencia"
+  },
+  {
+    type:"image",
+    url:"https://source.unsplash.com/600x900/?fashion",
+    title:"Moda urbana",
+    text:"Elegancia real"
+  },
+  {
+    type:"video",
+    url:"https://www.w3schools.com/html/movie.mp4",
+    title:"Nueva colección",
+    text:"Estilo único"
+  }
 ];
 
 let index = 0;
 const feed = document.getElementById("feed");
 
-/* =========================
-   CREAR POST
-========================= */
-function createPost(data){
+function createPost(item){
 
   const div = document.createElement("div");
   div.className = "post";
 
   let media = "";
 
-  if(data.type === "image"){
-    media = `<img src="${data.url}">`;
-  } else {
-    media = `
-      <video autoplay muted loop playsinline>
-        <source src="${data.url}">
-      </video>
-    `;
+  if(item.type === "video"){
+    media = `<video src="${item.url}" autoplay muted loop></video>`;
+  }else{
+    media = `<img src="${item.url}">`;
   }
 
   div.innerHTML = `
     ${media}
 
-    <div class="content">
-      <h3>${data.title}</h3>
-      <p>${data.text}</p>
+    <div class="info">
+      <h3>${item.title}</h3>
+      <p>${item.text}</p>
     </div>
 
     <div class="actions">
-      <button onclick="like(this)">❤️ Like</button>
-      <button onclick="share()">📤 Share</button>
+      <button onclick="like(this)">❤️</button>
+      <button>💬</button>
+      <button>📤</button>
     </div>
-
-    <div class="count">0 likes</div>
   `;
 
   feed.appendChild(div);
 }
 
-/* =========================
-   CARGAR MÁS (INFINITO)
-========================= */
 function loadMore(){
-  for(let i = 0; i < 5; i++){
-    createPost(posts[index % posts.length]);
+  for(let i=0;i<3;i++){
+    createPost(data[index % data.length]);
     index++;
   }
 }
 
-/* primera carga */
 loadMore();
 
-/* scroll infinito real */
-window.addEventListener("scroll", () => {
+window.addEventListener("scroll", ()=>{
   if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
     loadMore();
   }
 });
 
-/* =========================
-   LIKE
-========================= */
 function like(btn){
-  let post = btn.closest(".post");
-  let count = post.querySelector(".count");
-
-  let num = parseInt(count.innerText);
-  if(isNaN(num)) num = 0;
-
-  count.innerText = (num + 1) + " likes";
-}
-
-/* SHARE */
-function share(){
-  alert("Compartido 📤");
+  btn.style.transform = "scale(1.3)";
+  setTimeout(()=>btn.style.transform="scale(1)",200);
 }
 
 </script>
