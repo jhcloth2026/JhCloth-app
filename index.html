@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -14,7 +13,6 @@ body{
   font-family:Arial;
 }
 
-/* HEADER */
 header{
   text-align:center;
   padding:15px;
@@ -30,7 +28,6 @@ header p{
   color:#aaa;
 }
 
-/* FEED */
 .feed{
   max-width:500px;
   margin:auto;
@@ -81,7 +78,6 @@ button:hover{
   padding-bottom:10px;
 }
 
-/* CHAT */
 .chat{
   max-width:500px;
   margin:20px auto;
@@ -110,10 +106,8 @@ button:hover{
 <p>Elegancia · Disciplina · Presencia</p>
 </header>
 
-<!-- FEED -->
 <div class="feed" id="feed"></div>
 
-<!-- CHAT -->
 <div class="chat">
 <h3>Mensajes</h3>
 <div id="chatBox"></div>
@@ -123,9 +117,9 @@ button:hover{
 </div>
 
 <script>
-// =======================
-// POSTS (IMÁGENES + VIDEOS)
-// =======================
+// =====================
+// POSTS
+// =====================
 const posts = [
   {
     type: "image",
@@ -147,12 +141,20 @@ const posts = [
   }
 ];
 
-// =======================
-// CREAR FEED AUTOMÁTICO
-// =======================
+// 🔥 “INFINITO” (repite posts)
+let infinitePosts = [];
+
+for(let i = 0; i < 10; i++){
+  infinitePosts = infinitePosts.concat(posts);
+}
+
+// =====================
+// RENDER FEED
+// =====================
 const feed = document.getElementById("feed");
 
-posts.forEach(post => {
+infinitePosts.forEach(post => {
+
   const div = document.createElement("div");
   div.className = "post";
 
@@ -187,9 +189,9 @@ posts.forEach(post => {
   feed.appendChild(div);
 });
 
-// =======================
+// =====================
 // LIKE
-// =======================
+// =====================
 function like(btn){
   let post = btn.closest(".post");
   let count = post.querySelector(".count");
@@ -200,16 +202,16 @@ function like(btn){
   count.innerText = (num + 1) + " likes";
 }
 
-// =======================
+// =====================
 // SHARE
-// =======================
+// =====================
 function share(){
   alert("Compartido 📤");
 }
 
-// =======================
+// =====================
 // CHAT
-// =======================
+// =====================
 function sendMsg(){
   let input = document.getElementById("msg");
   let box = document.getElementById("chatBox");
