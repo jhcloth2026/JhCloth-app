@@ -3,37 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JhCloth TikTok Style</title>
+<title>JhCloth TikTok Pro</title>
 
 <style>
 body{
   margin:0;
-  background:#000;
-  color:#fff;
+  background:black;
   font-family:Arial;
+  color:white;
 }
 
+/* HEADER */
 header{
+  position:fixed;
+  top:0;
+  width:100%;
   text-align:center;
   padding:10px;
-  border-bottom:1px solid #222;
+  z-index:10;
+  background:rgba(0,0,0,0.6);
 }
 
+/* FEED */
 .feed{
   height:100vh;
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
 }
 
+/* POST FULL SCREEN */
 .post{
   height:100vh;
   scroll-snap-align:start;
+  position:relative;
   display:flex;
   justify-content:center;
   align-items:center;
-  position:relative;
 }
 
+/* MEDIA */
 .post img,
 .post video{
   width:100%;
@@ -41,25 +49,44 @@ header{
   object-fit:cover;
 }
 
+/* INFO */
 .info{
   position:absolute;
-  bottom:60px;
+  bottom:80px;
   left:15px;
-  color:white;
+  z-index:5;
 }
 
-.like{
+.info h2{
+  margin:0;
+}
+
+.info p{
+  color:#ccc;
+}
+
+/* BUTTONS */
+.actions{
   position:absolute;
   right:15px;
-  bottom:100px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:5;
 }
 
 button{
-  background:#222;
+  background:rgba(0,0,0,0.5);
+  border:1px solid #444;
   color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:10px;
+  padding:8px 10px;
+  border-radius:50px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#222;
 }
 </style>
 </head>
@@ -67,14 +94,16 @@ button{
 <body>
 
 <header>
-<h1>JHCLOTH</h1>
+<h2>JHCLOTH</h2>
 </header>
 
 <div class="feed" id="feed"></div>
 
 <script>
 
-// 📦 VIDEOS E IMÁGENES
+// =====================
+// CONTENIDO
+// =====================
 const posts = [
   {
     type:"video",
@@ -86,20 +115,22 @@ const posts = [
     type:"image",
     url:"https://source.unsplash.com/600x900/?fashion",
     title:"Moda urbana",
-    text:"Elegancia pura"
+    text:"Elegancia sin precio"
   },
   {
     type:"video",
     url:"https://www.w3schools.com/html/movie.mp4",
     title:"Nueva colección",
-    text:"Estilo único"
+    text:"Estilo único JhCloth"
   }
 ];
 
 const feed = document.getElementById("feed");
 
-// 🔥 CREAR POSTS
-posts.forEach(p => {
+// =====================
+// CREAR POSTS
+// =====================
+posts.forEach((p, i) => {
 
   const div = document.createElement("div");
   div.className = "post";
@@ -108,7 +139,7 @@ posts.forEach(p => {
 
   if(p.type === "video"){
     media = `<video muted loop playsinline>
-              <source src="${p.url}">
+               <source src="${p.url}">
              </video>`;
   } else {
     media = `<img src="${p.url}">`;
@@ -116,20 +147,24 @@ posts.forEach(p => {
 
   div.innerHTML = `
     ${media}
+
     <div class="info">
       <h2>${p.title}</h2>
       <p>${p.text}</p>
     </div>
 
-    <div class="like">
-      <button>❤️ Like</button>
+    <div class="actions">
+      <button onclick="like(this)">❤️</button>
+      <button>📤</button>
     </div>
   `;
 
   feed.appendChild(div);
 });
 
-// 🔥 AUTOPLAY TIPO TIKTOK
+// =====================
+// AUTOPLAY TIPO TIKTOK
+// =====================
 const videos = document.querySelectorAll("video");
 
 const observer = new IntersectionObserver(entries => {
@@ -140,9 +175,18 @@ const observer = new IntersectionObserver(entries => {
       entry.target.pause();
     }
   });
-}, { threshold: 0.7 });
+}, { threshold: 0.8 });
 
 videos.forEach(v => observer.observe(v));
+
+// =====================
+// LIKE SIMPLE
+// =====================
+function like(btn){
+  btn.innerText = "❤️";
+  btn.style.transform = "scale(1.2)";
+  setTimeout(()=>btn.style.transform="scale(1)",200);
+}
 
 </script>
 
