@@ -171,7 +171,7 @@ fecha: Date.now()
 postText.value = "";
 }
 
-// MOSTRAR POSTS EN TIEMPO REAL
+// FEED EN TIEMPO REAL
 const q = query(collection(db,"posts"),orderBy("fecha","desc"));
 
 onSnapshot(q,(snapshot)=>{
@@ -189,7 +189,7 @@ feed.innerHTML += `
 });
 });
 
-// ESTADO LOGIN
+// LOGIN STATE
 onAuthStateChanged(auth,(user)=>{
 if(user){
 login.style.display="none";
