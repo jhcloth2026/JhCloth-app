@@ -1,4 +1,3 @@
-
 <!doctype html>
 
 <html lang="es">
@@ -49,6 +48,27 @@ header{
   font-weight:bold;
 }
 
+.perfil{
+  text-align:center;
+  padding:20px;
+}
+
+.perfil img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid white;
+}
+
+.perfil h2{
+  margin-top:10px;
+}
+
+.perfil p{
+  color:#aaa;
+}
+
 #feed{
   max-width:600px;
   margin:auto;
@@ -76,20 +96,24 @@ header{
   color:#ccc;
 }
 </style></head><body><div id="login">
-<h1>JHCLOTH</h1><input id="email" placeholder="Correo">
-<input id="password" type="password" placeholder="Contraseña"><button onclick="register()">Registrarse</button>
+  <h1>JHCLOTH</h1>  <input id="email" placeholder="Correo">
+  <input id="password" type="password" placeholder="Contraseña"><button onclick="register()">Registrarse</button>
 <button onclick="login()">Entrar</button>
 
-</div><div id="app"><header>JHCLOTH</header><div id="feed"><div class="post">
-<img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=800">
-<h3>Moda urbana</h3>
-<p>Elegancia · Disciplina · Presencia</p>
-</div><div class="post">
-<img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
-<h3>Nueva colección</h3>
-<p>Estilo único JhCloth</p>
-</div></div><div style="text-align:center;padding:20px;">
-<button onclick="logout()">Salir</button>
+</div><div id="app"><header>JHCLOTH</header><div class="perfil">
+  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500">
+  <h2>Jahir Hurtado</h2>
+  <p>Fundador de JhCloth</p>
+</div><div id="feed">  <div class="post">
+    <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=800">
+    <h3>Moda urbana</h3>
+    <p>Elegancia · Disciplina · Presencia</p>
+  </div>  <div class="post">
+    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
+    <h3>Nueva colección</h3>
+    <p>Estilo único JhCloth</p>
+  </div></div><div style="text-align:center;padding:20px;">
+  <button onclick="logout()">Salir</button>
 </div></div><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
