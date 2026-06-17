@@ -13,7 +13,6 @@ body{
   font-family:Arial;
 }
 
-/* LOGIN */
 #login{
   text-align:center;
   padding-top:80px;
@@ -39,7 +38,6 @@ button{
   cursor:pointer;
 }
 
-/* APP */
 #app{ display:none; }
 
 header{
@@ -146,66 +144,64 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* LOGIN */
+/* REGISTRO */
 window.register = () => {
-createUserWithEmailAndPassword(auth, email.value, password.value)
-.then(()=>alert("Usuario creado 🔥"))
-.catch(e=>alert(e.message));
+  createUserWithEmailAndPassword(auth, email.value, password.value)
+    .then(() => alert("Usuario creado 🔥"))
+    .catch(e => alert(e.message));
 };
 
+/* LOGIN */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => {
-      alert("Entraste correctamente 🔥");
-    })
-    .catch((e) => {
-      alert("Error al entrar: " + e.message);
-    });
+    .then(() => alert("Entraste correctamente 🔥"))
+    .catch(e => alert("Error: " + e.message));
 };
 
+/* LOGOUT */
 window.logout = () => {
-signOut(auth);
+  signOut(auth);
 };
 
-/* POSTS */
+/* CREAR POST */
 window.createPost = async () => {
-if(!postText.value.trim()) return;
+  if(!postText.value.trim()) return;
 
-await addDoc(collection(db,"posts"),{
-texto: postText.value,
-fecha: Date.now()
-});
+  await addDoc(collection(db,"posts"),{
+    texto: postText.value,
+    fecha: Date.now()
+  });
 
-postText.value = "";
+  postText.value = "";
 };
 
-/* FEED */
+/* FEED EN TIEMPO REAL */
 const q = query(collection(db,"posts"),orderBy("fecha","desc"));
 
 onSnapshot(q,(snapshot)=>{
-feed.innerHTML = "";
+  feed.innerHTML = "";
 
-snapshot.forEach(doc=>{
-const p = doc.data();
+  snapshot.forEach(doc=>{
+    const p = doc.data();
 
-feed.innerHTML += `
-<div class="post">
-<h3>JhCloth</h3>
-<p>${p.texto}</p>
-</div>
-`;
+    feed.innerHTML += `
+      <div class="post">
+        <h3>JhCloth</h3>
+        <p>${p.texto}</p>
+      </div>
+    `;
+  });
 });
-});
 
-/* ESTADO LOGIN */
+/* CONTROL DE PANTALLA (ESTO ES LO IMPORTANTE) */
 onAuthStateChanged(auth,(user)=>{
-if(user){
-login.style.display="none";
-app.style.display="block";
-}else{
-login.style.display="block";
-app.style.display="none";
-}
+  if(user){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  }else{
+    document.getElementById("login").style.display = "block";
+    document.getElementById("app").style.display = "none";
+  }
 });
 
 </script>
