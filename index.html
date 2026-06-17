@@ -76,7 +76,7 @@ header{
 
 <!-- LOGIN -->
 <div id="login">
-<h1>JHCLOTH • Moda Urbana</h1>
+<h1>JHCLOTH</h1>
 
 <input id="email" placeholder="Correo">
 <input id="password" type="password" placeholder="Contraseña">
@@ -98,6 +98,7 @@ header{
 
 <div style="text-align:center">
 <input id="postText" placeholder="¿Qué estás pensando?">
+<input id="postImage" placeholder="URL de imagen (opcional)">
 <button onclick="createPost()">Publicar</button>
 </div>
 
@@ -175,16 +176,17 @@ window.createPost = async () => {
   try {
     await addDoc(collection(db,"posts"),{
       texto: texto,
+      imagen: postImage.value,
       fecha: Date.now(),
       usuario: auth.currentUser ? auth.currentUser.email : "Anónimo"
     });
 
     postText.value = "";
+    postImage.value = "";
   } catch (e) {
     alert("Error al publicar: " + e.message);
   }
 };
-
 
 /* FEED EN TIEMPO REAL */
 const q = query(collection(db,"posts"),orderBy("fecha","desc"));
@@ -199,12 +201,13 @@ onSnapshot(q,(snapshot)=>{
       <div class="post">
         <h3>${p.usuario}</h3>
         <p>${p.texto}</p>
+        ${p.imagen ? `<img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">` : ""}
       </div>
     `;
   });
 });
 
-/* CONTROL DE PANTALLA (ESTO ES LO IMPORTANTE) */
+/* CONTROL DE PANTALLA */
 onAuthStateChanged(auth,(user)=>{
   if(user){
     document.getElementById("login").style.display = "none";
