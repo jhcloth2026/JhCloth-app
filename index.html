@@ -76,7 +76,7 @@ header{
 
 <!-- LOGIN -->
 <div id="login">
-<h1>JHCLOTH</h1>
+<h1>JHCLOTH • Moda Urbana</h1>
 
 <input id="email" placeholder="Correo">
 <input id="password" type="password" placeholder="Contraseña">
@@ -176,7 +176,7 @@ window.createPost = async () => {
     await addDoc(collection(db,"posts"),{
       texto: texto,
       fecha: Date.now(),
-      usuario: "JhCloth"
+      usuario: auth.currentUser ? auth.currentUser.email : "Anónimo"
     });
 
     postText.value = "";
@@ -197,7 +197,7 @@ onSnapshot(q,(snapshot)=>{
 
     feed.innerHTML += `
       <div class="post">
-        <h3>JhCloth</h3>
+        <h3>${p.usuario}</h3>
         <p>${p.texto}</p>
       </div>
     `;
