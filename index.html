@@ -13,6 +13,7 @@ body{
   font-family:Arial;
 }
 
+/* LOGIN */
 #login{
   text-align:center;
   padding-top:80px;
@@ -35,8 +36,10 @@ button{
   border-radius:10px;
   background:#222;
   color:white;
+  cursor:pointer;
 }
 
+/* APP */
 #app{ display:none; }
 
 header{
@@ -108,6 +111,7 @@ header{
 
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -160,7 +164,7 @@ signOut(auth);
 
 /* POSTS */
 window.createPost = async () => {
-if(postText.value.trim() === "") return;
+if(!postText.value.trim()) return;
 
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
@@ -188,7 +192,7 @@ feed.innerHTML += `
 });
 });
 
-/* LOGIN STATE */
+/* ESTADO LOGIN */
 onAuthStateChanged(auth,(user)=>{
 if(user){
 login.style.display="none";
