@@ -1,15 +1,17 @@
-<!doctype html>
 
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JHCLOTH</title><style>
+<title>JHCLOTH</title>
+
+<style>
 body{
   margin:0;
   background:black;
   color:white;
-  font-family:Arial,sans-serif;
+  font-family:Arial;
 }
 
 #login{
@@ -28,13 +30,12 @@ input{
 }
 
 button{
-  padding:12px 20px;
+  padding:10px 20px;
+  margin:5px;
   border:none;
   border-radius:10px;
   background:#222;
   color:white;
-  cursor:pointer;
-  margin:5px;
 }
 
 #app{
@@ -43,8 +44,8 @@ button{
 
 header{
   text-align:center;
+  font-size:25px;
   padding:15px;
-  font-size:28px;
   font-weight:bold;
 }
 
@@ -57,16 +58,6 @@ header{
   width:120px;
   height:120px;
   border-radius:50%;
-  object-fit:cover;
-  border:3px solid white;
-}
-
-.perfil h2{
-  margin-top:10px;
-}
-
-.perfil p{
-  color:#aaa;
 }
 
 #feed{
@@ -77,44 +68,48 @@ header{
 .post{
   background:#111;
   margin:15px;
-  border-radius:15px;
-  overflow:hidden;
-}
-
-.post img{
-  width:100%;
-  display:block;
-}
-
-.post h3{
   padding:10px;
-  margin:0;
+  border-radius:10px;
 }
+</style>
+</head>
 
-.post p{
-  padding:0 10px 15px;
-  color:#ccc;
-}
-</style></head><body><div id="login">
-  <h1>JHCLOTH</h1>  <input id="email" placeholder="Correo">
-  <input id="password" type="password" placeholder="Contraseña"><button onclick="register()">Registrarse</button>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+<h1>JHCLOTH</h1>
+
+<input id="email" placeholder="Correo">
+<input id="password" type="password" placeholder="Contraseña">
+
+<button onclick="register()">Registrarse</button>
 <button onclick="login()">Entrar</button>
+</div>
 
-</div><div id="app"><header>JHCLOTH</header><div class="perfil">
-  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500">
-  <h2>Jahir Hurtado</h2>
-  <p>Fundador de JhCloth</p>
-</div><div id="feed">  <div class="post">
-    <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=800">
-    <h3>Moda urbana</h3>
-    <p>Elegancia · Disciplina · Presencia</p>
-  </div>  <div class="post">
-    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
-    <h3>Nueva colección</h3>
-    <p>Estilo único JhCloth</p>
-  </div></div><div style="text-align:center;padding:20px;">
-  <button onclick="logout()">Salir</button>
-</div></div><script type="module">
+<!-- APP -->
+<div id="app">
+
+<header>JHCLOTH</header>
+
+<div class="perfil">
+<img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500">
+<h2>Jahir Hurtado</h2>
+<p>Fundador de JhCloth</p>
+</div>
+
+<div style="text-align:center">
+<input id="postText" placeholder="¿Qué estás pensando?">
+<button onclick="createPost()">Publicar</button>
+</div>
+
+<div id="feed"></div>
+
+<button onclick="logout()" style="display:block;margin:20px auto;">Salir</button>
+
+</div>
+
+<script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -124,6 +119,15 @@ signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+query,
+orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
@@ -137,37 +141,66 @@ measurementId: "G-G95JWS0LXR"
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-window.register = function(){
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-
-createUserWithEmailAndPassword(auth,email,password)
+// LOGIN
+window.register = () => {
+createUserWithEmailAndPassword(auth,email.value,password.value)
 .then(()=>alert("Usuario creado"))
-.catch(error=>alert(error.message));
+.catch(e=>alert(e.message));
 }
 
-window.login = function(){
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-
-signInWithEmailAndPassword(auth,email,password)
-.catch(error=>alert(error.message));
+window.login = () => {
+signInWithEmailAndPassword(auth,email.value,password.value)
+.catch(e=>alert(e.message));
 }
 
-window.logout = function(){
+window.logout = () => {
 signOut(auth);
 }
 
+// POSTS
+window.createPost = async () => {
+if(postText.value.trim() === "") return;
+
+await addDoc(collection(db,"posts"),{
+texto: postText.value,
+fecha: Date.now()
+});
+
+postText.value = "";
+}
+
+// MOSTRAR POSTS EN TIEMPO REAL
+const q = query(collection(db,"posts"),orderBy("fecha","desc"));
+
+onSnapshot(q,(snapshot)=>{
+feed.innerHTML = "";
+
+snapshot.forEach(doc=>{
+const p = doc.data();
+
+feed.innerHTML += `
+<div class="post">
+<h3>JhCloth</h3>
+<p>${p.texto}</p>
+</div>
+`;
+});
+});
+
+// ESTADO LOGIN
 onAuthStateChanged(auth,(user)=>{
 if(user){
-document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
+login.style.display="none";
+app.style.display="block";
 }else{
-document.getElementById("login").style.display="block";
-document.getElementById("app").style.display="none";
+login.style.display="block";
+app.style.display="none";
 }
 });
 
-</script></body>
+</script>
+
+</body>
 </html>
