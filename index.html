@@ -154,8 +154,13 @@ createUserWithEmailAndPassword(auth, email.value, password.value)
 };
 
 window.login = () => {
-signInWithEmailAndPassword(auth, email.value, password.value)
-.catch(e=>alert(e.message));
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .then(() => {
+      alert("Entraste correctamente 🔥");
+    })
+    .catch((e) => {
+      alert("Error al entrar: " + e.message);
+    });
 };
 
 window.logout = () => {
