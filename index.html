@@ -1,81 +1,104 @@
+
 <!doctype html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JHCLOTH LOGIN</title>
-
-<style>
+<title>JHCLOTH</title><style>
 body{
   margin:0;
   background:black;
   color:white;
-  font-family:Arial;
-  text-align:center;
+  font-family:Arial,sans-serif;
 }
 
-.box{
-  margin-top:80px;
+#login{
+  text-align:center;
+  padding-top:80px;
 }
 
 input{
   display:block;
   margin:10px auto;
-  padding:10px;
+  padding:12px;
   width:80%;
   max-width:300px;
-  border-radius:8px;
   border:none;
+  border-radius:10px;
 }
 
 button{
-  padding:10px 20px;
-  margin:5px;
+  padding:12px 20px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   background:#222;
   color:white;
-}
-button:hover{
-  background:#333;
+  cursor:pointer;
+  margin:5px;
 }
 
 #app{
   display:none;
 }
-</style>
-</head>
 
-<body>
+header{
+  text-align:center;
+  padding:15px;
+  font-size:28px;
+  font-weight:bold;
+}
 
-<!-- LOGIN -->
-<div id="login">
-  <h1>JHCLOTH</h1>
+#feed{
+  max-width:600px;
+  margin:auto;
+}
 
-  <div class="box">
-    <input id="email" placeholder="Correo">
-    <input id="password" type="password" placeholder="Contraseña">
+.post{
+  background:#111;
+  margin:15px;
+  border-radius:15px;
+  overflow:hidden;
+}
 
-    <button onclick="register()">Registrarse</button>
-    <button onclick="login()">Entrar</button>
-  </div>
-</div>
+.post img{
+  width:100%;
+  display:block;
+}
 
-<!-- APP -->
-<div id="app">
-  <h2>Bienvenido a JHCLOTH 🔥</h2>
-  <button onclick="logout()">Salir</button>
-</div>
+.post h3{
+  padding:10px;
+  margin:0;
+}
 
-<script type="module">
+.post p{
+  padding:0 10px 15px;
+  color:#ccc;
+}
+</style></head><body><div id="login">
+<h1>JHCLOTH</h1><input id="email" placeholder="Correo">
+<input id="password" type="password" placeholder="Contraseña"><button onclick="register()">Registrarse</button>
+<button onclick="login()">Entrar</button>
+
+</div><div id="app"><header>JHCLOTH</header><div id="feed"><div class="post">
+<img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=800">
+<h3>Moda urbana</h3>
+<p>Elegancia · Disciplina · Presencia</p>
+</div><div class="post">
+<img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
+<h3>Nueva colección</h3>
+<p>Estilo único JhCloth</p>
+</div></div><div style="text-align:center;padding:20px;">
+<button onclick="logout()">Salir</button>
+</div></div><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -91,50 +114,36 @@ measurementId: "G-G95JWS0LXR"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/* ======================
-   REGISTRO
-====================== */
 window.register = function(){
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-  createUserWithEmailAndPassword(auth, email, password)
-  .then(() => alert("Usuario creado 🔥"))
-  .catch(err => alert(err.message));
+createUserWithEmailAndPassword(auth,email,password)
+.then(()=>alert("Usuario creado"))
+.catch(error=>alert(error.message));
 }
 
-/* ======================
-   LOGIN
-====================== */
 window.login = function(){
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-  signInWithEmailAndPassword(auth, email, password)
-  .catch(err => alert(err.message));
+signInWithEmailAndPassword(auth,email,password)
+.catch(error=>alert(error.message));
 }
 
-/* ======================
-   LOGOUT
-====================== */
 window.logout = function(){
-  signOut(auth);
+signOut(auth);
 }
 
-/* ======================
-   CAMBIO DE ESTADO
-====================== */
-onAuthStateChanged(auth, (user) => {
-  if(user){
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  } else {
-    document.getElementById("login").style.display = "block";
-    document.getElementById("app").style.display = "none";
-  }
+onAuthStateChanged(auth,(user)=>{
+if(user){
+document.getElementById("login").style.display="none";
+document.getElementById("app").style.display="block";
+}else{
+document.getElementById("login").style.display="block";
+document.getElementById("app").style.display="none";
+}
 });
 
-</script>
-
-</body>
+</script></body>
 </html>
