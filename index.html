@@ -165,15 +165,26 @@ window.logout = () => {
 
 /* CREAR POST */
 window.createPost = async () => {
-  if(!postText.value.trim()) return;
+  const texto = postText.value;
 
-  await addDoc(collection(db,"posts"),{
-    texto: postText.value,
-    fecha: Date.now()
-  });
+  if(!texto.trim()){
+    alert("Escribe algo primero");
+    return;
+  }
 
-  postText.value = "";
+  try {
+    await addDoc(collection(db,"posts"),{
+      texto: texto,
+      fecha: Date.now(),
+      usuario: "JhCloth"
+    });
+
+    postText.value = "";
+  } catch (e) {
+    alert("Error al publicar: " + e.message);
+  }
 };
+
 
 /* FEED EN TIEMPO REAL */
 const q = query(collection(db,"posts"),orderBy("fecha","desc"));
