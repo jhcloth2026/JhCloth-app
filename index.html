@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -14,7 +13,6 @@ body{
   font-family:Arial;
 }
 
-/* LOGIN */
 #login{
   text-align:center;
   padding-top:80px;
@@ -37,14 +35,10 @@ button{
   border-radius:10px;
   background:#222;
   color:white;
-  cursor:pointer;
 }
 
-#app{
-  display:none;
-}
+#app{ display:none; }
 
-/* APP */
 header{
   text-align:center;
   font-size:25px;
@@ -81,13 +75,13 @@ header{
 
 <!-- LOGIN -->
 <div id="login">
-  <h1>JHCLOTH</h1>
+<h1>JHCLOTH</h1>
 
-  <input id="email" placeholder="Correo">
-  <input id="password" type="password" placeholder="Contraseña">
+<input id="email" placeholder="Correo">
+<input id="password" type="password" placeholder="Contraseña">
 
-  <button onclick="register()">Registrarse</button>
-  <button onclick="login()">Entrar</button>
+<button onclick="register()">Registrarse</button>
+<button onclick="login()">Entrar</button>
 </div>
 
 <!-- APP -->
@@ -96,20 +90,20 @@ header{
 <header>JHCLOTH</header>
 
 <div class="perfil">
-  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500">
-  <h2>Jahir Hurtado</h2>
-  <p>Fundador de JhCloth</p>
+<img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500">
+<h2>Jahir Hurtado</h2>
+<p>Fundador de JhCloth</p>
 </div>
 
 <div style="text-align:center">
-  <input id="postText" placeholder="¿Qué estás pensando?">
-  <button onclick="createPost()">Publicar</button>
+<input id="postText" placeholder="¿Qué estás pensando?">
+<button onclick="createPost()">Publicar</button>
 </div>
 
 <div id="feed"></div>
 
 <div style="text-align:center;margin:20px;">
-  <button onclick="logout()">Salir</button>
+<button onclick="logout()">Salir</button>
 </div>
 
 </div>
@@ -117,7 +111,7 @@ header{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
+import { 
 getAuth,
 createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
@@ -151,13 +145,13 @@ const db = getFirestore(app);
 /* LOGIN */
 window.register = () => {
 createUserWithEmailAndPassword(auth, email.value, password.value)
-.then(() => alert("Usuario creado 🔥"))
-.catch(e => alert(e.message));
+.then(()=>alert("Usuario creado 🔥"))
+.catch(e=>alert(e.message));
 };
 
 window.login = () => {
 signInWithEmailAndPassword(auth, email.value, password.value)
-.catch(e => alert(e.message));
+.catch(e=>alert(e.message));
 };
 
 window.logout = () => {
@@ -168,7 +162,7 @@ signOut(auth);
 window.createPost = async () => {
 if(postText.value.trim() === "") return;
 
-await addDoc(collection(db, "posts"), {
+await addDoc(collection(db,"posts"),{
 texto: postText.value,
 fecha: Date.now()
 });
@@ -176,13 +170,13 @@ fecha: Date.now()
 postText.value = "";
 };
 
-/* FEED EN TIEMPO REAL */
-const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
+/* FEED */
+const q = query(collection(db,"posts"),orderBy("fecha","desc"));
 
-onSnapshot(q, (snapshot) => {
+onSnapshot(q,(snapshot)=>{
 feed.innerHTML = "";
 
-snapshot.forEach(doc => {
+snapshot.forEach(doc=>{
 const p = doc.data();
 
 feed.innerHTML += `
@@ -195,13 +189,13 @@ feed.innerHTML += `
 });
 
 /* LOGIN STATE */
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth,(user)=>{
 if(user){
-login.style.display = "none";
-app.style.display = "block";
+login.style.display="none";
+app.style.display="block";
 }else{
-login.style.display = "block";
-app.style.display = "none";
+login.style.display="block";
+app.style.display="none";
 }
 });
 
