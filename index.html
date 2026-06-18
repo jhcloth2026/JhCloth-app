@@ -209,19 +209,26 @@ const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 onSnapshot(q, (snapshot) => {
   feed.innerHTML = "";
 
+
   snapshot.forEach(docSnap => {
     const p = docSnap.data();
 
     feed.innerHTML += `
       <div class="post">
+
         <h3>${p.usuario}</h3>
         <p>${p.texto}</p>
 
-        ${p.imagen ? `<img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">` : ""}
+        ${p.imagen ? `
+          <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
+        ` : ""}
 
-        <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
-          ❤️ Me gusta (${p.likes || 0})
-        </button>
+        <div>
+          <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
+            ❤️ Me gusta (${p.likes || 0})
+          </button>
+        </div>
+
       </div>
     `;
   });
