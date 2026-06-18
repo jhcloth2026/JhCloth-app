@@ -253,7 +253,12 @@ onSnapshot(q, (snapshot) => {
           <button onclick="addComment('${docSnap.id}')">Comentar</button>
         </div>
 
-      </div>
+    <div style="margin-top:10px;">
+  ${(p.comentarios || [])
+    .map(c => `<p>💬 ${c}</p>`)
+    .join("")}
+</div>
+</div>
     `;
   });
 });
