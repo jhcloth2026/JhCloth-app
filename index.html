@@ -9,43 +9,19 @@
 <style>
 body{
   margin:0;
-  background:black;
+  background:#000;
   color:white;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
 }
-
-#login{
-  text-align:center;
-  padding-top:80px;
-}
-
-input{
-  display:block;
-  margin:10px auto;
-  padding:12px;
-  width:80%;
-  max-width:300px;
-  border:none;
-  border-radius:10px;
-}
-
-button{
-  padding:10px 20px;
-  margin:5px;
-  border:none;
-  border-radius:10px;
-  background:#222;
-  color:white;
-  cursor:pointer;
-}
-
-#app{ display:none; }
 
 header{
-  text-align:center;
-  font-size:25px;
+  background:#111;
   padding:15px;
+  text-align:center;
+  font-size:28px;
   font-weight:bold;
+  color:#d4af37;
+  border-bottom:1px solid #333;
 }
 
 .perfil{
@@ -57,18 +33,64 @@ header{
   width:120px;
   height:120px;
   border-radius:50%;
+  border:3px solid #d4af37;
 }
 
-#feed{
-  max-width:600px;
-  margin:auto;
+.perfil h2{
+  margin:10px 0 5px;
+}
+
+.perfil p{
+  color:#bbb;
+}
+
+input{
+  display:block;
+  margin:10px auto;
+  padding:12px;
+  width:90%;
+  max-width:500px;
+  border:none;
+  border-radius:10px;
+}
+
+button{
+  background:#d4af37;
+  color:black;
+  border:none;
+  border-radius:10px;
+  padding:10px 15px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .post{
   background:#111;
-  margin:15px;
-  padding:10px;
+  max-width:600px;
+  margin:15px auto;
+  padding:15px;
+  border-radius:15px;
+  border:1px solid #333;
+}
+
+.post img{
+  width:100%;
   border-radius:10px;
+  margin-top:10px;
+}
+  #feed{
+  max-width:600px;
+  margin:auto;
+  padding-bottom:30px;
+}
+
+  #login{
+  text-align:center;
+  padding-top:80px;
+}
+
+#app{
+  display:none;
 }
 </style>
 </head>
