@@ -1,3 +1,117 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JHCLOTH</title>
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:white;
+  font-family:Arial;
+}
+
+#login{
+  text-align:center;
+  padding-top:80px;
+}
+
+input{
+  display:block;
+  margin:10px auto;
+  padding:12px;
+  width:80%;
+  max-width:300px;
+  border:none;
+  border-radius:10px;
+}
+
+button{
+  padding:10px 20px;
+  margin:5px;
+  border:none;
+  border-radius:10px;
+  background:#222;
+  color:white;
+  cursor:pointer;
+}
+
+#app{ display:none; }
+
+header{
+  text-align:center;
+  font-size:25px;
+  padding:15px;
+  font-weight:bold;
+}
+
+.perfil{
+  text-align:center;
+  padding:20px;
+}
+
+.perfil img{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+}
+
+#feed{
+  max-width:600px;
+  margin:auto;
+}
+
+.post{
+  background:#111;
+  margin:15px;
+  padding:10px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+<h1>JHCLOTH</h1>
+
+<input id="email" placeholder="Correo">
+<input id="password" type="password" placeholder="Contraseña">
+
+<button onclick="register()">Registrarse</button>
+<button onclick="login()">Entrar</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<header>JHCLOTH</header>
+
+<div class="perfil">
+<img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500">
+<h2>Jahir Hurtado</h2>
+<p>Fundador de JhCloth</p>
+</div>
+
+<div style="text-align:center">
+<input id="postText" placeholder="¿Qué estás pensando?">
+<input id="postImage" placeholder="URL de imagen (opcional)">
+<button onclick="createPost()">Publicar</button>
+</div>
+
+<div id="feed"></div>
+
+<div style="text-align:center;margin:20px;">
+<button onclick="logout()">Salir</button>
+</div>
+
+</div>
+
+<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -20,7 +134,7 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG FIREBASE */
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -38,13 +152,11 @@ const db = getFirestore(app);
 /* REGISTRO */
 window.register = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => {
-      alert("Usuario creado 🔥");
-    })
+    .then(() => alert("Usuario creado 🔥"))
     .catch(e => alert(e.message));
 };
 
-/* LOGIN (ARREGLADO) */
+/* LOGIN */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => alert("Entraste correctamente 🔥"))
@@ -66,21 +178,16 @@ window.createPost = async () => {
     return;
   }
 
-  try {
-    await addDoc(collection(db, "posts"), {
-      texto: texto,
-      imagen: imagen,
-      fecha: Date.now(),
-      usuario: auth.currentUser ? auth.currentUser.email : "Anónimo",
-      likes: 0
-    });
+  await addDoc(collection(db, "posts"), {
+    texto: texto,
+    imagen: imagen,
+    fecha: Date.now(),
+    usuario: auth.currentUser ? auth.currentUser.email : "Anónimo",
+    likes: 0
+  });
 
-    postText.value = "";
-    postImage.value = "";
-
-  } catch (e) {
-    alert("Error al publicar: " + e.message);
-  }
+  postText.value = "";
+  postImage.value = "";
 };
 
 /* LIKE */
@@ -116,15 +223,18 @@ onSnapshot(q, (snapshot) => {
   });
 });
 
-/* CONTROL DE SESIÓN (IMPORTANTE) */
+/* CONTROL DE SESIÓN */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
+    login.style.display = "none";
+    app.style.display = "block";
   } else {
-    document.getElementById("login").style.display = "block";
-    document.getElementById("app").style.display = "none";
+    login.style.display = "block";
+    app.style.display = "none";
   }
 });
 
 </script>
+
+</body>
+</html>
