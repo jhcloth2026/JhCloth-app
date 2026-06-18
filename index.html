@@ -10,6 +10,7 @@
       font-family: Arial;
       margin: 0;
       padding-bottom: 70px;
+      background: #f4f4f4;
     }
 
     .navbar{
@@ -32,8 +33,10 @@
     }
 
     .post{
-      border-bottom: 1px solid #ddd;
+      background: white;
+      margin: 10px;
       padding: 10px;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -99,7 +102,7 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ================= CONFIG ================= */
+/* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -138,7 +141,7 @@ window.createPost = async () => {
     texto: postText.value,
     imagen: postImage.value,
     fecha: Date.now(),
-    usuario: "JhCloth",
+    usuario: auth.currentUser?.email || "JhCloth",
     likes: 0,
     likesList: [],
     comentarios: []
@@ -204,19 +207,21 @@ onSnapshot(q, (snapshot) => {
 
     feed.innerHTML += `
       <div class="post">
+
         <b>@${p.usuario}</b>
         <p>${p.texto}</p>
 
-        ${p.imagen ? `<img src="${p.imagen}" style="width:100%;">` : ""}
+        ${p.imagen ? `<img src="${p.imagen}" style="width:100%;border-radius:10px;">` : ""}
 
         <button onclick="likePost('${docSnap.id}')">
-          ❤️ ${p.likes || 0}
+          ❤️ ${p.likes || 0} Me gusta
         </button>
 
         <input id="c-${docSnap.id}" placeholder="Comentario">
         <button onclick="addComment('${docSnap.id}')">Comentar</button>
 
         ${(p.comentarios || []).map(c => `<p>💬 ${c}</p>`).join("")}
+
       </div>
     `;
   });
@@ -228,7 +233,7 @@ onAuthStateChanged(auth, (user) => {
   document.getElementById("app").style.display = user ? "block" : "none";
 });
 
-/* ================= NAV FUNCTIONS ================= */
+/* ================= NAV ================= */
 window.goHome = () => location.reload();
 window.search = () => alert("Buscador 🔎");
 window.openLikes = () => alert("Likes ❤️");
