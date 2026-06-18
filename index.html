@@ -1,184 +1,81 @@
 
-  <div><!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JHCLOTH</title>
+  <meta charset="UTF-8">
+  <title>JhCloth</title>
 
-<style>
+  <style>
+    body{
+      font-family: Arial;
+      margin: 0;
+      padding-bottom: 70px;
+    }
 
-body{
-  margin:0;
-  background:#000;
-  color:white;
-  font-family:Arial, sans-serif;
-}
+    .navbar{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: #111;
+      padding: 10px 0;
+      border-top: 1px solid #333;
+    }
 
-header{
-  background:#111;
-  padding:15px;
-  text-align:center;
-  font-size:28px;
-  font-weight:bold;
-  color:#d4af37;
-  border-bottom:1px solid #333;
-}
+    .navbar button{
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: white;
+    }
 
-.perfil{
-  text-align:center;
-  padding:20px;
-}
-
-.perfil img{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  border:3px solid #d4af37;
-}
-
-.perfil h2{
-  margin:10px 0 5px;
-}
-
-.perfil p{
-  color:#bbb;
-}
-
-input{
-  display:block;
-  margin:10px auto;
-  padding:12px;
-  width:90%;
-  max-width:500px;
-  border:none;
-  border-radius:10px;
-}
-
-button{
-  background:#d4af37;
-  color:black;
-  border:none;
-  border-radius:10px;
-  padding:10px 15px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.post{
-  background:#111;
-  max-width:600px;
-  margin:15px auto;
-  padding:15px;
-  border-radius:15px;
-  border:1px solid #333;
-}
-
-.post img{
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
-}
-  #feed{
-  max-width:600px;
-  margin:auto;
-  padding-bottom:30px;
-}
-
-  #login{
-  text-align:center;
-  padding-top:80px;
-}
-
-#app{
-  display:none;
-}
-  .navbar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  background:#111;
-  border-top:1px solid #333;
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-}
-
-.navbar button{
-  background:none;
-  border:none;
-  color:#d4af37;
-  font-size:24px;
-  cursor:pointer;
-}
-</style>
+    .post{
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
 <!-- ================= LOGIN ================= -->
 <div id="login">
-<h1>JHCLOTH</h1>
-
-<input id="email" placeholder="Correo">
-<input id="password" type="password" placeholder="Contraseña">
-
-<button onclick="register()">Registrarse</button>
-<button onclick="login()">Entrar</button>
+  <h2>JhCloth Login</h2>
+  <input id="email" placeholder="Email"><br>
+  <input id="password" placeholder="Password"><br>
+  <button onclick="register()">Registrar</button>
+  <button onclick="login()">Entrar</button>
 </div>
 
 <!-- ================= APP ================= -->
-<div id="app">
+<div id="app" style="display:none;">
 
-<header>JHCLOTH</header>
+  <h3>Crear post</h3>
+  <input id="postText" placeholder="Texto"><br>
+  <input id="postImage" placeholder="Imagen URL"><br>
+  <button onclick="createPost()">Publicar ➕</button>
 
-<div class="perfil">
+  <h4>Total posts: <span id="totalPosts">0</span></h4>
 
-<img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=500">
+  <div id="feed"></div>
 
-<h2>JhCloth</h2>
-
-<p>Elegancia • Disciplina • Presencia</p>
-
-<div style="display:flex;justify-content:center;gap:25px;margin-top:15px;">
-  <div>
-    <strong id="totalPosts">0</strong><br>
-Publicaciones
-  </div>
-
-  <div>
-    <strong>0</strong><br>
-    Siguiendo
-  </div>
+  <button onclick="logout()">Salir</button>
 
 </div>
 
-<div style="text-align:center">
-<input id="postText" placeholder="¿Qué estás pensando?">
-<input id="postImage" placeholder="URL de imagen (opcional)">
-<button onclick="createPost()">Publicar</button>
-</div>
-
-<div id="feed"></div>
-
-<div style="text-align:center;margin:20px;">
-<button onclick="logout()">Salir</button>
-</div>
-
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+  <button onclick="goHome()">🏠</button>
+  <button onclick="search()">🔎</button>
+  <button onclick="createPost()">➕</button>
+  <button onclick="openLikes()">❤️</button>
+  <button onclick="openProfile()">👤</button>
 </div>
 
 <!-- ================= FIREBASE ================= -->
 <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -201,50 +98,45 @@ import {
   updateDoc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-/* ================= FIREBASE CONFIG ================= */
+
+/* ================= CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
   projectId: "jhcloth-app",
   storageBucket: "jhcloth-app.firebasestorage.app",
   messagingSenderId: "683518974253",
-  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4",
-  measurementId: "G-G95JWS0LXR"
+  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ================= REGISTRO ================= */
+const feed = document.getElementById("feed");
+
+/* ================= AUTH ================= */
 window.register = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then(() => alert("Usuario creado 🔥"))
     .catch(e => alert(e.message));
 };
 
-/* ================= LOGIN ================= */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => alert("Entraste correctamente 🔥"))
+    .then(() => alert("Entraste 🔥"))
     .catch(e => alert(e.message));
 };
 
-/* ================= LOGOUT ================= */
-window.logout = () => {
-  signOut(auth);
-};
+window.logout = () => signOut(auth);
 
-/* ================= CREAR POST ================= */
+/* ================= POST ================= */
 window.createPost = async () => {
-  const texto = postText.value;
-  const imagen = postImage.value;
-
-  if (!texto.trim()) return;
+  if (!postText.value.trim()) return;
 
   await addDoc(collection(db, "posts"), {
-    texto,
-    imagen,
+    texto: postText.value,
+    imagen: postImage.value,
     fecha: Date.now(),
     usuario: "JhCloth",
     likes: 0,
@@ -258,48 +150,43 @@ window.createPost = async () => {
 
 /* ================= LIKE ================= */
 window.likePost = async (id) => {
-  const postRef = doc(db, "posts", id);
-  const snap = await getDoc(postRef);
+  const ref = doc(db, "posts", id);
+  const snap = await getDoc(ref);
   const data = snap.data();
 
-  
   const user = auth.currentUser;
+  if (!user) return;
 
-if (!user) return;
+  const email = user.email;
+  const list = data.likesList || [];
 
-const email = user.email;
-
-  const likesList = data.likesList || [];
-
-  if (likesList.includes(email)) {
-    await updateDoc(postRef, {
-      likesList: likesList.filter(u => u !== email),
+  if (list.includes(email)) {
+    await updateDoc(ref, {
+      likesList: list.filter(u => u !== email),
       likes: Math.max((data.likes || 0) - 1, 0)
     });
   } else {
-    await updateDoc(postRef, {
-      likesList: [...likesList, email],
+    await updateDoc(ref, {
+      likesList: [...list, email],
       likes: (data.likes || 0) + 1
     });
   }
 };
 
-/* ================= COMENTARIOS ================= */
+/* ================= COMMENT ================= */
 window.addComment = async (id) => {
   const input = document.getElementById("c-" + id);
-  const texto = input.value;
+  if (!input.value.trim()) return;
 
-  if (!texto.trim()) return;
-
-  const postRef = doc(db, "posts", id);
-  const snap = await getDoc(postRef);
+  const ref = doc(db, "posts", id);
+  const snap = await getDoc(ref);
   const data = snap.data();
 
-  const nuevos = data.comentarios || [];
-  nuevos.push(texto);
+  const comments = data.comentarios || [];
+  comments.push(input.value);
 
-  await updateDoc(postRef, {
-    comentarios: nuevos
+  await updateDoc(ref, {
+    comentarios: comments
   });
 
   input.value = "";
@@ -309,72 +196,45 @@ window.addComment = async (id) => {
 const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
-
   feed.innerHTML = "";
-
   document.getElementById("totalPosts").innerText = snapshot.size;
 
   snapshot.forEach(docSnap => {
-
     const p = docSnap.data();
 
     feed.innerHTML += `
       <div class="post">
-
-        <div style="font-weight:bold;margin-bottom:5px;">
-          @${p.usuario}
-        </div>
-
+        <b>@${p.usuario}</b>
         <p>${p.texto}</p>
 
-        ${p.imagen ? `
-          <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
-        ` : ""}
+        ${p.imagen ? `<img src="${p.imagen}" style="width:100%;">` : ""}
 
-        <div style="margin-top:10px;">
-          <button onclick="likePost('${docSnap.id}')"
-          style="background:none;border:none;color:#d4af37;font-size:18px;">
-            ❤️ ${p.likes || 0} Me gusta
-          </button>
-        </div>
+        <button onclick="likePost('${docSnap.id}')">
+          ❤️ ${p.likes || 0}
+        </button>
 
-        <div style="margin-top:10px;">
-          <input id="c-${docSnap.id}" placeholder="Escribe comentario"
-          style="width:100%;padding:8px;border-radius:8px;">
-          <button onclick="addComment('${docSnap.id}')">Comentar</button>
-        </div>
+        <input id="c-${docSnap.id}" placeholder="Comentario">
+        <button onclick="addComment('${docSnap.id}')">Comentar</button>
 
-        <div style="margin-top:10px;">
-          ${(p.comentarios || [])
-            .map(c => `<p>💬 ${c}</p>`)
-            .join("")}
-        </div>
-
+        ${(p.comentarios || []).map(c => `<p>💬 ${c}</p>`).join("")}
       </div>
     `;
   });
 });
 
-/* ================= SESIÓN ================= */
+/* ================= SESSION ================= */
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  } else {
-    document.getElementById("login").style.display = "block";
-    document.getElementById("app").style.display = "none";
-  }
+  document.getElementById("login").style.display = user ? "none" : "block";
+  document.getElementById("app").style.display = user ? "block" : "none";
 });
-    
+
+/* ================= NAV FUNCTIONS ================= */
+window.goHome = () => location.reload();
+window.search = () => alert("Buscador 🔎");
+window.openLikes = () => alert("Likes ❤️");
+window.openProfile = () => alert("Perfil 👤");
 
 </script>
-  <div class="navbar">
-  <button>🏠</button>
-  <button>🔍</button>
-  <button>➕</button>
-  <button>❤️</button>
-  <button>👤</button>
-  </div>
 
 </body>
 </html>
