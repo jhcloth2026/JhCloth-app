@@ -1,5 +1,6 @@
 
-<!doctype html>
+
+  <div><!doctype html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -143,8 +144,8 @@ button{
 
 <div style="display:flex;justify-content:center;gap:25px;margin-top:15px;">
   <div>
-    <strong>3</strong><br>
-    Publicaciones
+    <strong id="totalPosts">0</strong><br>
+Publicaciones
   </div>
 
   <div>
@@ -152,7 +153,6 @@ button{
     Seguidores
   </div>
 
-  <div>
     <strong>0</strong><br>
     Siguiendo
   </div>
@@ -282,60 +282,65 @@ window.addComment = async (id) => {
   input.value = "";
 };
 
-/* ================= FEED ================= */
 const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
-  feed.innerHTML = "";
 
-  snapshot.forEach(docSnap => {
-    const p = docSnap.data();
+feed.innerHTML = "";
 
-    feed.innerHTML += `
-      <div class="post">
+document.getElementById("totalPosts").innerText = snapshot.size;
 
-        <div style="font-weight:bold;margin-bottom:5px;">
-          @${p.usuario}
-        </div>
+snapshot.forEach(docSnap => {
 
-        <p>${p.texto}</p>
+const p = docSnap.data();
 
-        ${p.imagen ? `
-          <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
-        ` : ""}
+feed.innerHTML += `
+  <div class="post">
 
-        <div style="margin-top:10px;">
-          <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
-            ❤️ ${p.likes || 0} Me gusta
-          </button>
-        </div>
+    <div style="font-weight:bold;margin-bottom:5px;">
+      @${p.usuario}
+    </div>
 
-        <div style="margin-top:10px;">
-          <input id="c-${docSnap.id}" placeholder="Escribe comentario"
-          style="width:100%;padding:8px;border-radius:8px;">
-          <button onclick="addComment('${docSnap.id}')">Comentar</button>
-        </div>
+    <p>${p.texto}</p>
+
+    ${p.imagen ? `
+      <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
+    ` : ""}
 
     <div style="margin-top:10px;">
-  ${(p.comentarios || [])
-    .map(c => `<p>💬 ${c}</p>`)
-    .join("")}
-</div>
-</div>
-    `;
-  });
-});
+      <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
+        ❤️ ${p.likes || 0} Me gusta
+      </button>
+    </div>
 
+    <div style="margin-top:10px;">
+      <input id="c-${docSnap.id}" placeholder="Escribe comentario"
+      style="width:100%;padding:8px;border-radius:8px;">
+      <button onclick="addComment('${docSnap.id}')">Comentar</button>
+    </div>
+
+    <div style="margin-top:10px;">
+      ${(p.comentarios || [])
+        .map(c => `<p>💬 ${c}</p>`)
+        .join("")}
+    </div>
+
+  </div>
+`;
+});
+});
 /* ================= SESIÓN ================= */
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  } else {
-    document.getElementById("login").style.display = "block";
-    document.getElementById("app").style.display = "none";
-  }
+if (user) {
+document.getElementById("login").style.display = "none";
+document.getElementById("app").style.display = "block";
+} else {
+document.getElementById("login").style.display = "block";
+document.getElementById("app").style.display = "none";
+
+}
 });
+    
 
 </script>
   <div class="navbar">
