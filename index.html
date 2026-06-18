@@ -134,7 +134,7 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
+/* CONFIG FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -156,20 +156,17 @@ window.register = () => {
     .catch(e => alert(e.message));
 };
 
-/* LOGIN */
-
+/* LOGIN (ARREGLADO 100%) */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => {
-      setTimeout(() => {
-        login.style.display = "none";
-        app.style.display = "block";
-      }, 500);
-
+      document.getElementById("login").style.display = "none";
+      document.getElementById("app").style.display = "block";
       alert("Entraste correctamente 🔥");
     })
     .catch(e => alert(e.message));
 };
+
 /* LOGOUT */
 window.logout = () => {
   signOut(auth);
@@ -186,8 +183,8 @@ window.createPost = async () => {
   }
 
   await addDoc(collection(db, "posts"), {
-    texto: texto,
-    imagen: imagen,
+    texto,
+    imagen,
     fecha: Date.now(),
     usuario: auth.currentUser ? auth.currentUser.email : "Anónimo",
     likes: 0
@@ -230,14 +227,14 @@ onSnapshot(q, (snapshot) => {
   });
 });
 
-/* CONTROL DE SESIÓN */
+/* CONTROL DE SESIÓN (IMPORTANTE) */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    login.style.display = "none";
-    app.style.display = "block";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
   } else {
-    login.style.display = "block";
-    app.style.display = "none";
+    document.getElementById("login").style.display = "block";
+    document.getElementById("app").style.display = "none";
   }
 });
 
