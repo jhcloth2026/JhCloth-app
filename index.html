@@ -149,13 +149,8 @@ Publicaciones
 
   <div>
     <strong>0</strong><br>
-    Seguidores
-  </div>
-
-    <strong>0</strong><br>
     Siguiendo
   </div>
-</div>
 
 </div>
 
@@ -185,6 +180,16 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
   getFirestore,
   collection,
@@ -196,7 +201,6 @@ import {
   updateDoc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 /* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
@@ -244,6 +248,7 @@ window.createPost = async () => {
     fecha: Date.now(),
     usuario: "JhCloth",
     likes: 0,
+    likesList: [],
     comentarios: []
   });
 
@@ -251,8 +256,36 @@ window.createPost = async () => {
   postImage.value = "";
 };
 
-/* ================= LIKE (INSTAGRAM STYLE) ================= */
-  window.addComment = async (id) => {
+/* ================= LIKE ================= */
+window.likePost = async (id) => {
+  const postRef = doc(db, "posts", id);
+  const snap = await getDoc(postRef);
+  const data = snap.data();
+
+  
+  const user = auth.currentUser;
+
+if (!user) return;
+
+const email = user.email;
+
+  const likesList = data.likesList || [];
+
+  if (likesList.includes(email)) {
+    await updateDoc(postRef, {
+      likesList: likesList.filter(u => u !== email),
+      likes: Math.max((data.likes || 0) - 1, 0)
+    });
+  } else {
+    await updateDoc(postRef, {
+      likesList: [...likesList, email],
+      likes: (data.likes || 0) + 1
+    });
+  }
+};
+
+/* ================= COMENTARIOS ================= */
+window.addComment = async (id) => {
   const input = document.getElementById("c-" + id);
   const texto = input.value;
 
@@ -272,6 +305,7 @@ window.createPost = async () => {
   input.value = "";
 };
 
+/* ================= FEED ================= */
 const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
@@ -298,7 +332,8 @@ onSnapshot(q, (snapshot) => {
         ` : ""}
 
         <div style="margin-top:10px;">
-          <button onclick="likePost('${docSnap.id}')" style="background:none;border:none;color:#d4af37;font-size:18px;">
+          <button onclick="likePost('${docSnap.id}')"
+          style="background:none;border:none;color:#d4af37;font-size:18px;">
             ❤️ ${p.likes || 0} Me gusta
           </button>
         </div>
@@ -318,18 +353,17 @@ onSnapshot(q, (snapshot) => {
       </div>
     `;
   });
-
 });
+
 /* ================= SESIÓN ================= */
 onAuthStateChanged(auth, (user) => {
-if (user) {
-document.getElementById("login").style.display = "none";
-document.getElementById("app").style.display = "block";
-} else {
-document.getElementById("login").style.display = "block";
-document.getElementById("app").style.display = "none";
-
-}
+  if (user) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  } else {
+    document.getElementById("login").style.display = "block";
+    document.getElementById("app").style.display = "none";
+  }
 });
     
 
