@@ -157,12 +157,19 @@ window.register = () => {
 };
 
 /* LOGIN */
+
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => alert("Entraste correctamente 🔥"))
+    .then(() => {
+      setTimeout(() => {
+        login.style.display = "none";
+        app.style.display = "block";
+      }, 500);
+
+      alert("Entraste correctamente 🔥");
+    })
     .catch(e => alert(e.message));
 };
-
 /* LOGOUT */
 window.logout = () => {
   signOut(auth);
