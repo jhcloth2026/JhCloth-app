@@ -200,15 +200,10 @@ window.likePost = async (id, currentLikes) => {
 
   await updateDoc(postRef, {
     likes: currentLikes + 1
-  });
-};
-
-/* FEED EN TIEMPO REAL */
-const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
+  const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
   feed.innerHTML = "";
-
 
   snapshot.forEach(docSnap => {
     const p = docSnap.data();
@@ -234,7 +229,7 @@ onSnapshot(q, (snapshot) => {
   });
 });
 
-/* CONTROL DE SESIÓN (IMPORTANTE) */
+/* CONTROL DE SESIÓN */
 onAuthStateChanged(auth, (user) => {
   if (user) {
     document.getElementById("login").style.display = "none";
