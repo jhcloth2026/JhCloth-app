@@ -252,30 +252,7 @@ window.createPost = async () => {
 };
 
 /* ================= LIKE (INSTAGRAM STYLE) ================= */
-window.likePost = async (id) => {
-  const postRef = doc(db, "posts", id);
-  const snap = await getDoc(postRef);
-  const data = snap.data();
-
-  const user = auth.currentUser?.email;
-
-  const likesList = data.likesList || [];
-
-  // si ya dio like → quitar like
-  if (likesList.includes(user)) {
-    await updateDoc(postRef, {
-      likesList: likesList.filter(u => u !== user),
-      likes: Math.max((data.likes || 0) - 1, 0)
-    });
-  } else {
-    await updateDoc(postRef, {
-      likesList: [...likesList, user],
-      likes: (data.likes || 0) + 1
-    });
-  }
-};
-/* ================= COMENTARIOS ================= */
-window.addComment = async (id) => {
+  window.addComment = async (id) => {
   const input = document.getElementById("c-" + id);
   const texto = input.value;
 
@@ -299,49 +276,49 @@ const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
 
-feed.innerHTML = "";
+  feed.innerHTML = "";
 
-document.getElementById("totalPosts").innerText = snapshot.size;
+  document.getElementById("totalPosts").innerText = snapshot.size;
 
-snapshot.forEach(docSnap => {
+  snapshot.forEach(docSnap => {
 
-const p = docSnap.data();
+    const p = docSnap.data();
 
-feed.innerHTML += `
-  <div class="post">
+    feed.innerHTML += `
+      <div class="post">
 
-    <div style="font-weight:bold;margin-bottom:5px;">
-      @${p.usuario}
-    </div>
+        <div style="font-weight:bold;margin-bottom:5px;">
+          @${p.usuario}
+        </div>
 
-    <p>${p.texto}</p>
+        <p>${p.texto}</p>
 
-    ${p.imagen ? `
-      <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
-    ` : ""}
+        ${p.imagen ? `
+          <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
+        ` : ""}
 
-    <div style="margin-top:10px;">
-  <button onclick="likePost('${docSnap.id}')">
-    ❤️ ${p.likes || 0} Me gusta
-  </button>
-</div>
-    
+        <div style="margin-top:10px;">
+          <button onclick="likePost('${docSnap.id}')" style="background:none;border:none;color:#d4af37;font-size:18px;">
+            ❤️ ${p.likes || 0} Me gusta
+          </button>
+        </div>
 
-    <div style="margin-top:10px;">
-      <input id="c-${docSnap.id}" placeholder="Escribe comentario"
-      style="width:100%;padding:8px;border-radius:8px;">
-      <button onclick="addComment('${docSnap.id}')">Comentar</button>
-    </div>
+        <div style="margin-top:10px;">
+          <input id="c-${docSnap.id}" placeholder="Escribe comentario"
+          style="width:100%;padding:8px;border-radius:8px;">
+          <button onclick="addComment('${docSnap.id}')">Comentar</button>
+        </div>
 
-    <div style="margin-top:10px;">
-      ${(p.comentarios || [])
-        .map(c => `<p>💬 ${c}</p>`)
-        .join("")}
-    </div>
+        <div style="margin-top:10px;">
+          ${(p.comentarios || [])
+            .map(c => `<p>💬 ${c}</p>`)
+            .join("")}
+        </div>
 
-  </div>
-`;
-});
+      </div>
+    `;
+  });
+
 });
 /* ================= SESIÓN ================= */
 onAuthStateChanged(auth, (user) => {
