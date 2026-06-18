@@ -114,7 +114,7 @@ header{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
+import {
 getAuth,
 createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
@@ -128,7 +128,9 @@ collection,
 addDoc,
 onSnapshot,
 query,
-orderBy
+orderBy,
+doc,
+updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -156,7 +158,7 @@ window.register = () => {
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => alert("Entraste correctamente 🔥"))
-    .catch(e => alert("Error: " + e.message));
+    .catch(e => alert(e.message));
 };
 
 /* LOGOUT */
@@ -178,43 +180,58 @@ window.createPost = async () => {
       texto: texto,
       imagen: postImage.value,
       fecha: Date.now(),
-      usuario: auth.currentUser ? auth.currentUser.email : "Anónimo"
+      usuario: auth.currentUser ? auth.currentUser.email : "Anónimo",
+      likes: 0
     });
 
     postText.value = "";
     postImage.value = "";
   } catch (e) {
-    alert("Error al publicar: " + e.message);
+    alert("Error: " + e.message);
   }
 };
 
-/* FEED EN TIEMPO REAL */
+/* LIKE */
+window.likePost = async (id, currentLikes) => {
+  const postRef = doc(db, "posts", id);
+
+  await updateDoc(postRef, {
+    likes: currentLikes + 1
+  });
+};
+
+/* FEED */
 const q = query(collection(db,"posts"),orderBy("fecha","desc"));
 
 onSnapshot(q,(snapshot)=>{
   feed.innerHTML = "";
 
-  snapshot.forEach(doc=>{
-    const p = doc.data();
+  snapshot.forEach(docSnap=>{
+    const p = docSnap.data();
 
     feed.innerHTML += `
       <div class="post">
         <h3>${p.usuario}</h3>
         <p>${p.texto}</p>
+
         ${p.imagen ? `<img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">` : ""}
+
+        <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
+          ❤️ Me gusta (${p.likes || 0})
+        </button>
       </div>
     `;
   });
 });
 
-/* CONTROL DE PANTALLA */
+/* LOGIN STATE */
 onAuthStateChanged(auth,(user)=>{
   if(user){
-    document.getElementById("login").style.display = "none";
-    document.getElementById("app").style.display = "block";
+    login.style.display="none";
+    app.style.display="block";
   }else{
-    document.getElementById("login").style.display = "block";
-    document.getElementById("app").style.display = "none";
+    login.style.display="block";
+    app.style.display="none";
   }
 });
 
