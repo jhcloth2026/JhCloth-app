@@ -321,10 +321,11 @@ feed.innerHTML += `
     ` : ""}
 
     <div style="margin-top:10px;">
-      <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
-        ❤️ ${p.likes || 0} Me gusta
-      </button>
-    </div>
+  <button onclick="likePost('${docSnap.id}')">
+    ❤️ ${p.likes || 0} Me gusta
+  </button>
+</div>
+    
 
     <div style="margin-top:10px;">
       <input id="c-${docSnap.id}" placeholder="Escribe comentario"
