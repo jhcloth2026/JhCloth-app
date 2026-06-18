@@ -75,7 +75,7 @@ header{
 
 <body>
 
-<!-- LOGIN -->
+<!-- ================= LOGIN ================= -->
 <div id="login">
 <h1>JHCLOTH</h1>
 
@@ -86,7 +86,7 @@ header{
 <button onclick="login()">Entrar</button>
 </div>
 
-<!-- APP -->
+<!-- ================= APP ================= -->
 <div id="app">
 
 <header>JHCLOTH</header>
@@ -111,7 +111,7 @@ header{
 
 </div>
 
-<!-- FIREBASE -->
+<!-- ================= FIREBASE ================= -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -131,10 +131,11 @@ import {
   query,
   orderBy,
   doc,
-  updateDoc
+  updateDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG FIREBASE */
+/* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -149,58 +150,77 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* REGISTRO */
+/* ================= REGISTRO ================= */
 window.register = () => {
   createUserWithEmailAndPassword(auth, email.value, password.value)
     .then(() => alert("Usuario creado 🔥"))
     .catch(e => alert(e.message));
 };
 
-/* LOGIN (ARREGLADO 100%) */
+/* ================= LOGIN ================= */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => {
-      document.getElementById("login").style.display = "none";
-      document.getElementById("app").style.display = "block";
-      alert("Entraste correctamente 🔥");
-    })
+    .then(() => alert("Entraste correctamente 🔥"))
     .catch(e => alert(e.message));
 };
 
-/* LOGOUT */
+/* ================= LOGOUT ================= */
 window.logout = () => {
   signOut(auth);
 };
 
-/* CREAR POST */
+/* ================= CREAR POST ================= */
 window.createPost = async () => {
   const texto = postText.value;
   const imagen = postImage.value;
 
-  if (!texto.trim()) {
-    alert("Escribe algo primero");
-    return;
-  }
+  if (!texto.trim()) return;
 
   await addDoc(collection(db, "posts"), {
     texto,
     imagen,
     fecha: Date.now(),
-    usuario: auth.currentUser ? auth.currentUser.email : "Anónimo",
-    likes: 0
+    usuario: auth.currentUser?.email.split("@")[0] || "Anónimo",
+    likes: 0,
+    comentarios: []
   });
 
   postText.value = "";
   postImage.value = "";
 };
 
-/* LIKE */
+/* ================= LIKE ================= */
 window.likePost = async (id, currentLikes) => {
   const postRef = doc(db, "posts", id);
 
   await updateDoc(postRef, {
     likes: currentLikes + 1
-  const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
+  });
+};
+
+/* ================= COMENTARIOS ================= */
+window.addComment = async (id) => {
+  const input = document.getElementById("c-" + id);
+  const texto = input.value;
+
+  if (!texto.trim()) return;
+
+  const postRef = doc(db, "posts", id);
+  const snap = await getDoc(postRef);
+  const data = snap.data();
+
+  const nuevos = data.comentarios || [];
+  nuevos.push(texto);
+
+  await updateDoc(postRef, {
+    comentarios: nuevos
+  });
+
+  input.value = "";
+};
+
+/* ================= FEED ================= */
+const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
   feed.innerHTML = "";
@@ -211,17 +231,26 @@ onSnapshot(q, (snapshot) => {
     feed.innerHTML += `
       <div class="post">
 
-        <h3>${p.usuario}</h3>
+        <div style="font-weight:bold;margin-bottom:5px;">
+          @${p.usuario}
+        </div>
+
         <p>${p.texto}</p>
 
         ${p.imagen ? `
           <img src="${p.imagen}" style="width:100%;border-radius:10px;margin-top:10px;">
         ` : ""}
 
-        <div>
+        <div style="margin-top:10px;">
           <button onclick="likePost('${docSnap.id}', ${p.likes || 0})">
-            ❤️ Me gusta (${p.likes || 0})
+            ❤️ ${p.likes || 0} Me gusta
           </button>
+        </div>
+
+        <div style="margin-top:10px;">
+          <input id="c-${docSnap.id}" placeholder="Escribe comentario"
+          style="width:100%;padding:8px;border-radius:8px;">
+          <button onclick="addComment('${docSnap.id}')">Comentar</button>
         </div>
 
       </div>
@@ -229,7 +258,7 @@ onSnapshot(q, (snapshot) => {
   });
 });
 
-/* CONTROL DE SESIÓN */
+/* ================= SESIÓN ================= */
 onAuthStateChanged(auth, (user) => {
   if (user) {
     document.getElementById("login").style.display = "none";
