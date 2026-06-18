@@ -1,5 +1,4 @@
 
-
   <div><!doctype html>
 <html lang="es">
 <head>
@@ -252,15 +251,29 @@ window.createPost = async () => {
   postImage.value = "";
 };
 
-/* ================= LIKE ================= */
-window.likePost = async (id, currentLikes) => {
+/* ================= LIKE (INSTAGRAM STYLE) ================= */
+window.likePost = async (id) => {
   const postRef = doc(db, "posts", id);
+  const snap = await getDoc(postRef);
+  const data = snap.data();
 
-  await updateDoc(postRef, {
-    likes: currentLikes + 1
-  });
+  const user = auth.currentUser?.email;
+
+  const likesList = data.likesList || [];
+
+  // si ya dio like → quitar like
+  if (likesList.includes(user)) {
+    await updateDoc(postRef, {
+      likesList: likesList.filter(u => u !== user),
+      likes: Math.max((data.likes || 0) - 1, 0)
+    });
+  } else {
+    await updateDoc(postRef, {
+      likesList: [...likesList, user],
+      likes: (data.likes || 0) + 1
+    });
+  }
 };
-
 /* ================= COMENTARIOS ================= */
 window.addComment = async (id) => {
   const input = document.getElementById("c-" + id);
