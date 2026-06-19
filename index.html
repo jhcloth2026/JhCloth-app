@@ -49,7 +49,7 @@
   <input id="email" placeholder="Email"><br>
   <input id="password" placeholder="Password"><br>
   <button onclick="register()">Registrar</button>
-  <button onclick="login()">Entrar</button>
+  <button type="button" onclick="login()">Entrar</button>
 </div>
 
 <!-- ================= APP ================= -->
@@ -79,6 +79,7 @@
 
 <!-- ================= FIREBASE ================= -->
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -104,6 +105,9 @@ import {
 
 /* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
+  const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
   projectId: "jhcloth-app",
@@ -126,7 +130,8 @@ window.register = () => {
 };
 
 window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
+  <input id="email" placeholder="Email"><br>
+<input id="password" placeholder="Password"><br>
     .then(() => alert("Entraste 🔥"))
     .catch(e => alert(e.message));
 };
