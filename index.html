@@ -2,50 +2,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>JhCloth</title>
+<meta charset="UTF-8">
+<title>JhCloth</title>
 
-  <style>
-    body{
-      font-family: Arial;
-      margin: 0;
-      padding-bottom: 70px;
-      background: #f4f4f4;
-    }
+<style>
+body{
+  font-family: Arial;
+  margin:0;
+  background:#f4f4f4;
+  padding-bottom:70px;
+}
 
-    .navbar{
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: #111;
-      padding: 10px 0;
-      border-top: 1px solid #333;
-    }
+/* POST STYLE */
+.post{
+  background:white;
+  margin:10px;
+  padding:10px;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
 
-    .navbar button{
-      background: none;
-      border: none;
-      font-size: 22px;
-      color: white;
-    }
+/* MEDIA */
+.post img, .post video{
+  width:100%;
+  border-radius:10px;
+  margin-top:10px;
+}
 
-    .post{
-      background: white;
-      margin: 10px;
-      padding: 10px;
-      border-radius: 10px;
-    }
-  </style>
+/* NAVBAR */
+.navbar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  background:#111;
+  padding:10px;
+}
+
+.navbar button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:22px;
+}
+</style>
 </head>
 
 <body>
 
 <!-- LOGIN -->
 <div id="login">
-  <h2>JhCloth Login</h2>
+  <h2>JhCloth</h2>
   <input id="email" placeholder="Email"><br>
   <input id="password" placeholder="Password"><br>
   <button onclick="register()">Registrar</button>
@@ -55,26 +64,26 @@
 <!-- APP -->
 <div id="app" style="display:none;">
 
-  <h3>Crear post</h3>
-  <input id="postText" placeholder="Texto"><br>
-  <input id="postImage" placeholder="Imagen URL"><br>
-  <button onclick="createPost()">Publicar ➕</button>
+<h3>Crear post</h3>
+<input id="postText" placeholder="Texto"><br>
+<input id="postMedia" placeholder="Imagen o Video URL"><br>
+<button onclick="createPost()">Publicar ➕</button>
 
-  <h4>Total posts: <span id="totalPosts">0</span></h4>
+<h4>Posts: <span id="totalPosts">0</span></h4>
 
-  <div id="feed"></div>
+<div id="feed"></div>
 
-  <button onclick="logout()">Salir</button>
+<button onclick="logout()">Salir</button>
 
 </div>
 
-<!-- NAVBAR -->
+<!-- NAV -->
 <div class="navbar">
-  <button onclick="goHome()">🏠</button>
-  <button onclick="search()">🔎</button>
-  <button onclick="createPost()">➕</button>
-  <button onclick="openLikes()">❤️</button>
-  <button onclick="openProfile()">👤</button>
+<button onclick="goHome()">🏠</button>
+<button onclick="search()">🔎</button>
+<button onclick="createPost()">➕</button>
+<button onclick="alert('Likes')">❤️</button>
+<button onclick="alert('Perfil')">👤</button>
 </div>
 
 <!-- FIREBASE -->
@@ -82,36 +91,35 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  doc,
-  updateDoc,
-  getDoc
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+query,
+orderBy,
+doc,
+updateDoc,
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
-  authDomain: "jhcloth-app.firebaseapp.com",
-  projectId: "jhcloth-app",
-  storageBucket: "jhcloth-app.firebasestorage.app",
-  messagingSenderId: "683518974253",
-  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
+apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
+authDomain: "jhcloth-app.firebaseapp.com",
+projectId: "jhcloth-app",
+storageBucket: "jhcloth-app.firebasestorage.app",
+messagingSenderId: "683518974253",
+appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
 };
 
-/* INIT */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -119,145 +127,137 @@ const db = getFirestore(app);
 const feed = document.getElementById("feed");
 
 /* AUTH */
-window.register = async () => {
-  const username = prompt("Nombre de usuario 👤");
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email.value,
-      password.value
-    );
-
-    const user = userCredential.user;
-
-    await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      email: user.email,
-      username: username
-    });
-
-    alert("Usuario creado 🔥");
-  } catch (e) {
-    alert(e.message);
-  }
+window.register = () => {
+createUserWithEmailAndPassword(auth, email.value, password.value)
+.then(()=>alert("Usuario creado"))
+.catch(e=>alert(e.message));
 };
 
 window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => alert("Entraste 🔥"))
-    .catch(e => alert(e.message));
+signInWithEmailAndPassword(auth, email.value, password.value)
+.then(()=>alert("Entraste"))
+.catch(e=>alert(e.message));
 };
 
 window.logout = () => signOut(auth);
 
 /* POST */
 window.createPost = async () => {
-  if (!postText.value.trim()) return;
+if(!postText.value.trim()) return;
 
-  const user = auth.currentUser;
+const user = auth.currentUser;
 
-  await addDoc(collection(db, "posts"), {
-    texto: postText.value,
-    imagen: postImage.value,
-    fecha: Date.now(),
-    usuario: user?.email || "JhCloth",
-    likes: 0,
-    likesList: [],
-    comentarios: []
-  });
+await addDoc(collection(db,"posts"),{
+texto: postText.value,
+media: postMedia.value,
+fecha: Date.now(),
+usuario: user?.email || "JhCloth",
+likes:0,
+likesList:[],
+comentarios:[]
+});
 
-  postText.value = "";
-  postImage.value = "";
+postText.value="";
+postMedia.value="";
 };
 
 /* LIKE */
 window.likePost = async (id) => {
-  const ref = doc(db, "posts", id);
-  const snap = await getDoc(ref);
-  const data = snap.data();
+const ref = doc(db,"posts",id);
+const snap = await getDoc(ref);
+const data = snap.data();
 
-  const user = auth.currentUser;
-  if (!user) return;
+const user = auth.currentUser;
+if(!user) return;
 
-  const email = user.email;
-  const list = data.likesList || [];
+const email = user.email;
+const list = data.likesList || [];
 
-  if (list.includes(email)) {
-    await updateDoc(ref, {
-      likesList: list.filter(u => u !== email),
-      likes: Math.max((data.likes || 0) - 1, 0)
-    });
-  } else {
-    await updateDoc(ref, {
-      likesList: [...list, email],
-      likes: (data.likes || 0) + 1
-    });
-  }
+if(list.includes(email)){
+await updateDoc(ref,{
+likesList:list.filter(u=>u!==email),
+likes:Math.max((data.likes||0)-1,0)
+});
+}else{
+await updateDoc(ref,{
+likesList:[...list,email],
+likes:(data.likes||0)+1
+});
+}
 };
 
 /* COMMENT */
 window.addComment = async (id) => {
-  const input = document.getElementById("c-" + id);
-  if (!input.value.trim()) return;
+const input = document.getElementById("c-"+id);
+if(!input.value.trim()) return;
 
-  const ref = doc(db, "posts", id);
-  const snap = await getDoc(ref);
-  const data = snap.data();
+const ref = doc(db,"posts",id);
+const snap = await getDoc(ref);
+const data = snap.data();
 
-  const comments = data.comentarios || [];
-  comments.push(input.value);
+const comments = data.comentarios || [];
+comments.push(input.value);
 
-  await updateDoc(ref, {
-    comentarios: comments
-  });
+await updateDoc(ref,{
+comentarios:comments
+});
 
-  input.value = "";
+input.value="";
 };
 
 /* FEED */
-const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
+const q = query(collection(db,"posts"),orderBy("fecha","desc"));
 
-onSnapshot(q, (snapshot) => {
-  feed.innerHTML = "";
-  document.getElementById("totalPosts").innerText = snapshot.size;
+onSnapshot(q,(snapshot)=>{
+feed.innerHTML="";
+document.getElementById("totalPosts").innerText=snapshot.size;
 
-  snapshot.forEach(docSnap => {
-    const p = docSnap.data();
+snapshot.forEach(docSnap=>{
+const p = docSnap.data();
 
-    feed.innerHTML += `
-      <div class="post">
+let mediaHTML = "";
 
-        <b>@${p.usuario}</b>
-        <p>${p.texto}</p>
+if(p.media){
+if(p.media.includes("mp4") || p.media.includes("video")){
+mediaHTML = `<video src="${p.media}" controls></video>`;
+}else{
+mediaHTML = `<img src="${p.media}">`;
+}
+}
 
-        ${p.imagen ? `<img src="${p.imagen}" style="width:100%;border-radius:10px;">` : ""}
+feed.innerHTML += `
+<div class="post">
 
-        <button onclick="likePost('${docSnap.id}')">
-          ❤️ ${p.likes || 0} Me gusta
-        </button>
+<b>@${p.usuario}</b>
+<p>${p.texto}</p>
 
-        <input id="c-${docSnap.id}" placeholder="Comentario">
-        <button onclick="addComment('${docSnap.id}')">Comentar</button>
+${mediaHTML}
 
-        ${(p.comentarios || []).map(c => `<p>💬 ${c}</p>`).join("")}
+<button onclick="likePost('${docSnap.id}')">
+❤️ ${p.likes || 0}
+</button>
 
-      </div>
-    `;
-  });
+<br>
+
+<input id="c-${docSnap.id}" placeholder="Comentario">
+<button onclick="addComment('${docSnap.id}')">Comentar</button>
+
+${(p.comentarios||[]).map(c=>`<p>💬 ${c}</p>`).join("")}
+
+</div>
+`;
+});
 });
 
 /* SESSION */
-onAuthStateChanged(auth, (user) => {
-  document.getElementById("login").style.display = user ? "none" : "block";
-  document.getElementById("app").style.display = user ? "block" : "none";
+onAuthStateChanged(auth,(user)=>{
+document.getElementById("login").style.display=user?"none":"block";
+document.getElementById("app").style.display=user?"block":"none";
 });
 
 /* NAV */
-window.goHome = () => location.reload();
-window.search = () => alert("Buscador 🔎");
-window.openLikes = () => alert("Likes ❤️");
-window.openProfile = () => alert("Perfil 👤");
+window.goHome=()=>location.reload();
+window.search=()=>alert("Buscar");
 
 </script>
 
