@@ -13,7 +13,6 @@ body{
   padding-bottom:80px;
 }
 
-/* HEADER */
 h2{
   text-align:center;
   margin-top:20px;
@@ -27,13 +26,11 @@ h2{
   margin-bottom:10px;
 }
 
-/* LOGIN */
 #login{
   text-align:center;
   padding:20px;
 }
 
-/* INPUTS */
 input{
   width:90%;
   padding:10px;
@@ -42,7 +39,6 @@ input{
   border-radius:8px;
 }
 
-/* POST */
 .post{
   background:#1a1a1a;
   margin:15px auto;
@@ -50,19 +46,8 @@ input{
   max-width:600px;
   padding:15px;
   border-radius:15px;
-  box-shadow:0 0 15px rgba(0,255,255,0.15);
 }
 
-.post b{
-  font-size:18px;
-  color:#00e5ff;
-}
-
-.post p{
-  font-size:16px;
-}
-
-/* MEDIA */
 .post img,
 .post video,
 .post iframe{
@@ -73,7 +58,6 @@ input{
   margin-top:10px;
 }
 
-/* NAV */
 .navbar{
   position:fixed;
   bottom:0;
@@ -83,9 +67,7 @@ input{
   justify-content:space-around;
   background:#000;
   padding:10px;
-  border-top:1px solid #333;
 }
-
 .navbar button{
   background:none;
   color:white;
@@ -96,7 +78,6 @@ input{
 
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <h2>JhCloth</h2>
   <div class="subtitle">Elegancia • Disciplina • Presencia</div>
@@ -108,11 +89,9 @@ input{
   <button onclick="login()">Entrar</button>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none;">
 
 <h2>JhCloth</h2>
-<div class="subtitle">Elegancia • Disciplina • Presencia</div>
 
 <h3>Crear post de moda</h3>
 
@@ -129,16 +108,14 @@ input{
 
 </div>
 
-<!-- NAV -->
 <div class="navbar">
 <button onclick="goHome()">🏠</button>
 <button onclick="search()">🔎</button>
 <button onclick="createPost()">➕</button>
-<button onclick="alert('Likes')">❤️</button>
-<button onclick="alert('Perfil')">👤</button>
+<button>❤️</button>
+<button>👤</button>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -162,7 +139,6 @@ updateDoc,
 getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG */
 const firebaseConfig = {
 apiKey: "TU_API_KEY",
 authDomain: "TU_PROJECT.firebaseapp.com",
@@ -180,15 +156,11 @@ const feed = document.getElementById("feed");
 
 /* AUTH */
 window.register = () => {
-createUserWithEmailAndPassword(auth, email.value, password.value)
-.then(()=>alert("Usuario creado 🔥"))
-.catch(e=>alert(e.message));
+createUserWithEmailAndPassword(auth, email.value, password.value);
 };
 
 window.login = () => {
-signInWithEmailAndPassword(auth, email.value, password.value)
-.then(()=>alert("Bienvenido 🔥"))
-.catch(e=>alert(e.message));
+signInWithEmailAndPassword(auth, email.value, password.value);
 };
 
 window.logout = () => signOut(auth);
@@ -197,13 +169,11 @@ window.logout = () => signOut(auth);
 window.createPost = async () => {
 if(!postText.value.trim()) return;
 
-const user = auth.currentUser;
-
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
 media: postMedia.value,
 fecha: Date.now(),
-usuario: user?.email || "JhCloth",
+usuario: auth.currentUser?.email || "JhCloth",
 likes:0,
 likesList:[],
 comentarios:[]
@@ -211,50 +181,6 @@ comentarios:[]
 
 postText.value="";
 postMedia.value="";
-};
-
-/* LIKE */
-window.likePost = async (id) => {
-const ref = doc(db,"posts",id);
-const snap = await getDoc(ref);
-const data = snap.data();
-
-const user = auth.currentUser;
-if(!user) return;
-
-const email = user.email;
-const list = data.likesList || [];
-
-if(list.includes(email)){
-await updateDoc(ref,{
-likesList:list.filter(u=>u!==email),
-likes:Math.max((data.likes||0)-1,0)
-});
-}else{
-await updateDoc(ref,{
-likesList:[...list,email],
-likes:(data.likes||0)+1
-});
-}
-};
-
-/* COMMENT */
-window.addComment = async (id) => {
-const input = document.getElementById("c-"+id);
-if(!input.value.trim()) return;
-
-const ref = doc(db,"posts",id);
-const snap = await getDoc(ref);
-const data = snap.data();
-
-const comments = data.comentarios || [];
-comments.push(input.value);
-
-await updateDoc(ref,{
-comentarios:comments
-});
-
-input.value="";
 };
 
 /* FEED */
@@ -271,24 +197,13 @@ let mediaHTML = "";
 
 if(p.media){
 
-if(p.media.includes("youtube.com") || p.media.includes("youtu.be")){
-
-let id = "";
-if(p.media.includes("watch?v=")){
-id = p.media.split("watch?v=")[1].split("&")[0];
-}else{
-id = p.media.split("youtu.be/")[1];
+if(p.media.includes("youtube")){
+let id = p.media.split("v=")[1] || "";
+mediaHTML = `<iframe src="https://www.youtube.com/embed/${id}" width="100%" height="300"></iframe>`;
 }
-
-mediaHTML = `<iframe width="100%" height="300"
-src="https://www.youtube.com/embed/${id}"
-allowfullscreen></iframe>`;
-}
-
 else if(p.media.includes(".mp4")){
 mediaHTML = `<video src="${p.media}" controls></video>`;
 }
-
 else{
 mediaHTML = `<img src="${p.media}">`;
 }
@@ -296,35 +211,19 @@ mediaHTML = `<img src="${p.media}">`;
 
 feed.innerHTML += `
 <div class="post">
-
-<b>@${p.usuario.split("@")[0]}</b>
+<b>@${p.usuario}</b>
 <p>${p.texto}</p>
-
 ${mediaHTML}
-
-<button onclick="likePost('${docSnap.id}')">
-❤️ ${p.likes || 0}
-</button>
-
-<br>
-
-<input id="c-${docSnap.id}" placeholder="Comentario">
-<button onclick="addComment('${docSnap.id}')">Comentar</button>
-
-${(p.comentarios||[]).map(c=>`<p>💬 ${c}</p>`).join("")}
-
 </div>
 `;
 });
 });
 
-/* SESSION */
 onAuthStateChanged(auth,(user)=>{
 document.getElementById("login").style.display=user?"none":"block";
 document.getElementById("app").style.display=user?"block":"none";
 });
 
-/* NAV */
 window.goHome=()=>location.reload();
 window.search=()=>alert("Buscar 🔎");
 
