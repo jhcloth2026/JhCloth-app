@@ -46,14 +46,21 @@ input{
 /* POST */
 .post{
   background:#1a1a1a;
-  margin:10px;
-  padding:10px;
-  border-radius:12px;
-  box-shadow:0 0 10px rgba(0,255,255,0.1);
+  margin:15px auto;
+  width:95%;
+  max-width:600px;
+  padding:15px;
+  border-radius:15px;
+  box-shadow:0 0 15px rgba(0,255,255,0.15);
 }
 
 .post b{
+  font-size:18px;
   color:#00e5ff;
+}
+
+.post p{
+  font-size:16px;
 }
 
 /* MEDIA */
@@ -61,44 +68,16 @@ input{
 .post video,
 .post iframe{
   width:100%;
-  border-radius:10px;
+  height:500px;
+  object-fit:cover;
+  border-radius:12px;
   margin-top:10px;
-}
-
-/* BUTTONS */
-button{
-  padding:8px 12px;
-  margin:5px;
-  border:none;
-  border-radius:8px;
-  background:#00e5ff;
-  color:black;
-  font-weight:bold;
-}
-
-/* NAVBAR */
-.navbar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  background:#000;
-  padding:10px;
-  border-top:1px solid #333;
-}
-
-.navbar button{
-  background:none;
-  color:white;
-  font-size:22px;
 }
 </style>
 </head>
-
-<body>
-
+  
+  <body>
+  
 <!-- LOGIN -->
 <div id="login">
   <h2>JhCloth</h2>
