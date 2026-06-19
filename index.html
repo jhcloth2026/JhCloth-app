@@ -1,75 +1,83 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth</title>
+<title>JhCloth | Instagram Style</title>
 
 <style>
 body{
-  font-family: Arial;
-  margin:0;
-  background:#0d0d0d;
-  color:white;
-  padding-bottom:80px;
+font-family: Arial;
+margin:0;
+background:#0d0d0d;
+color:white;
+padding-bottom:80px;
 }
 
+/* HEADER */
 h2{
-  text-align:center;
-  color:#00e5ff;
-  margin-top:20px;
+text-align:center;
+color:#00e5ff;
+margin-top:20px;
 }
 
 .subtitle{
-  text-align:center;
-  opacity:0.7;
-  font-size:14px;
+text-align:center;
+font-size:14px;
+opacity:0.7;
+margin-bottom:10px;
 }
 
+/* LOGIN */
 #login{
-  text-align:center;
-  padding:20px;
+text-align:center;
+padding:20px;
 }
 
+/* INPUTS */
 input{
-  width:90%;
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:8px;
+width:90%;
+padding:10px;
+margin:5px;
+border:none;
+border-radius:8px;
 }
 
+/* POST */
 .post{
-  background:#1a1a1a;
-  margin:15px auto;
-  width:95%;
-  max-width:600px;
-  padding:15px;
-  border-radius:15px;
+background:#1a1a1a;
+margin:15px auto;
+width:95%;
+max-width:600px;
+padding:15px;
+border-radius:15px;
 }
 
+/* MEDIA */
 .post img,
 .post video,
 .post iframe{
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
+width:100%;
+border-radius:10px;
+margin-top:10px;
 }
 
+/* NAV */
 .navbar{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  background:#000;
-  padding:10px;
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+display:flex;
+justify-content:space-around;
+background:#000;
+padding:10px;
 }
 
 .navbar button{
-  background:none;
-  color:white;
-  font-size:22px;
+background:none;
+color:white;
+font-size:22px;
 }
 </style>
 </head>
@@ -78,14 +86,14 @@ input{
 
 <!-- LOGIN -->
 <div id="login">
-  <h2>JhCloth</h2>
-  <div class="subtitle">Elegancia • Disciplina • Presencia</div>
+<h2>JhCloth</h2>
+<div class="subtitle">Elegancia • Disciplina • Presencia</div>
 
-  <input id="email" placeholder="Email"><br>
-  <input id="password" placeholder="Password"><br>
+<input id="email" placeholder="Email"><br>
+<input id="password" placeholder="Password"><br>
 
-  <button onclick="register()">Registrar</button>
-  <button onclick="login()">Entrar</button>
+<button onclick="register()">Registrar</button>
+<button onclick="login()">Entrar</button>
 </div>
 
 <!-- APP -->
@@ -112,8 +120,8 @@ input{
 
 <!-- NAV -->
 <div class="navbar">
-<button onclick="goHome()">🏠</button>
-<button onclick="search()">🔎</button>
+<button onclick="location.reload()">🏠</button>
+<button onclick="alert('Buscar')">🔎</button>
 <button onclick="createPost()">➕</button>
 <button>❤️</button>
 <button>👤</button>
@@ -140,7 +148,7 @@ query,
 orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
+/* CONFIG */
 const firebaseConfig = {
 apiKey: "TU_API_KEY",
 authDomain: "TU_PROJECT.firebaseapp.com",
@@ -177,10 +185,13 @@ if(!postText.value.trim()) return;
 
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
-mediaImage: postImage.value,
-mediaVideo: postVideo.value,
+mediaImage: postImage.value.trim(),
+mediaVideo: postVideo.value.trim(),
 fecha: Date.now(),
-usuario: auth.currentUser?.email || "JhCloth"
+usuario: auth.currentUser?.email || "JhCloth",
+likes:0,
+likesList:[],
+comentarios:[]
 });
 
 postText.value="";
@@ -205,13 +216,10 @@ if(p.mediaImage){
 mediaHTML += `<img src="${p.mediaImage}">`;
 }
 
-/* VIDEO */
+/* VIDEO / YOUTUBE */
 if(p.mediaVideo){
 
-if(
-p.mediaVideo.includes("youtube.com") ||
-p.mediaVideo.includes("youtu.be")
-){
+if(p.mediaVideo.includes("youtube.com") || p.mediaVideo.includes("youtu.be")){
 
 let id = "";
 
@@ -236,6 +244,7 @@ feed.innerHTML += `
 <div class="post">
 <b>${p.usuario}</b>
 <p>${p.texto}</p>
+
 ${mediaHTML}
 </div>
 `;
@@ -247,10 +256,6 @@ onAuthStateChanged(auth,(user)=>{
 document.getElementById("login").style.display=user?"none":"block";
 document.getElementById("app").style.display=user?"block":"none";
 });
-
-/* NAV */
-window.goHome=()=>location.reload();
-window.search=()=>alert("Buscar 🔎");
 
 </script>
 
