@@ -171,7 +171,7 @@ if(!postText.value.trim()) return;
 
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
-media: postMedia.value,
+media: postMedia.value.trim(),
 fecha: Date.now(),
 usuario: auth.currentUser?.email || "JhCloth",
 likes:0,
