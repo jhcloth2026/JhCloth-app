@@ -193,22 +193,55 @@ document.getElementById("totalPosts").innerText=snapshot.size;
 snapshot.forEach(docSnap=>{
 const p = docSnap.data();
 
+
 let mediaHTML = "";
 
 if(p.media){
 
-if(p.media.includes("youtube")){
-let id = p.media.split("v=")[1] || "";
-mediaHTML = `<iframe src="https://www.youtube.com/embed/${id}" width="100%" height="300"></iframe>`;
+if(
+p.media.includes("youtube.com") ||
+p.media.includes("youtu.be")
+){
+
+let id = "";
+
+if(p.media.includes("watch?v=")){
+id = p.media.split("watch?v=")[1].split("&")[0];
 }
-else if(p.media.includes(".mp4")){
-mediaHTML = `<video src="${p.media}" controls></video>`;
-}
-else{
-mediaHTML = `<img src="${p.media}">`;
-}
+else if(p.media.includes("youtu.be/")){
+id = p.media.split("youtu.be/")[1];
 }
 
+mediaHTML = `
+<iframe
+width="100%"
+height="400"
+src="https://www.youtube.com/embed/${id}"
+allowfullscreen>
+</iframe>`;
+}
+
+else if(
+p.media.includes(".mp4")
+){
+
+mediaHTML = `
+<video
+src="${p.media}"
+controls
+width="100%">
+</video>`;
+}
+
+else{
+
+mediaHTML = `
+<img
+src="${p.media}"
+width="100%">`;
+}
+
+}
 feed.innerHTML += `
 <div class="post">
 <b>@${p.usuario}</b>
