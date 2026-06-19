@@ -141,7 +141,9 @@ window.createPost = async () => {
     texto: postText.value,
     imagen: postImage.value,
     fecha: Date.now(),
-    usuario: auth.currentUser?.email || "JhCloth",
+    const user = auth.currentUser;
+
+usuario: user.displayName || user.email
     likes: 0,
     likesList: [],
     comentarios: []
@@ -231,7 +233,7 @@ onSnapshot(q, (snapshot) => {
 onAuthStateChanged(auth, (user) => {
   document.getElementById("login").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
-});
+}); 
 
 /* ================= NAV ================= */
 window.goHome = () => location.reload();
