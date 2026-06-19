@@ -1,22 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth | Moda & Disciplina</title>
+<title>JhCloth | Elegancia, Disciplina, Presencia</title>
 
 <style>
 body{
   font-family: Arial;
   margin:0;
-  background:#111;
+  background:#0d0d0d;
   color:white;
-  padding-bottom:70px;
+  padding-bottom:80px;
 }
 
-/* HEADER STYLE */
-h2, h3, h4{
+/* HEADER */
+h2{
   text-align:center;
-  letter-spacing:2px;
+  margin-top:20px;
+  color:#00e5ff;
+}
+
+.subtitle{
+  text-align:center;
+  font-size:14px;
+  opacity:0.7;
+  margin-bottom:10px;
 }
 
 /* LOGIN */
@@ -30,8 +39,8 @@ input{
   width:90%;
   padding:10px;
   margin:5px;
-  border-radius:8px;
   border:none;
+  border-radius:8px;
 }
 
 /* POST */
@@ -40,7 +49,7 @@ input{
   margin:10px;
   padding:10px;
   border-radius:12px;
-  box-shadow:0 0 10px rgba(255,255,255,0.05);
+  box-shadow:0 0 10px rgba(0,255,255,0.1);
 }
 
 .post b{
@@ -49,7 +58,8 @@ input{
 
 /* MEDIA */
 .post img,
-.post video{
+.post video,
+.post iframe{
   width:100%;
   border-radius:10px;
   margin-top:10px;
@@ -92,7 +102,7 @@ button{
 <!-- LOGIN -->
 <div id="login">
   <h2>JhCloth</h2>
-  <p>Moda • Disciplina • Elegancia</p>
+  <div class="subtitle">Elegancia • Disciplina • Presencia</div>
 
   <input id="email" placeholder="Email"><br>
   <input id="password" placeholder="Password"><br>
@@ -104,11 +114,13 @@ button{
 <!-- APP -->
 <div id="app" style="display:none;">
 
-<h3>Crear post de moda</h3>
-<p style="text-align:center;">Comparte estilo, disciplina y elegancia 🔥</p>
+<h2>JhCloth</h2>
+<div class="subtitle">Elegancia • Disciplina • Presencia</div>
 
-<input id="postText" placeholder="Escribe algo de moda..."><br>
-<input id="postMedia" placeholder="Imagen o Video URL"><br>
+<h3>Crear post de moda</h3>
+
+<input id="postText" placeholder="Comparte tu estilo..."><br>
+<input id="postMedia" placeholder="Imagen, Video o YouTube URL"><br>
 
 <button onclick="createPost()">Publicar ➕</button>
 
@@ -178,7 +190,7 @@ createUserWithEmailAndPassword(auth, email.value, password.value)
 
 window.login = () => {
 signInWithEmailAndPassword(auth, email.value, password.value)
-.then(()=>alert("Bienvenido a JhCloth 🔥"))
+.then(()=>alert("Bienvenido JhCloth 🔥"))
 .catch(e=>alert(e.message));
 };
 
@@ -261,9 +273,14 @@ const p = docSnap.data();
 let mediaHTML = "";
 
 if(p.media){
-if(p.media.includes("mp4") || p.media.includes("video")){
+if(p.media.includes("youtube")){
+const id = new URL(p.media).searchParams.get("v");
+mediaHTML = `<iframe width="100%" height="220" src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+}
+else if(p.media.includes("mp4")){
 mediaHTML = `<video src="${p.media}" controls></video>`;
-}else{
+}
+else{
 mediaHTML = `<img src="${p.media}">`;
 }
 }
@@ -300,7 +317,7 @@ document.getElementById("app").style.display=user?"block":"none";
 
 /* NAV */
 window.goHome=()=>location.reload();
-window.search=()=>alert("Buscar moda 🔎");
+window.search=()=>alert("Buscar 🔎");
 
 </script>
 
