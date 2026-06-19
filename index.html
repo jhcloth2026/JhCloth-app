@@ -252,18 +252,41 @@ const p = docSnap.data();
 let mediaHTML = "";
 
 if(p.media){
-if(p.media.includes("youtube")){
-const id = new URL(p.media).searchParams.get("v");
-mediaHTML = `<iframe width="100%" height="220" src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+
+if(
+p.media.includes("youtube.com") ||
+p.media.includes("youtu.be")
+){
+
+let id = "";
+
+if(p.media.includes("watch?v=")){
+  id = p.media.split("watch?v=")[1].split("&")[0];
 }
-else if(p.media.includes("mp4")){
-mediaHTML = `<video src="${p.media}" controls></video>`;
-}
-else{
-mediaHTML = `<img src="${p.media}">`;
-}
+else if(p.media.includes("youtu.be/")){
+  id = p.media.split("youtu.be/")[1];
 }
 
+mediaHTML = `<iframe width="100%" height="300"
+src="https://www.youtube.com/embed/${id}"
+allowfullscreen></iframe>`;
+
+}
+else if(
+p.media.includes(".mp4") ||
+p.media.includes("mp4")
+){
+
+mediaHTML = `<video src="${p.media}" controls></video>`;
+
+}
+else{
+
+mediaHTML = `<img src="${p.media}">`;
+
+}
+
+}
 feed.innerHTML += `
 <div class="post">
 
