@@ -47,8 +47,8 @@
   <h2>JhCloth Login</h2>
   <input id="email" placeholder="Email"><br>
   <input id="password" placeholder="Password"><br>
-  <button type="button" onclick="register()">Registrar</button>
-  <button type="button" onclick="login()">Entrar</button>
+  <button onclick="register()">Registrar</button>
+  <button onclick="login()">Entrar</button>
 </div>
 
 <!-- ================= APP ================= -->
@@ -64,6 +64,7 @@
   <div id="feed"></div>
 
   <button onclick="logout()">Salir</button>
+
 </div>
 
 <!-- ================= NAVBAR ================= -->
@@ -78,8 +79,8 @@
 <!-- ================= FIREBASE ================= -->
 <script type="module">
 
+/* IMPORTS */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -100,7 +101,7 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ================= FIREBASE CONFIG ================= */
+/* CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -110,7 +111,7 @@ const firebaseConfig = {
   appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
 };
 
-/* ================= INIT ================= */
+/* INIT */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
