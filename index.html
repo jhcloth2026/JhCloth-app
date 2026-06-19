@@ -1,32 +1,69 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth</title>
+<title>JhCloth | Moda & Disciplina</title>
 
 <style>
 body{
   font-family: Arial;
   margin:0;
-  background:#f4f4f4;
+  background:#111;
+  color:white;
   padding-bottom:70px;
 }
 
-/* POST STYLE */
+/* HEADER STYLE */
+h2, h3, h4{
+  text-align:center;
+  letter-spacing:2px;
+}
+
+/* LOGIN */
+#login{
+  text-align:center;
+  padding:20px;
+}
+
+/* INPUTS */
+input{
+  width:90%;
+  padding:10px;
+  margin:5px;
+  border-radius:8px;
+  border:none;
+}
+
+/* POST */
 .post{
-  background:white;
+  background:#1a1a1a;
   margin:10px;
   padding:10px;
   border-radius:12px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  box-shadow:0 0 10px rgba(255,255,255,0.05);
+}
+
+.post b{
+  color:#00e5ff;
 }
 
 /* MEDIA */
-.post img, .post video{
+.post img,
+.post video{
   width:100%;
   border-radius:10px;
   margin-top:10px;
+}
+
+/* BUTTONS */
+button{
+  padding:8px 12px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  background:#00e5ff;
+  color:black;
+  font-weight:bold;
 }
 
 /* NAVBAR */
@@ -37,13 +74,13 @@ body{
   width:100%;
   display:flex;
   justify-content:space-around;
-  background:#111;
+  background:#000;
   padding:10px;
+  border-top:1px solid #333;
 }
 
 .navbar button{
   background:none;
-  border:none;
   color:white;
   font-size:22px;
 }
@@ -55,8 +92,11 @@ body{
 <!-- LOGIN -->
 <div id="login">
   <h2>JhCloth</h2>
+  <p>Moda • Disciplina • Elegancia</p>
+
   <input id="email" placeholder="Email"><br>
   <input id="password" placeholder="Password"><br>
+
   <button onclick="register()">Registrar</button>
   <button onclick="login()">Entrar</button>
 </div>
@@ -64,9 +104,12 @@ body{
 <!-- APP -->
 <div id="app" style="display:none;">
 
-<h3>Crear post</h3>
-<input id="postText" placeholder="Texto"><br>
+<h3>Crear post de moda</h3>
+<p style="text-align:center;">Comparte estilo, disciplina y elegancia 🔥</p>
+
+<input id="postText" placeholder="Escribe algo de moda..."><br>
 <input id="postMedia" placeholder="Imagen o Video URL"><br>
+
 <button onclick="createPost()">Publicar ➕</button>
 
 <h4>Posts: <span id="totalPosts">0</span></h4>
@@ -129,19 +172,19 @@ const feed = document.getElementById("feed");
 /* AUTH */
 window.register = () => {
 createUserWithEmailAndPassword(auth, email.value, password.value)
-.then(()=>alert("Usuario creado"))
+.then(()=>alert("Usuario creado 🔥"))
 .catch(e=>alert(e.message));
 };
 
 window.login = () => {
 signInWithEmailAndPassword(auth, email.value, password.value)
-.then(()=>alert("Entraste"))
+.then(()=>alert("Bienvenido a JhCloth 🔥"))
 .catch(e=>alert(e.message));
 };
 
 window.logout = () => signOut(auth);
 
-/* POST */
+/* CREATE POST */
 window.createPost = async () => {
 if(!postText.value.trim()) return;
 
@@ -257,7 +300,7 @@ document.getElementById("app").style.display=user?"block":"none";
 
 /* NAV */
 window.goHome=()=>location.reload();
-window.search=()=>alert("Buscar");
+window.search=()=>alert("Buscar moda 🔎");
 
 </script>
 
