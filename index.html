@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -79,6 +80,7 @@
 <!-- FIREBASE -->
 <script type="module">
 
+/* IMPORTS */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -110,13 +112,14 @@ const firebaseConfig = {
   appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
 };
 
+/* INIT */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
 
-/* REGISTER (PERFIL NIVEL 4) */
+/* ================= AUTH ================= */
 window.register = async () => {
   const username = prompt("Nombre de usuario 👤");
 
@@ -141,17 +144,15 @@ window.register = async () => {
   }
 };
 
-/* LOGIN */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => alert("Entraste 🔥"))
     .catch(e => alert(e.message));
 };
 
-/* LOGOUT */
 window.logout = () => signOut(auth);
 
-/* CREATE POST */
+/* ================= POST ================= */
 window.createPost = async () => {
   if (!postText.value.trim()) return;
 
@@ -171,7 +172,7 @@ window.createPost = async () => {
   postImage.value = "";
 };
 
-/* LIKE */
+/* ================= LIKE ================= */
 window.likePost = async (id) => {
   const ref = doc(db, "posts", id);
   const snap = await getDoc(ref);
@@ -196,7 +197,7 @@ window.likePost = async (id) => {
   }
 };
 
-/* COMMENT */
+/* ================= COMMENT ================= */
 window.addComment = async (id) => {
   const input = document.getElementById("c-" + id);
   if (!input.value.trim()) return;
@@ -215,7 +216,7 @@ window.addComment = async (id) => {
   input.value = "";
 };
 
-/* FEED */
+/* ================= FEED ================= */
 const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
@@ -247,13 +248,13 @@ onSnapshot(q, (snapshot) => {
   });
 });
 
-/* SESSION */
+/* ================= SESSION ================= */
 onAuthStateChanged(auth, (user) => {
   document.getElementById("login").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
 });
 
-/* NAV */
+/* ================= NAV ================= */
 window.goHome = () => location.reload();
 window.search = () => alert("Buscador 🔎");
 window.openLikes = () => alert("Likes ❤️");
