@@ -80,7 +80,6 @@
 <!-- FIREBASE -->
 <script type="module">
 
-/* IMPORTS */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -119,7 +118,7 @@ const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
 
-/* ================= AUTH ================= */
+/* AUTH */
 window.register = async () => {
   const username = prompt("Nombre de usuario 👤");
 
@@ -152,7 +151,7 @@ window.login = () => {
 
 window.logout = () => signOut(auth);
 
-/* ================= POST ================= */
+/* POST */
 window.createPost = async () => {
   if (!postText.value.trim()) return;
 
@@ -172,7 +171,7 @@ window.createPost = async () => {
   postImage.value = "";
 };
 
-/* ================= LIKE ================= */
+/* LIKE */
 window.likePost = async (id) => {
   const ref = doc(db, "posts", id);
   const snap = await getDoc(ref);
@@ -197,7 +196,7 @@ window.likePost = async (id) => {
   }
 };
 
-/* ================= COMMENT ================= */
+/* COMMENT */
 window.addComment = async (id) => {
   const input = document.getElementById("c-" + id);
   if (!input.value.trim()) return;
@@ -216,7 +215,7 @@ window.addComment = async (id) => {
   input.value = "";
 };
 
-/* ================= FEED ================= */
+/* FEED */
 const q = query(collection(db, "posts"), orderBy("fecha", "desc"));
 
 onSnapshot(q, (snapshot) => {
@@ -248,13 +247,13 @@ onSnapshot(q, (snapshot) => {
   });
 });
 
-/* ================= SESSION ================= */
+/* SESSION */
 onAuthStateChanged(auth, (user) => {
   document.getElementById("login").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
 });
 
-/* ================= NAV ================= */
+/* NAV */
 window.goHome = () => location.reload();
 window.search = () => alert("Buscador 🔎");
 window.openLikes = () => alert("Likes ❤️");
