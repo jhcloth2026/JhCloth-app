@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -79,7 +80,6 @@
 <!-- ================= FIREBASE ================= -->
 <script type="module">
 
-/* IMPORTS */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -101,7 +101,7 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG */
+/* ================= CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -111,29 +111,49 @@ const firebaseConfig = {
   appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
 };
 
-/* INIT */
+/* ================= INIT ================= */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
 
-/* ================= AUTH ================= */
-window.register = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .then(() => alert("Usuario creado 🔥"))
-    .catch(e => alert(e.message));
+/* ================= REGISTER (NIVEL 3) ================= */
+window.register = async () => {
+  const username = prompt("Elige tu nombre de usuario 👤");
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+
+    const user = userCredential.user;
+
+    await addDoc(collection(db, "users"), {
+      uid: user.uid,
+      username: username,
+      email: user.email
+    });
+
+    alert("Usuario creado 🔥");
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
+/* ================= LOGIN ================= */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => alert("Entraste 🔥"))
     .catch(e => alert(e.message));
 };
 
+/* ================= LOGOUT ================= */
 window.logout = () => signOut(auth);
 
-/* ================= POST ================= */
+/* ================= CREATE POST ================= */
 window.createPost = async () => {
   if (!postText.value.trim()) return;
 
