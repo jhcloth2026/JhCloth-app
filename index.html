@@ -2,124 +2,104 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth</title>
+<title>JhCloth PRO MAX</title>
 
 <style>
 body{
-  font-family: Arial;
   margin:0;
-  background:#0d0d0d;
+  font-family:Arial;
+  background:#0b0b0b;
   color:white;
-  padding-bottom:80px;
+  padding-bottom:90px;
 }
 
-h2{
+.header{
   text-align:center;
+  padding:15px;
+  font-size:22px;
   color:#00e5ff;
-  margin-top:20px;
+  font-weight:bold;
 }
 
-.subtitle{
-  text-align:center;
-  opacity:0.7;
-  font-size:14px;
-}
-
-#login{
-  text-align:center;
-  padding:20px;
-}
-
-input{
-  width:90%;
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:8px;
-}
-
-button{
-  padding:10px 15px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+.feed{
+  max-width:600px;
+  margin:auto;
 }
 
 .post{
   background:#1a1a1a;
-  margin:15px auto;
-  width:95%;
-  max-width:600px;
-  padding:15px;
+  margin:15px;
+  padding:12px;
   border-radius:15px;
 }
 
-.post img,
-.post video,
-.post iframe{
+.post img, .post video, iframe{
   width:100%;
   border-radius:10px;
   margin-top:10px;
 }
 
-.navbar{
+input, button{
+  width:90%;
+  margin:5px auto;
+  display:block;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  background:#00e5ff;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.nav{
   position:fixed;
   bottom:0;
-  left:0;
   width:100%;
   display:flex;
   justify-content:space-around;
   background:#000;
   padding:10px;
-}
-.navbar button{
-  background:none;
-  color:white;
-  font-size:22px;
+  font-size:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="login">
-  <h2>JhCloth</h2>
-  <div class="subtitle">Elegancia • Disciplina • Presencia</div>
+<div class="header">JhCloth PRO MAX</div>
 
-  <input id="email" placeholder="Email"><br>
-  <input id="password" type="password" placeholder="Password"><br>
-
+<div id="auth">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
   <button onclick="register()">Registrar</button>
   <button onclick="login()">Entrar</button>
 </div>
 
-<div id="app" style="display:none;">
+<div id="app" style="display:none">
 
-<h2>JhCloth</h2>
-<div class="subtitle">Elegancia • Disciplina • Presencia</div>
+<h3 style="text-align:center">Crear Post</h3>
 
-<h3>Crear post</h3>
+<input id="text" placeholder="Texto">
+<input id="img" placeholder="Imagen URL">
+<input id="video" placeholder="Video o YouTube URL">
+<button onclick="createPost()">Publicar</button>
 
-<input id="postText" placeholder="Texto..."><br>
-<input id="postImage" placeholder="Imagen URL"><br>
-<input id="postVideo" placeholder="Video o YouTube URL"><br>
+<h4 style="text-align:center">Feed</h4>
 
-<button onclick="createPost()">Publicar ➕</button>
-
-<h4>Posts: <span id="totalPosts">0</span></h4>
-
-<div id="feed"></div>
+<div id="feed" class="feed"></div>
 
 <button onclick="logout()">Salir</button>
-
 </div>
 
-<div class="navbar">
-<button onclick="goHome()">🏠</button>
-<button onclick="alert('Buscar 🔎')">🔎</button>
-<button onclick="createPost()">➕</button>
-<button>❤️</button>
-<button>👤</button>
+<div class="nav">
+<div>🏠</div>
+<div>🔎</div>
+<div>➕</div>
+<div>❤️</div>
+<div>👤</div>
 </div>
 
 <script type="module">
@@ -142,17 +122,17 @@ query,
 orderBy,
 doc,
 updateDoc,
-getDoc
+getDoc,
+arrayUnion,
+arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE */
 const firebaseConfig = {
-  apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
-  authDomain: "jhcloth-app.firebaseapp.com",
-  projectId: "jhcloth-app",
-  storageBucket: "jhcloth-app.firebasestorage.app",
-  messagingSenderId: "683518974253",
-  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
+apiKey:"TU_API",
+authDomain:"TU_DOMAIN",
+projectId:"TU_ID",
+storageBucket:"TU_BUCKET",
+appId:"TU_APP"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -162,116 +142,94 @@ const db = getFirestore(app);
 const feed = document.getElementById("feed");
 
 /* AUTH */
-window.register = async () => {
-try {
-await createUserWithEmailAndPassword(auth, email.value, password.value);
-alert("Usuario creado 🔥");
-} catch (e) {
-alert(e.message);
-}
+window.register = async ()=>{
+await createUserWithEmailAndPassword(auth,email.value,password.value);
 };
 
-window.login = async () => {
-try {
-await signInWithEmailAndPassword(auth, email.value, password.value);
-alert("Bienvenido 🔥");
-} catch (e) {
-alert(e.message);
-}
+window.login = async ()=>{
+await signInWithEmailAndPassword(auth,email.value,password.value);
 };
 
-window.logout = () => signOut(auth);
+window.logout = ()=>signOut(auth);
 
-/* CREATE POST */
-window.createPost = async () => {
-if(!postText.value.trim()) return;
+/* POST */
+window.createPost = async ()=>{
+if(!text.value.trim()) return;
 
 await addDoc(collection(db,"posts"),{
-texto: postText.value,
-mediaImage: postImage.value,
-mediaVideo: postVideo.value,
-fecha: Date.now(),
-usuario: auth.currentUser?.email || "JhCloth",
-likes:0
+text:text.value,
+img:img.value,
+video:video.value,
+user:auth.currentUser.email,
+time:Date.now(),
+likes:[]
 });
 
-postText.value="";
-postImage.value="";
-postVideo.value="";
+text.value="";
+img.value="";
+video.value="";
 };
 
 /* LIKE */
-window.likePost = async (id) => {
+window.likePost = async (id)=>{
 const ref = doc(db,"posts",id);
 const snap = await getDoc(ref);
 const data = snap.data();
 
-await updateDoc(ref,{
-likes:(data.likes || 0) + 1
-});
+const user = auth.currentUser.email;
+const likes = data.likes || [];
+
+if(likes.includes(user)){
+await updateDoc(ref,{likes:arrayRemove(user)});
+}else{
+await updateDoc(ref,{likes:arrayUnion(user)});
+}
 };
 
 /* FEED */
-const q = query(collection(db,"posts"), orderBy("fecha","desc"));
+const q = query(collection(db,"posts"),orderBy("time","desc"));
 
-onSnapshot(q,(snapshot)=>{
-
+onSnapshot(q,(snap)=>{
 feed.innerHTML="";
-document.getElementById("totalPosts").innerText = snapshot.size;
 
-snapshot.forEach(docSnap=>{
-const p = docSnap.data();
+snap.forEach(d=>{
+const p=d.data();
 
-let mediaHTML = "";
+let media="";
 
-/* IMAGEN */
-if(p.mediaImage){
-mediaHTML += `<img src="${p.mediaImage}">`;
-}
+if(p.img) media+=`<img src="${p.img}">`;
 
-/* VIDEO */
-if(p.mediaVideo){
+if(p.video){
+if(p.video.includes("youtube")){
+let id = p.video.includes("watch?v=")
+? p.video.split("watch?v=")[1].split("&")[0]
+: p.video.split("youtu.be/")[1];
 
-if(p.mediaVideo.includes("youtube.com") || p.mediaVideo.includes("youtu.be")){
-
-let id = p.mediaVideo.includes("watch?v=")
-? p.mediaVideo.split("watch?v=")[1].split("&")[0]
-: p.mediaVideo.split("youtu.be/")[1];
-
-mediaHTML += `
-<iframe height="300"
-src="https://www.youtube.com/embed/${id}"
-allowfullscreen></iframe>`;
-}
-else{
-mediaHTML += `<video src="${p.mediaVideo}" controls></video>`;
+media+=`<iframe height="300" src="https://www.youtube.com/embed/${id}"></iframe>`;
+}else{
+media+=`<video src="${p.video}" controls></video>`;
 }
 }
 
-feed.innerHTML += `
+feed.innerHTML+=`
 <div class="post">
-<b>${p.usuario}</b>
-<p>${p.texto}</p>
-${mediaHTML}
+<b>@${p.user.split("@")[0]}</b>
+<p>${p.text}</p>
+${media}
 
-<button onclick="likePost('${docSnap.id}')">
-❤️ ${p.likes || 0}
+<button onclick="likePost('${d.id}')">
+❤️ ${(p.likes||[]).length}
 </button>
 </div>
 `;
-
+});
 });
 
-/* SESSION */
+/* AUTH STATE */
 onAuthStateChanged(auth,(user)=>{
-document.getElementById("login").style.display = user ? "none" : "block";
-document.getElementById("app").style.display = user ? "block" : "none";
+auth.style.display=user?"none":"block";
+app.style.display=user?"block":"none";
 });
-
-});
-
-/* NAV */
-window.goHome = () => location.reload();
 
 </script>
 
