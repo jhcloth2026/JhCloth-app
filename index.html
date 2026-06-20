@@ -162,12 +162,31 @@ signInWithEmailAndPassword(auth, email.value, password.value)
 .catch(e=>alert(e.message));
 };
 
+window.register = async () => {
+try {
+await createUserWithEmailAndPassword(auth, email.value, password.value);
+alert("Usuario creado 🔥");
+} catch (e) {
+alert(e.message);
+}
+};
+
+window.login = async () => {
+try {
+await signInWithEmailAndPassword(auth, email.value, password.value);
+alert("Bienvenido 🔥");
+} catch (e) {
+alert(e.message);
+}
+};
+
 window.logout = () => signOut(auth);
 
 /* CREATE POST */
 window.createPost = async () => {
 if(!postText.value.trim()) return;
 
+try {
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
 mediaImage: postImage.value,
@@ -179,6 +198,10 @@ usuario: auth.currentUser?.email || "JhCloth"
 postText.value="";
 postImage.value="";
 postVideo.value="";
+
+} catch (e) {
+alert(e.message);
+}
 };
 
 /* FEED */
