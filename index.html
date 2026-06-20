@@ -194,65 +194,68 @@ alert(e.message);
 }
 };
 
-/* FEED */
-const q = query(collection(db,"posts"),orderBy("fecha","desc"));
+
+const q = query(collection(db,"posts"), orderBy("fecha","desc"));
 
 onSnapshot(q,(snapshot)=>{
-feed.innerHTML="";
-document.getElementById("totalPosts").innerText=snapshot.size;
+  feed.innerHTML="";
+  document.getElementById("totalPosts").innerText = snapshot.size;
 
-snapshot.forEach(docSnap=>{
-const p = docSnap.data();
+  snapshot.forEach(docSnap=>{
+    const p = docSnap.data();
 
-let mediaHTML = "";
+    let mediaHTML = "";
 
-/* IMAGEN */
-if(p.mediaImage){
-mediaHTML += `<img src="${p.mediaImage}">`;
-}
+    /* IMAGEN */
+    if(p.mediaImage){
+      mediaHTML += `<img src="${p.mediaImage}" style="width:100%; border-radius:10px; margin-top:10px;">`;
+    }
 
-/* VIDEO / YOUTUBE */
-if(p.mediaVideo){
+    /* VIDEO / YOUTUBE */
+    if(p.mediaVideo){
 
-if(p.mediaVideo.includes("youtube.com") || p.mediaVideo.includes("youtu.be")){
+      if(p.mediaVideo.includes("youtube.com") || p.mediaVideo.includes("youtu.be")){
 
-let id = "";
+        let id = "";
 
-if(p.mediaVideo.includes("watch?v=")){
-id = p.mediaVideo.split("watch?v=")[1].split("&")[0];
-}else{
-id = p.mediaVideo.split("youtu.be/")[1];
-}
+        if(p.mediaVideo.includes("watch?v=")){
+          id = p.mediaVideo.split("watch?v=")[1].split("&")[0];
+        }else{
+          id = p.mediaVideo.split("youtu.be/")[1];
+        }
 
-mediaHTML += `
-<iframe height="300"
-src="https://www.youtube.com/embed/${id}"
-allowfullscreen></iframe>`;
-}
-else{
-mediaHTML += `<video src="${p.mediaVideo}" controls></video>`;
-}
-}
+        mediaHTML += `
+        <iframe width="100%" height="300"
+        src="https://www.youtube.com/embed/${id}"
+        style="border-radius:10px; margin-top:10px;"
+        allowfullscreen></iframe>`;
+      }
+      else{
+        mediaHTML += `
+        <video src="${p.mediaVideo}" controls
+        style="width:100%; border-radius:10px; margin-top:10px;"></video>`;
+      }
+    }
 
-feed.innerHTML += `
-<div class="post">
-<b>${p.usuario}</b>
-<p>${p.texto}</p>
-${mediaHTML}
-</div>
-`;
-});
+    feed.innerHTML += `
+    <div class="post">
+      <b>${p.usuario}</b>
+      <p>${p.texto}</p>
+      ${mediaHTML}
+    </div>
+    `;
+  });
 });
 
 /* SESSION */
 onAuthStateChanged(auth,(user)=>{
-document.getElementById("login").style.display=user?"none":"block";
-document.getElementById("app").style.display=user?"block":"none";
+  document.getElementById("login").style.display = user ? "none" : "block";
+  document.getElementById("app").style.display = user ? "block" : "none";
 });
 
-window.goHome=()=>location.reload();
-window.search=()=>alert("Buscar 🔎");
-
+/* NAV */
+window.goHome = () => location.reload();
+window.search = () => alert("Buscar 🔎");
 </script>
 
 </body>
