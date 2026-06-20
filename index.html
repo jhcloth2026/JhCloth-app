@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -67,11 +66,12 @@ button{
   border-radius:10px;
   margin-top:10px;
   transition:0.2s;
+  cursor:pointer;
 }
 
 .like-btn.active{
   background:red;
-  transform:scale(1.1);
+  transform:scale(1.2);
 }
 
 /* PROFILE */
@@ -187,19 +187,28 @@ window.login = async ()=>{
 
 window.logout = ()=>signOut(auth);
 
-/* CREATE POST */
-await addDoc(collection(db,"posts"),{
-  text:text.value,
-  img:img.value || "",
-  video:video.value || "",
-  user:auth.currentUser.email,
-  username:auth.currentUser.email.split("@")[0],
-  time:Date.now(),
-  likes:[],
-  comments:[]
-});
+/* CREATE POST (CORREGIDO) */
+window.createPost = async ()=>{
 
-/* LIKE */
+  if(!text.value.trim()) return;
+
+  await addDoc(collection(db,"posts"),{
+    text:text.value,
+    img:img.value || "",
+    video:video.value || "",
+    user:auth.currentUser.email,
+    username:auth.currentUser.email.split("@")[0],
+    time:Date.now(),
+    likes:[],
+    comments:[]
+  });
+
+  text.value="";
+  img.value="";
+  video.value="";
+};
+
+/* LIKE (ANIMADO) */
 window.likePost = async (id)=>{
 
   const ref = doc(db,"posts",id);
@@ -252,13 +261,8 @@ onSnapshot(q,(snap)=>{
 
     let media="";
 
-    if(p.img){
-      media += `<img src="${p.img}">`;
-    }
-
-    if(p.video){
-      media += `<video src="${p.video}" controls></video>`;
-    }
+    if(p.img) media += `<img src="${p.img}">`;
+    if(p.video) media += `<video src="${p.video}" controls></video>`;
 
     feed.innerHTML += `
       <div class="post">
