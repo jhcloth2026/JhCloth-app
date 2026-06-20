@@ -184,7 +184,8 @@ texto: postText.value,
 mediaImage: postImage.value,
 mediaVideo: postVideo.value,
 fecha: Date.now(),
-usuario: auth.currentUser?.email || "JhCloth"
+usuario: auth.currentUser?.email || "JhCloth",
+likes:0
 });
 
 postText.value="";
@@ -240,14 +241,16 @@ onSnapshot(q,(snapshot)=>{
     }
 
     feed.innerHTML += `
-    <div class="post">
-      <b>${p.usuario}</b>
-      <p>${p.texto}</p>
-      ${mediaHTML}
-    </div>
-    `;
-  });
-});
+
+<div class="post">
+  <b>${p.usuario}</b>
+  <p>${p.texto}</p>${mediaHTML}
+
+  <button onclick="likePost('${docSnap.id}')">
+    ❤️ ${p.likes || 0}
+  </button>
+</div>
+`;
 
 /* SESSION */
 onAuthStateChanged(auth,(user)=>{
@@ -257,7 +260,19 @@ onAuthStateChanged(auth,(user)=>{
 
 /* NAV */
 window.goHome = () => location.reload();
-window.search = () => alert("Buscar 🔎");
+window.likePost = async (id) => {
+
+const ref = doc(db,"posts",id);
+
+const snap = await getDoc(ref);
+
+const data = snap.data();
+
+await updateDoc(ref,{
+likes:(data.likes || 0) + 1
+});
+
+};
 </script>
 
 </body>
