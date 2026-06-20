@@ -19,10 +19,10 @@ header{
   color:#00e5ff;
 }
 
+/* FEED */
 #feed{
   height:100vh;
   overflow-y:auto;
-  scroll-snap-type:y mandatory;
 }
 
 /* POST */
@@ -31,7 +31,6 @@ header{
   margin:10px;
   padding:10px;
   border-radius:15px;
-  scroll-snap-align:start;
 }
 
 /* MEDIA */
@@ -71,7 +70,7 @@ button{
 
 .like-btn.active{
   background:red;
-  transform:scale(1.2);
+  transform:scale(1.1);
 }
 
 /* PROFILE */
@@ -101,7 +100,7 @@ button{
   <small>ELEGANCIA • DISCIPLINA • PRESENCIA</small>
 </header>
 
-<!-- AUTH -->
+<!-- LOGIN -->
 <div id="auth">
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
@@ -187,7 +186,7 @@ window.login = async ()=>{
 
 window.logout = ()=>signOut(auth);
 
-/* CREATE POST (CORREGIDO) */
+/* CREATE POST */
 window.createPost = async ()=>{
 
   if(!text.value.trim()) return;
@@ -208,7 +207,7 @@ window.createPost = async ()=>{
   video.value="";
 };
 
-/* LIKE (ANIMADO) */
+/* LIKE */
 window.likePost = async (id)=>{
 
   const ref = doc(db,"posts",id);
@@ -260,7 +259,6 @@ onSnapshot(q,(snap)=>{
     const user = p.user.split("@")[0];
 
     let media="";
-
     if(p.img) media += `<img src="${p.img}">`;
     if(p.video) media += `<video src="${p.video}" controls></video>`;
 
