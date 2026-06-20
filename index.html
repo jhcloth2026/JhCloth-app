@@ -175,6 +175,31 @@ alert(e.message);
 window.logout = () => signOut(auth);
 
 /* CREATE POST*/
+  window.createPost = async () => {
+
+if(!postText.value.trim()) return;
+
+try {
+
+await addDoc(collection(db,"posts"),{
+texto: postText.value,
+mediaImage: postImage.value,
+mediaVideo: postVideo.value,
+fecha: Date.now(),
+usuario: auth.currentUser?.email || "JhCloth",
+likes:0,
+likesList:[]
+});
+
+postText.value="";
+postImage.value="";
+postVideo.value="";
+
+} catch (e) {
+alert(e.message);
+}
+
+};
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
 mediaImage: postImage.value,
