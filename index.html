@@ -38,6 +38,13 @@ input{
   border-radius:8px;
 }
 
+button{
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
 .post{
   background:#1a1a1a;
   margin:15px auto;
@@ -80,10 +87,10 @@ input{
   <div class="subtitle">Elegancia • Disciplina • Presencia</div>
 
   <input id="email" placeholder="Email"><br>
-  <input id="password" placeholder="Password"><br>
+  <input id="password" type="password" placeholder="Password"><br>
 
+  <button onclick="register()">Registrar</button>
   <button onclick="login()">Entrar</button>
-<button onclick="register()">Registrar</button>
 </div>
 
 <div id="app" style="display:none;">
@@ -109,7 +116,7 @@ input{
 
 <div class="navbar">
 <button onclick="goHome()">🏠</button>
-<button onclick="search()">🔎</button>
+<button onclick="alert('Buscar 🔎')">🔎</button>
 <button onclick="createPost()">➕</button>
 <button>❤️</button>
 <button>👤</button>
@@ -133,11 +140,12 @@ addDoc,
 onSnapshot,
 query,
 orderBy,
-  doc,
-  updateDoc,
-  getDoc
+doc,
+updateDoc,
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -153,7 +161,7 @@ const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
 
-/* LOGIN */
+/* AUTH */
 window.register = async () => {
 try {
 await createUserWithEmailAndPassword(auth, email.value, password.value);
@@ -174,150 +182,100 @@ alert(e.message);
 
 window.logout = () => signOut(auth);
 
-/* CREATE POST*/
-  window.createPost = async () => {
-
+/* CREATE POST */
+window.createPost = async () => {
 if(!postText.value.trim()) return;
 
-try {
-
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
 mediaImage: postImage.value,
 mediaVideo: postVideo.value,
 fecha: Date.now(),
 usuario: auth.currentUser?.email || "JhCloth",
-likes:0,
-likesList:[]
+likes:0
 });
 
 postText.value="";
 postImage.value="";
 postVideo.value="";
-
-} catch (e) {
-alert(e.message);
-}
-
 };
-await addDoc(collection(db,"posts"),{
-texto: postText.value,
-mediaImage: postImage.value,
-mediaVideo: postVideo.value,
-fecha: Date.now(),
-usuario: auth.currentUser?.email || "JhCloth",
-likes:0,
-likesList:[]
-});
-
-postText.value="";
-postImage.value="";
-postVideo.value="";
-
-} catch (e) {
-alert(e.message);
-}
-};
-
-
-const q = query(collection(db,"posts"), orderBy("fecha","desc"));
-
-onSnapshot(q,(snapshot)=>{
-  feed.innerHTML="";
-  document.getElementById("totalPosts").innerText = snapshot.size;
-
-  snapshot.forEach(docSnap=>{
-    const p = docSnap.data();
-
-    let mediaHTML = "";
-
-    /* IMAGEN */
-    if(p.mediaImage){
-      mediaHTML += `<img src="${p.mediaImage}" style="width:100%; border-radius:10px; margin-top:10px;">`;
-    }
-
-    /* VIDEO / YOUTUBE */
-    if(p.mediaVideo){
-
-      if(p.mediaVideo.includes("youtube.com") || p.mediaVideo.includes("youtu.be")){
-
-        let id = "";
-
-        if(p.mediaVideo.includes("watch?v=")){
-          id = p.mediaVideo.split("watch?v=")[1].split("&")[0];
-        }else{
-          id = p.mediaVideo.split("youtu.be/")[1];
-        }
-
-        mediaHTML += `
-        <iframe width="100%" height="300"
-        src="https://www.youtube.com/embed/${id}"
-        style="border-radius:10px; margin-top:10px;"
-        allowfullscreen></iframe>`;
-      }
-      else{
-        mediaHTML += `
-        <video src="${p.mediaVideo}" controls
-        style="width:100%; border-radius:10px; margin-top:10px;"></video>`;
-      }
-    }
-
-    feed.innerHTML += `
-
-<div class="post">
-  <b>${p.usuario}</b>
-  <p>${p.texto}</p>
-  ${mediaHTML}  <button onclick="likePost('${docSnap.id}')">
-    ❤️ ${p.likes || 0}
-  </button>
-</div>
-`;
-  });
-  
-})
-  ;onAuthStateChanged(auth,(user)=>{
-document.getElementById("login").style.display =
-user ? "none" : "block";
-
-document.getElementById("app").style.display =
-user ? "block" : "none";
-});
-
-/* NAV */
-window.goHome = () => location.reload();
-window.search = () => alert("Buscar 🔎");
 
 /* LIKE */
 window.likePost = async (id) => {
-
 const ref = doc(db,"posts",id);
 const snap = await getDoc(ref);
 const data = snap.data();
 
-const user = auth.currentUser?.email;
-
-if(!user) return;
-
-const likesList = data.likesList || [];
-
-if(likesList.includes(user)){
-
 await updateDoc(ref,{
-likes: Math.max((data.likes || 0) - 1, 0),
-likesList: likesList.filter(email => email !== user)
+likes:(data.likes || 0) + 1
 });
+};
 
-}else{
+/* FEED */
+const q = query(collection(db,"posts"), orderBy("fecha","desc"));
 
-await updateDoc(ref,{
-likes:(data.likes || 0) + 1,
-likesList:[...likesList,user]
-});
+onSnapshot(q,(snapshot)=>{
 
+feed.innerHTML="";
+document.getElementById("totalPosts").innerText = snapshot.size;
+
+snapshot.forEach(docSnap=>{
+const p = docSnap.data();
+
+let mediaHTML = "";
+
+/* IMAGEN */
+if(p.mediaImage){
+mediaHTML += `<img src="${p.mediaImage}">`;
 }
 
-};
-</script></body>
+/* VIDEO */
+if(p.mediaVideo){
+
+if(p.mediaVideo.includes("youtube.com") || p.mediaVideo.includes("youtu.be")){
+
+let id = p.mediaVideo.includes("watch?v=")
+? p.mediaVideo.split("watch?v=")[1].split("&")[0]
+: p.mediaVideo.split("youtu.be/")[1];
+
+mediaHTML += `
+<iframe height="300"
+src="https://www.youtube.com/embed/${id}"
+allowfullscreen></iframe>`;
+}
+else{
+mediaHTML += `<video src="${p.mediaVideo}" controls></video>`;
+}
+}
+
+feed.innerHTML += `
+<div class="post">
+<b>${p.usuario}</b>
+<p>${p.texto}</p>
+${mediaHTML}
+
+<button onclick="likePost('${docSnap.id}')">
+❤️ ${p.likes || 0}
+</button>
+</div>
+`;
+
+});
+
+/* SESSION */
+onAuthStateChanged(auth,(user)=>{
+document.getElementById("login").style.display = user ? "none" : "block";
+document.getElementById("app").style.display = user ? "block" : "none";
+});
+
+});
+
+/* NAV */
+window.goHome = () => location.reload();
+
+</script>
+
+</body>
 </html>
 
 
