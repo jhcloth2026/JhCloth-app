@@ -175,17 +175,14 @@ alert(e.message);
 window.logout = () => signOut(auth);
 
 /* CREATE POST */
-window.createPost = async () => {
-if(!postText.value.trim()) return;
-
-try {
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
 mediaImage: postImage.value,
 mediaVideo: postVideo.value,
 fecha: Date.now(),
 usuario: auth.currentUser?.email || "JhCloth",
-likes:0
+likes:0,
+likesList:[]
 });
 
 postText.value="";
@@ -266,6 +263,7 @@ window.goHome = () => location.reload();
 window.search = () => alert("Buscar 🔎");
 
 /* LIKE */
+
 window.likePost = async (id) => {
 
 const ref = doc(db,"posts",id);
@@ -274,12 +272,29 @@ const snap = await getDoc(ref);
 
 const data = snap.data();
 
+const user = auth.currentUser?.email;
+
+if(!user) return;
+
+const likesList = data.likesList || [];
+
+if(likesList.includes(user)){
+
 await updateDoc(ref,{
-likes:(data.likes || 0) + 1
+likes: Math.max((data.likes || 0) - 1, 0),
+likesList: likesList.filter(email => email !== user)
 });
 
-};
+}else{
 
+await updateDoc(ref,{
+likes:(data.likes || 0) + 1,
+likesList:[...likesList,user]
+});
+
+}
+
+};
 </script></body>
 </html>
 
