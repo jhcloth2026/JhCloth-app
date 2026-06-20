@@ -244,22 +244,28 @@ onSnapshot(q,(snapshot)=>{
 
 <div class="post">
   <b>${p.usuario}</b>
-  <p>${p.texto}</p>${mediaHTML}
-
-  <button onclick="likePost('${docSnap.id}')">
+  <p>${p.texto}</p>
+  ${mediaHTML}  <button onclick="likePost('${docSnap.id}')">
     ❤️ ${p.likes || 0}
   </button>
 </div>
 `;
+  });
+  
+})
+  ;onAuthStateChanged(auth,(user)=>{
+document.getElementById("login").style.display =
+user ? "none" : "block";
 
-/* SESSION */
-onAuthStateChanged(auth,(user)=>{
-  document.getElementById("login").style.display = user ? "none" : "block";
-  document.getElementById("app").style.display = user ? "block" : "none";
+document.getElementById("app").style.display =
+user ? "block" : "none";
 });
 
 /* NAV */
 window.goHome = () => location.reload();
+window.search = () => alert("Buscar 🔎");
+
+/* LIKE */
 window.likePost = async (id) => {
 
 const ref = doc(db,"posts",id);
@@ -273,7 +279,8 @@ likes:(data.likes || 0) + 1
 });
 
 };
-</script>
 
-</body>
+</script></body>
 </html>
+
+
