@@ -188,23 +188,16 @@ window.login = async ()=>{
 window.logout = ()=>signOut(auth);
 
 /* CREATE POST */
-window.createPost = async ()=>{
-  if(!text.value.trim()) return;
-
-  await addDoc(collection(db,"posts"),{
-    text:text.value,
-    img:img.value || "",
-    video:video.value || "",
-    user:auth.currentUser.email,
-    time:Date.now(),
-    likes:[],
-    comments:[]
-  });
-
-  text.value="";
-  img.value="";
-  video.value="";
-};
+await addDoc(collection(db,"posts"),{
+  text:text.value,
+  img:img.value || "",
+  video:video.value || "",
+  user:auth.currentUser.email,
+  username:auth.currentUser.email.split("@")[0],
+  time:Date.now(),
+  likes:[],
+  comments:[]
+});
 
 /* LIKE */
 window.likePost = async (id)=>{
