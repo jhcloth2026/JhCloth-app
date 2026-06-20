@@ -174,7 +174,7 @@ alert(e.message);
 
 window.logout = () => signOut(auth);
 
-/* CREATE POST */
+/* CREATE POST*/
 await addDoc(collection(db,"posts"),{
 texto: postText.value,
 mediaImage: postImage.value,
@@ -263,13 +263,10 @@ window.goHome = () => location.reload();
 window.search = () => alert("Buscar 🔎");
 
 /* LIKE */
-
 window.likePost = async (id) => {
 
 const ref = doc(db,"posts",id);
-
 const snap = await getDoc(ref);
-
 const data = snap.data();
 
 const user = auth.currentUser?.email;
