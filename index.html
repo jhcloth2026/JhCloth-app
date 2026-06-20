@@ -2,47 +2,61 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth PRO MAX</title>
+<title>JhCloth ULTRA PRO</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0b0b0b;
+  background:black;
   color:white;
-  padding-bottom:90px;
+  padding-bottom:80px;
 }
 
-.header{
+header{
   text-align:center;
   padding:15px;
-  font-size:22px;
   color:#00e5ff;
+  font-size:22px;
   font-weight:bold;
 }
 
-.feed{
+/* FEED */
+#feed{
   max-width:600px;
   margin:auto;
 }
 
+/* POST STYLE IG */
 .post{
-  background:#1a1a1a;
+  background:#111;
   margin:15px;
-  padding:12px;
+  padding:10px;
   border-radius:15px;
 }
 
-.post img, .post video, iframe{
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
+/* REELS STYLE */
+.reel{
+  background:black;
+  margin:15px 0;
+  height:80vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
 }
 
-input, button{
+.reel video{
+  width:100%;
+  max-height:70vh;
+  border-radius:10px;
+}
+
+/* INPUTS */
+input,button{
   width:90%;
-  margin:5px auto;
   display:block;
+  margin:5px auto;
   padding:10px;
   border-radius:8px;
   border:none;
@@ -50,10 +64,10 @@ input, button{
 
 button{
   background:#00e5ff;
-  cursor:pointer;
   font-weight:bold;
 }
 
+/* NAV */
 .nav{
   position:fixed;
   bottom:0;
@@ -62,15 +76,16 @@ button{
   justify-content:space-around;
   background:#000;
   padding:10px;
-  font-size:20px;
+  font-size:22px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">JhCloth PRO MAX</div>
+<header>JhCloth ULTRA PRO</header>
 
+<!-- AUTH -->
 <div id="auth">
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
@@ -78,22 +93,24 @@ button{
   <button onclick="login()">Entrar</button>
 </div>
 
+<!-- APP -->
 <div id="app" style="display:none">
 
-<h3 style="text-align:center">Crear Post</h3>
+<h3 style="text-align:center">Crear Post / Reel</h3>
 
 <input id="text" placeholder="Texto">
 <input id="img" placeholder="Imagen URL">
-<input id="video" placeholder="Video o YouTube URL">
+<input id="video" placeholder="Video URL (TikTok style)">
 <button onclick="createPost()">Publicar</button>
 
-<h4 style="text-align:center">Feed</h4>
-
-<div id="feed" class="feed"></div>
+<h3 style="text-align:center">Feed</h3>
+<div id="feed"></div>
 
 <button onclick="logout()">Salir</button>
+
 </div>
 
+<!-- NAV -->
 <div class="nav">
 <div>🏠</div>
 <div>🔎</div>
@@ -127,6 +144,7 @@ arrayUnion,
 arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* FIREBASE */
 const firebaseConfig = {
 apiKey:"TU_API",
 authDomain:"TU_DOMAIN",
@@ -152,14 +170,14 @@ await signInWithEmailAndPassword(auth,email.value,password.value);
 
 window.logout = ()=>signOut(auth);
 
-/* POST */
+/* CREATE POST */
 window.createPost = async ()=>{
 if(!text.value.trim()) return;
 
 await addDoc(collection(db,"posts"),{
 text:text.value,
-img:img.value,
-video:video.value,
+img:img.value || "",
+video:video.value || "",
 user:auth.currentUser.email,
 time:Date.now(),
 likes:[]
@@ -177,19 +195,19 @@ const snap = await getDoc(ref);
 const data = snap.data();
 
 const user = auth.currentUser.email;
-const likes = data.likes || [];
 
-if(likes.includes(user)){
+if((data.likes||[]).includes(user)){
 await updateDoc(ref,{likes:arrayRemove(user)});
 }else{
 await updateDoc(ref,{likes:arrayUnion(user)});
 }
 };
 
-/* FEED */
+/* FEED (IG + REELS MIX) */
 const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 onSnapshot(q,(snap)=>{
+
 feed.innerHTML="";
 
 snap.forEach(d=>{
@@ -197,29 +215,31 @@ const p=d.data();
 
 let media="";
 
-if(p.img) media+=`<img src="${p.img}">`;
-
-if(p.video){
-if(p.video.includes("youtube")){
-let id = p.video.includes("watch?v=")
-? p.video.split("watch?v=")[1].split("&")[0]
-: p.video.split("youtu.be/")[1];
-
-media+=`<iframe height="300" src="https://www.youtube.com/embed/${id}"></iframe>`;
-}else{
-media+=`<video src="${p.video}" controls></video>`;
+/* IMAGE */
+if(p.img){
+media+=`<img src="${p.img}" style="width:100%;border-radius:10px;margin-top:10px;">`;
 }
+
+/* VIDEO (REELS STYLE) */
+if(p.video){
+media+=`
+<div class="reel">
+<video src="${p.video}" controls autoplay></video>
+</div>`;
 }
 
 feed.innerHTML+=`
 <div class="post">
+
 <b>@${p.user.split("@")[0]}</b>
 <p>${p.text}</p>
+
 ${media}
 
 <button onclick="likePost('${d.id}')">
 ❤️ ${(p.likes||[]).length}
 </button>
+
 </div>
 `;
 });
@@ -227,8 +247,8 @@ ${media}
 
 /* AUTH STATE */
 onAuthStateChanged(auth,(user)=>{
-auth.style.display=user?"none":"block";
-app.style.display=user?"block":"none";
+document.getElementById("auth").style.display=user?"none":"block";
+document.getElementById("app").style.display=user?"block":"none";
 });
 
 </script>
