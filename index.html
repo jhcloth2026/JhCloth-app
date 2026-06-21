@@ -247,9 +247,9 @@ onSnapshot(q, (snap) => {
 
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
 
-        <button onclick="likePost('${d.id}')">
-          ❤️ ${(p.likes || []).length}
-        </button>
+        <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
+  ❤️ ${(p.likes || []).length}
+</button>
 
         <input id="c-${d.id}" placeholder="Comentario">
         <button onclick="commentPost('${d.id}')">Comentar</button>
