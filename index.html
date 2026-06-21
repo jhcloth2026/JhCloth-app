@@ -1,43 +1,30 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth Social</title>
+<title>JhCloth Social PRO</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:black;
-  color:white;
+  background:#000;
+  color:#fff;
 }
 
 header{
   text-align:center;
   padding:15px;
   color:#00e5ff;
+  font-weight:bold;
 }
 
-#feed{
-  height:100vh;
-  overflow-y:auto;
-}
-
-.post{
-  background:#111;
-  margin:10px;
+#auth, #app{
   padding:10px;
-  border-radius:15px;
 }
 
-.post img,.post video{
-  width:100%;
-  border-radius:10px;
-}
-
-input,button{
-  width:90%;
+input, button{
+  width:95%;
   margin:5px auto;
   padding:10px;
   border-radius:8px;
@@ -50,20 +37,33 @@ button{
   font-weight:bold;
 }
 
-.like-btn{
-  background:#222;
-  color:white;
-  transition:0.2s;
+#feed{
+  margin-top:10px;
 }
 
-.like-btn.active{
-  background:red;
-  transform:scale(1.1);
+.post{
+  background:#111;
+  padding:10px;
+  margin:10px 0;
+  border-radius:12px;
 }
 
 .profile{
   font-size:12px;
-  opacity:0.8;
+  opacity:0.7;
+}
+
+.like-btn{
+  background:#222;
+  color:white;
+}
+
+.like-btn.active{
+  background:red;
+}
+
+.comment-box{
+  margin-top:5px;
 }
 
 .nav{
@@ -74,6 +74,7 @@ button{
   justify-content:space-around;
   background:#000;
   padding:10px;
+  border-top:1px solid #222;
 }
 </style>
 </head>
@@ -81,8 +82,7 @@ button{
 <body>
 
 <header>
-  <h2>JhCloth</h2>
-  <small>ELEGANCIA • DISCIPLINA • PRESENCIA</small>
+JhCloth Social PRO
 </header>
 
 <div id="auth">
@@ -94,11 +94,9 @@ button{
 
 <div id="app" style="display:none">
 
-<h3 style="text-align:center">Crear Post</h3>
-
+<h3>Crear Post</h3>
 <input id="text" placeholder="Texto">
 <input id="img" placeholder="Imagen URL">
-<input id="video" placeholder="Video URL">
 <button onclick="createPost()">Publicar</button>
 
 <div id="feed"></div>
@@ -156,30 +154,36 @@ const db = getFirestore(app);
 const feed = document.getElementById("feed");
 
 window.register = async () => {
-  await createUserWithEmailAndPassword(auth,email.value,password.value);
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  await createUserWithEmailAndPassword(auth,email,password);
 };
 
 window.login = async () => {
-  await signInWithEmailAndPassword(auth,email.value,password.value);
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  await signInWithEmailAndPassword(auth,email,password);
 };
 
 window.logout = () => signOut(auth);
 
 window.createPost = async () => {
-  if(!auth.currentUser) return alert("Inicia sesión");
+  const text = document.getElementById("text").value;
+  const img = document.getElementById("img").value;
+
+  if(!auth.currentUser) return alert("Login primero");
 
   await addDoc(collection(db,"posts"),{
-    text:text.value,
-    img:img.value||"",
-    video:video.value||"",
+    text,
+    img,
     user:auth.currentUser.email,
     time:Date.now(),
-    likes:[]
+    likes:[],
+    comments:[]
   });
 
-  text.value="";
-  img.value="";
-  video.value="";
+  document.getElementById("text").value="";
+  document.getElementById("img").value="";
 };
 
 window.likePost = async (id)=>{
@@ -195,39 +199,56 @@ window.likePost = async (id)=>{
   });
 };
 
+window.commentPost = async (id)=>{
+  const input = document.getElementById("c-"+id);
+  if(!input.value) return;
+
+  const ref = doc(db,"posts",id);
+  const snap = await getDoc(ref);
+  const data = snap.data();
+
+  const comments = data.comments || [];
+  comments.push(auth.currentUser.email + ": " + input.value);
+
+  await updateDoc(ref,{comments});
+  input.value="";
+};
+
 const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 onSnapshot(q,(snap)=>{
   feed.innerHTML="";
 
   snap.forEach(d=>{
-    const p=d.data();
-    const user=p.user.split("@")[0];
-    const currentUser=auth.currentUser?.email;
-    const isLiked=(p.likes||[]).includes(currentUser);
+    const p = d.data();
+    const user = p.user.split("@")[0];
+    const current = auth.currentUser?.email;
+    const isLiked = (p.likes||[]).includes(current);
 
-    let media="";
-    if(p.img) media+=`<img src="${p.img}">`;
-    if(p.video) media+=`<video src="${p.video}" controls></video>`;
-
-    feed.innerHTML+=`
+    feed.innerHTML += `
       <div class="post">
         <div class="profile">@${user}</div>
         <p>${p.text}</p>
-        ${media}
+
+        ${p.img ? `<img src="${p.img}" width="100%">` : ""}
 
         <button class="like-btn ${isLiked?"active":""}"
         onclick="likePost('${d.id}')">
-        ❤️ ${(p.likes||[]).length}
+          ❤️ ${(p.likes||[]).length}
         </button>
+
+        <input id="c-${d.id}" placeholder="Comentario">
+        <button onclick="commentPost('${d.id}')">Comentar</button>
+
+        ${(p.comments||[]).map(c=>`<p>💬 ${c}</p>`).join("")}
       </div>
     `;
   });
 });
 
 onAuthStateChanged(auth,(user)=>{
-  authDiv.style.display=user?"none":"block";
-  appDiv.style.display=user?"block":"none";
+  document.getElementById("auth").style.display = user?"none":"block";
+  document.getElementById("app").style.display = user?"block":"none";
 });
 
 </script>
