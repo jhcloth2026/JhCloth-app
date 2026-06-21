@@ -98,7 +98,6 @@ JhCloth PRO
 <div>❤️</div>
 <div>👤</div>
 </div>
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -125,16 +124,15 @@ arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* 🔥 FIREBASE CONFIG */
+  
 const firebaseConfig = {
-  rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}
-
+apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
+authDomain: "jhcloth-app.firebaseapp.com",
+projectId: "jhcloth-app",
+storageBucket: "jhcloth-app.firebasestorage.app",
+messagingSenderId: "683518974253",
+appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
+};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
