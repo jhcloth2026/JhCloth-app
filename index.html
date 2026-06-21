@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth Social PRO FIX</title>
+<title>JhCloth Social PRO</title>
 
 <style>
 body{
@@ -49,37 +50,67 @@ button{
   border-radius:12px;
 }
 
-.error{
-  color:red;
-  font-size:13px;
-  text-align:center;
+.profile{
+  font-size:12px;
+  opacity:0.7;
+}
+
+.like-btn{
+  background:#222;
+  color:white;
+  transition:0.2s;
+}
+
+.like-btn.active{
+  background:red;
+  transform:scale(1.1);
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  background:#000;
+  padding:10px;
+  border-top:1px solid #222;
 }
 </style>
 </head>
 
 <body>
 
-<header>JhCloth Social PRO</header>
+<header>
+JhCloth Social PRO
+</header>
 
 <div id="auth">
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-
   <button onclick="register()">Registrar</button>
   <button onclick="login()">Entrar</button>
-
-  <p id="error" class="error"></p>
 </div>
 
 <div id="app" style="display:none">
-  <h3>Crear Post</h3>
-  <input id="text" placeholder="Texto">
-  <input id="img" placeholder="Imagen URL">
-  <button onclick="createPost()">Publicar</button>
 
-  <div id="feed"></div>
+<h3>Crear Post</h3>
+<input id="text" placeholder="Texto">
+<input id="img" placeholder="Imagen URL">
+<button onclick="createPost()">Publicar</button>
 
-  <button onclick="logout()">Salir</button>
+<div id="feed"></div>
+
+<button onclick="logout()">Salir</button>
+
+</div>
+
+<div class="nav">
+<div>🏠</div>
+<div>🔎</div>
+<div>➕</div>
+<div>❤️</div>
+<div>👤</div>
 </div>
 
 <script type="module">
@@ -99,15 +130,20 @@ collection,
 addDoc,
 onSnapshot,
 query,
-orderBy
+orderBy,
+doc,
+updateDoc,
+getDoc,
+arrayUnion,
+arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 FIREBASE CONFIG (CAMBIA ESTO) */
+/* 🔥 PEGA AQUÍ TU CONFIG REAL */
 const firebaseConfig = {
   apiKey: "TU_API_KEY",
   authDomain: "TU_AUTH_DOMAIN",
   projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_BUCKET",
+  storageBucket: "TU_STORAGE",
   messagingSenderId: "TU_ID",
   appId: "TU_APP_ID"
 };
@@ -117,59 +153,66 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
-const errorBox = document.getElementById("error");
 
-/* ERROR HANDLER */
-function showError(msg){
-  errorBox.textContent = msg;
-  setTimeout(()=> errorBox.textContent="", 4000);
-}
+/* ========= AUTH ========= */
+window.register = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-/* LOGIN */
-window.login = async () => {
   try{
-    const email = emailInput().value;
-    const pass = passInput().value;
-
-    await signInWithEmailAndPassword(auth,email,pass);
+    await createUserWithEmailAndPassword(auth,email,password);
   }catch(e){
-    showError(e.message);
+    alert(e.message);
   }
 };
 
-/* REGISTER */
-window.register = async () => {
-  try{
-    const email = emailInput().value;
-    const pass = passInput().value;
+window.login = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-    await createUserWithEmailAndPassword(auth,email,pass);
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
   }catch(e){
-    showError(e.message);
+    alert(e.message);
   }
 };
 
 window.logout = () => signOut(auth);
 
-/* CREATE POST */
+/* ========= POST ========= */
 window.createPost = async () => {
   const text = document.getElementById("text").value;
   const img = document.getElementById("img").value;
 
-  if(!auth.currentUser) return showError("Inicia sesión primero");
+  if(!auth.currentUser) return alert("Inicia sesión");
 
   await addDoc(collection(db,"posts"),{
     text,
     img,
     user: auth.currentUser.email,
-    time: Date.now()
+    time: Date.now(),
+    likes:[]
   });
 
   document.getElementById("text").value="";
   document.getElementById("img").value="";
 };
 
-/* FEED */
+/* ========= LIKE ========= */
+window.likePost = async (id)=>{
+  const ref = doc(db,"posts",id);
+  const snap = await getDoc(ref);
+  const data = snap.data();
+
+  const user = auth.currentUser.email;
+  const liked = (data.likes||[]).includes(user);
+
+  await updateDoc(ref,{
+    likes: liked ? arrayRemove(user) : arrayUnion(user)
+  });
+};
+
+/* ========= FEED ========= */
 const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 onSnapshot(q,(snap)=>{
@@ -177,26 +220,31 @@ onSnapshot(q,(snap)=>{
 
   snap.forEach(d=>{
     const p = d.data();
+    const user = p.user.split("@")[0];
+    const current = auth.currentUser?.email;
+    const isLiked = (p.likes||[]).includes(current);
 
     feed.innerHTML += `
       <div class="post">
-        <b>@${p.user.split("@")[0]}</b>
+        <div class="profile">@${user}</div>
         <p>${p.text}</p>
+
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
+
+        <button class="like-btn ${isLiked?"active":""}"
+        onclick="likePost('${d.id}')">
+          ❤️ ${(p.likes||[]).length}
+        </button>
       </div>
     `;
   });
 });
 
-/* AUTH STATE */
+/* ========= AUTH STATE ========= */
 onAuthStateChanged(auth,(user)=>{
   document.getElementById("auth").style.display = user ? "none":"block";
   document.getElementById("app").style.display = user ? "block":"none";
 });
-
-/* helpers */
-function emailInput(){ return document.getElementById("email"); }
-function passInput(){ return document.getElementById("password"); }
 
 </script>
 
