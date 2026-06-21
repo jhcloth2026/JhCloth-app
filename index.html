@@ -118,13 +118,13 @@ onSnapshot,
 query,
 orderBy,
 doc,
-updateDoc,
 getDoc,
+updateDoc,
 arrayUnion,
 arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE */
+/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
   rules_version = '2';
 service cloud.firestore {
@@ -141,33 +141,43 @@ const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
 
-/* LOGIN */
-window.login = async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+/* ---------------- AUTH ---------------- */
 
-  await signInWithEmailAndPassword(auth, email, password);
-};
-
-/* REGISTER */
 window.register = async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  await createUserWithEmailAndPassword(auth, email, password);
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Usuario creado ✔");
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
-/* LOGOUT */
+window.login = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert("Bienvenido a JhCloth 🚀");
+  } catch (e) {
+    alert(e.message);
+  }
+};
+
 window.logout = () => signOut(auth);
 
-/* CREATE POST */
+/* ---------------- POST ---------------- */
+
 window.createPost = async () => {
   const text = document.getElementById("text").value;
   const img = document.getElementById("img").value;
 
-  if(!auth.currentUser) return alert("Inicia sesión");
+  if (!auth.currentUser) return alert("Inicia sesión");
 
-  await addDoc(collection(db,"posts"),{
+  await addDoc(collection(db, "posts"), {
     text,
     img,
     user: auth.currentUser.email,
@@ -176,57 +186,62 @@ window.createPost = async () => {
     comments: []
   });
 
-  document.getElementById("text").value="";
-  document.getElementById("img").value="";
+  document.getElementById("text").value = "";
+  document.getElementById("img").value = "";
 };
 
-/* LIKE */
+/* ---------------- LIKE ---------------- */
+
 window.likePost = async (id) => {
-  const ref = doc(db,"posts",id);
+  const ref = doc(db, "posts", id);
   const snap = await getDoc(ref);
   const data = snap.data();
 
   const user = auth.currentUser.email;
   const liked = (data.likes || []).includes(user);
 
-  await updateDoc(ref,{
+  await updateDoc(ref, {
     likes: liked ? arrayRemove(user) : arrayUnion(user)
   });
 };
 
-/* COMMENT */
-window.commentPost = async (id) => {
-  const input = document.getElementById("c-"+id);
-  if(!input.value) return;
+/* ---------------- COMMENT ---------------- */
 
-  const ref = doc(db,"posts",id);
+window.commentPost = async (id) => {
+  const input = document.getElementById("c-" + id);
+  if (!input.value) return;
+
+  const ref = doc(db, "posts", id);
   const snap = await getDoc(ref);
   const data = snap.data();
 
-  const comments = data.comments || [];
-  comments.push(auth.currentUser.email + ": " + input.value);
+  const comment = auth.currentUser.email + ": " + input.value;
 
-  await updateDoc(ref,{ comments });
+  await updateDoc(ref, {
+    comments: [...(data.comments || []), comment]
+  });
 
-  input.value="";
+  input.value = "";
 };
 
-/* FEED */
-const q = query(collection(db,"posts"),orderBy("time","desc"));
+/* ---------------- FEED ---------------- */
 
-onSnapshot(q,(snap)=>{
-  feed.innerHTML="";
+const q = query(collection(db, "posts"), orderBy("time", "desc"));
 
-  snap.forEach(d=>{
+onSnapshot(q, (snap) => {
+  feed.innerHTML = "";
+
+  snap.forEach((d) => {
     const p = d.data();
     const name = p.user.split("@")[0];
+    const current = auth.currentUser?.email;
+
+    const isLiked = (p.likes || []).includes(current);
 
     feed.innerHTML += `
       <div class="post">
 
-        <div class="profile">
-          👤 @${name}
-        </div>
+        <div class="profile">👤 @${name}</div>
 
         <p>${p.text}</p>
 
@@ -246,8 +261,9 @@ onSnapshot(q,(snap)=>{
   });
 });
 
-/* AUTH STATE */
-onAuthStateChanged(auth,(user)=>{
+/* ---------------- AUTH STATE ---------------- */
+
+onAuthStateChanged(auth, (user) => {
   document.getElementById("auth").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
 });
