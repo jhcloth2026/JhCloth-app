@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth Social PRO</title>
+<title>JhCloth PRO FINAL</title>
 
 <style>
 body{
@@ -39,15 +38,11 @@ button{
   cursor:pointer;
 }
 
-#feed{
-  margin-top:10px;
-}
-
 .post{
   background:#111;
-  padding:10px;
   margin:10px 0;
-  border-radius:12px;
+  padding:10px;
+  border-radius:10px;
 }
 
 .profile{
@@ -55,15 +50,8 @@ button{
   opacity:0.7;
 }
 
-.like-btn{
-  background:#222;
-  color:white;
-  transition:0.2s;
-}
-
 .like-btn.active{
   background:red;
-  transform:scale(1.1);
 }
 
 .nav{
@@ -74,7 +62,6 @@ button{
   justify-content:space-around;
   background:#000;
   padding:10px;
-  border-top:1px solid #222;
 }
 </style>
 </head>
@@ -82,14 +69,14 @@ button{
 <body>
 
 <header>
-JhCloth Social PRO
+JhCloth PRO
 </header>
 
 <div id="auth">
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-  <button onclick="register()">Registrar</button>
   <button onclick="login()">Entrar</button>
+  <button onclick="register()">Registrar</button>
 </div>
 
 <div id="app" style="display:none">
@@ -102,7 +89,6 @@ JhCloth Social PRO
 <div id="feed"></div>
 
 <button onclick="logout()">Salir</button>
-
 </div>
 
 <div class="nav">
@@ -130,20 +116,15 @@ collection,
 addDoc,
 onSnapshot,
 query,
-orderBy,
-doc,
-updateDoc,
-getDoc,
-arrayUnion,
-arrayRemove
+orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 PEGA AQUÍ TU CONFIG REAL */
+/* 🔥 TU CONFIG AQUÍ */
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_STORAGE",
+  apiKey: "PON_TU_API_KEY",
+  authDomain: "jhcloth-app.firebaseapp.com",
+  projectId: "jhcloth-app",
+  storageBucket: "jhcloth-app.appspot.com",
   messagingSenderId: "TU_ID",
   appId: "TU_APP_ID"
 };
@@ -154,32 +135,36 @@ const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
 
-/* ========= AUTH ========= */
-window.register = async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try{
-    await createUserWithEmailAndPassword(auth,email,password);
-  }catch(e){
-    alert(e.message);
-  }
-};
-
+/* LOGIN */
 window.login = async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  try{
-    await signInWithEmailAndPassword(auth,email,password);
-  }catch(e){
-    alert(e.message);
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert("Bienvenido a JhCloth");
+  } catch (e) {
+    alert("Error login: " + e.message);
   }
 };
 
+/* REGISTER */
+window.register = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Usuario creado");
+  } catch (e) {
+    alert("Error register: " + e.message);
+  }
+};
+
+/* LOGOUT */
 window.logout = () => signOut(auth);
 
-/* ========= POST ========= */
+/* CREATE POST */
 window.createPost = async () => {
   const text = document.getElementById("text").value;
   const img = document.getElementById("img").value;
@@ -190,29 +175,14 @@ window.createPost = async () => {
     text,
     img,
     user: auth.currentUser.email,
-    time: Date.now(),
-    likes:[]
+    time: Date.now()
   });
 
   document.getElementById("text").value="";
   document.getElementById("img").value="";
 };
 
-/* ========= LIKE ========= */
-window.likePost = async (id)=>{
-  const ref = doc(db,"posts",id);
-  const snap = await getDoc(ref);
-  const data = snap.data();
-
-  const user = auth.currentUser.email;
-  const liked = (data.likes||[]).includes(user);
-
-  await updateDoc(ref,{
-    likes: liked ? arrayRemove(user) : arrayUnion(user)
-  });
-};
-
-/* ========= FEED ========= */
+/* FEED */
 const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 onSnapshot(q,(snap)=>{
@@ -220,30 +190,21 @@ onSnapshot(q,(snap)=>{
 
   snap.forEach(d=>{
     const p = d.data();
-    const user = p.user.split("@")[0];
-    const current = auth.currentUser?.email;
-    const isLiked = (p.likes||[]).includes(current);
 
     feed.innerHTML += `
       <div class="post">
-        <div class="profile">@${user}</div>
+        <div class="profile">@${p.user}</div>
         <p>${p.text}</p>
-
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
-
-        <button class="like-btn ${isLiked?"active":""}"
-        onclick="likePost('${d.id}')">
-          ❤️ ${(p.likes||[]).length}
-        </button>
       </div>
     `;
   });
 });
 
-/* ========= AUTH STATE ========= */
+/* STATE */
 onAuthStateChanged(auth,(user)=>{
-  document.getElementById("auth").style.display = user ? "none":"block";
-  document.getElementById("app").style.display = user ? "block":"none";
+  document.getElementById("auth").style.display = user ? "none" : "block";
+  document.getElementById("app").style.display = user ? "block" : "none";
 });
 
 </script>
