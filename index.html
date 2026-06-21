@@ -207,7 +207,9 @@ window.likePost = async (id)=>{
   const snap = await getDoc(ref);
   const data = snap.data();
 
-  const user = auth.currentUser.email;
+  const user = auth.currentUser?.email;
+  if(!user) return;
+
   const liked = (data.likes || []).includes(user);
 
   if(liked){
