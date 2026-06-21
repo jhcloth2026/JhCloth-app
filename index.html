@@ -116,18 +116,24 @@ collection,
 addDoc,
 onSnapshot,
 query,
-orderBy
+orderBy,
+doc,
+updateDoc,
+getDoc,
+arrayUnion,
+arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 TU CONFIG AQUÍ */
-  const firebaseConfig = {
-  apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
-  authDomain: "jhcloth-app.firebaseapp.com",
-  projectId: "jhcloth-app",
-  storageBucket: "jhcloth-app.firebasestorage.app",
-  messagingSenderId: "683518974253",
-  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
-};
+/* FIREBASE */
+const firebaseConfig = {
+  rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -140,12 +146,7 @@ window.login = async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("Bienvenido a JhCloth");
-  } catch (e) {
-    alert("Error login: " + e.message);
-  }
+  await signInWithEmailAndPassword(auth, email, password);
 };
 
 /* REGISTER */
@@ -153,12 +154,7 @@ window.register = async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    alert("Usuario creado");
-  } catch (e) {
-    alert("Error register: " + e.message);
-  }
+  await createUserWithEmailAndPassword(auth, email, password);
 };
 
 /* LOGOUT */
@@ -175,11 +171,44 @@ window.createPost = async () => {
     text,
     img,
     user: auth.currentUser.email,
-    time: Date.now()
+    time: Date.now(),
+    likes: [],
+    comments: []
   });
 
   document.getElementById("text").value="";
   document.getElementById("img").value="";
+};
+
+/* LIKE */
+window.likePost = async (id) => {
+  const ref = doc(db,"posts",id);
+  const snap = await getDoc(ref);
+  const data = snap.data();
+
+  const user = auth.currentUser.email;
+  const liked = (data.likes || []).includes(user);
+
+  await updateDoc(ref,{
+    likes: liked ? arrayRemove(user) : arrayUnion(user)
+  });
+};
+
+/* COMMENT */
+window.commentPost = async (id) => {
+  const input = document.getElementById("c-"+id);
+  if(!input.value) return;
+
+  const ref = doc(db,"posts",id);
+  const snap = await getDoc(ref);
+  const data = snap.data();
+
+  const comments = data.comments || [];
+  comments.push(auth.currentUser.email + ": " + input.value);
+
+  await updateDoc(ref,{ comments });
+
+  input.value="";
 };
 
 /* FEED */
@@ -190,18 +219,34 @@ onSnapshot(q,(snap)=>{
 
   snap.forEach(d=>{
     const p = d.data();
+    const name = p.user.split("@")[0];
 
     feed.innerHTML += `
       <div class="post">
-        <div class="profile">@${p.user}</div>
+
+        <div class="profile">
+          👤 @${name}
+        </div>
+
         <p>${p.text}</p>
+
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
+
+        <button onclick="likePost('${d.id}')">
+          ❤️ ${(p.likes || []).length}
+        </button>
+
+        <input id="c-${d.id}" placeholder="Comentario">
+        <button onclick="commentPost('${d.id}')">Comentar</button>
+
+        ${(p.comments || []).map(c => `<p>💬 ${c}</p>`).join("")}
+
       </div>
     `;
   });
 });
 
-/* STATE */
+/* AUTH STATE */
 onAuthStateChanged(auth,(user)=>{
   document.getElementById("auth").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
