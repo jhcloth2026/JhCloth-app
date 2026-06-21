@@ -53,6 +53,15 @@ button{
 .like-btn.active{
   background:red;
 }
+  .like{
+  background:white;
+  color:black;
+}
+
+.like.active{
+  background:red;
+  color:white;
+}
 
 .nav{
   position:fixed;
@@ -265,14 +274,8 @@ onSnapshot(q, (snap) => {
 
 onAuthStateChanged(auth, (user) => {
   document.getElementById("auth").style.display = user ? "none" : "block";
-  document.getElementById("app").style.display = user ? "block" : "none";
-});
-  window.login = login;
-window.register = register;
-window.logout = logout;
-window.createPost = createPost;
-window.likePost = likePost;
-window.commentPost = commentPost;
+  document.getElementById("app").style.display = user ? "block" : "none"
+  
 
 </script>
 
