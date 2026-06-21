@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>JhCloth ULTRA PRO</title>
+<title>JhCloth Social GOD MODE</title>
 
 <style>
 body{
@@ -19,53 +19,42 @@ header{
   color:#00e5ff;
 }
 
-/* FEED */
+/* FEED TIKTOK STYLE */
 #feed{
   height:100vh;
   overflow-y:auto;
+  scroll-snap-type:y mandatory;
 }
 
-/* POST */
 .post{
   background:#111;
   margin:10px;
   padding:10px;
   border-radius:15px;
+  scroll-snap-align:start;
 }
 
-/* MEDIA */
-.post img,
-.post video{
+.post img, .post video{
   width:100%;
   border-radius:10px;
-  margin-top:10px;
 }
 
-/* INPUTS */
-input,button{
+/* BUTTONS */
+button{
   width:90%;
-  display:block;
   margin:5px auto;
   padding:10px;
-  border-radius:8px;
   border:none;
-}
-
-button{
+  border-radius:8px;
   background:#00e5ff;
   font-weight:bold;
 }
 
-/* LIKE */
+/* LIKE GOD MODE */
 .like-btn{
   background:#222;
   color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:10px;
-  margin-top:10px;
   transition:0.2s;
-  cursor:pointer;
 }
 
 .like-btn.active{
@@ -75,8 +64,9 @@ button{
 
 /* PROFILE */
 .profile{
+  opacity:0.8;
   font-size:12px;
-  opacity:0.7;
+  cursor:pointer;
 }
 
 /* NAV */
@@ -88,7 +78,6 @@ button{
   justify-content:space-around;
   background:#000;
   padding:10px;
-  font-size:22px;
 }
 </style>
 </head>
@@ -100,7 +89,7 @@ button{
   <small>ELEGANCIA • DISCIPLINA • PRESENCIA</small>
 </header>
 
-<!-- LOGIN -->
+<!-- AUTH -->
 <div id="auth">
   <input id="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
@@ -118,14 +107,12 @@ button{
 <input id="video" placeholder="Video URL">
 <button onclick="createPost()">Publicar</button>
 
-<h3 style="text-align:center">Feed</h3>
 <div id="feed"></div>
 
 <button onclick="logout()">Salir</button>
 
 </div>
 
-<!-- NAV -->
 <div class="nav">
 <div>🏠</div>
 <div>🔎</div>
@@ -159,7 +146,6 @@ arrayUnion,
 arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -176,19 +162,18 @@ const db = getFirestore(app);
 const feed = document.getElementById("feed");
 
 /* AUTH */
-window.register = async ()=>{
+window.register = async () => {
   await createUserWithEmailAndPassword(auth,email.value,password.value);
 };
 
-window.login = async ()=>{
+window.login = async () => {
   await signInWithEmailAndPassword(auth,email.value,password.value);
 };
 
-window.logout = ()=>signOut(auth);
+window.logout = () => signOut(auth);
 
 /* CREATE POST */
-window.createPost = async ()=>{
-
+window.createPost = async () => {
   if(!text.value.trim()) return;
 
   await addDoc(collection(db,"posts"),{
@@ -207,7 +192,7 @@ window.createPost = async ()=>{
   video.value="";
 };
 
-/* LIKE */
+/* LIKE SYSTEM GOD MODE */
 window.likePost = async (id)=>{
 
   const ref = doc(db,"posts",id);
@@ -220,34 +205,14 @@ window.likePost = async (id)=>{
     await updateDoc(ref,{
       likes: arrayRemove(user)
     });
-  }else{
+  } else {
     await updateDoc(ref,{
       likes: arrayUnion(user)
     });
   }
 };
 
-/* COMMENT */
-window.addComment = async (id)=>{
-
-  const input = document.getElementById("c-"+id);
-  if(!input.value.trim()) return;
-
-  const ref = doc(db,"posts",id);
-  const snap = await getDoc(ref);
-  const data = snap.data();
-
-  const comments = data.comments || [];
-  comments.push(input.value);
-
-  await updateDoc(ref,{
-    comments: comments
-  });
-
-  input.value="";
-};
-
-/* FEED */
+/* FEED REAL TIME */
 const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 onSnapshot(q,(snap)=>{
@@ -256,16 +221,19 @@ onSnapshot(q,(snap)=>{
 
   snap.forEach(d=>{
     const p=d.data();
-    const user = p.user.split("@")[0];
+    const user=p.user.split("@")[0];
 
     let media="";
-    if(p.img) media += `<img src="${p.img}">`;
-    if(p.video) media += `<video src="${p.video}" controls></video>`;
+    if(p.img) media+=`<img src="${p.img}">`;
+    if(p.video) media+=`<video src="${p.video}" controls></video>`;
 
-    feed.innerHTML += `
+    feed.innerHTML+=`
       <div class="post">
 
-        <div class="profile">@${user}</div>
+        <div class="profile" onclick="alert('Perfil de ${user}')">
+          @${user}
+        </div>
+
         <p>${p.text}</p>
 
         ${media}
@@ -273,11 +241,6 @@ onSnapshot(q,(snap)=>{
         <button class="like-btn" onclick="likePost('${d.id}')">
           ❤️ ${(p.likes||[]).length}
         </button>
-
-        <input id="c-${d.id}" placeholder="Comentario">
-        <button onclick="addComment('${d.id}')">Comentar</button>
-
-        ${(p.comments||[]).map(c=>`<p>💬 ${c}</p>`).join("")}
 
       </div>
     `;
@@ -287,12 +250,11 @@ onSnapshot(q,(snap)=>{
 
 /* AUTH STATE */
 onAuthStateChanged(auth,(user)=>{
-  document.getElementById("auth").style.display = user ? "none" : "block";
-  document.getElementById("app").style.display = user ? "block" : "none";
+  auth.style.display = user ? "none" : "block";
+  app.style.display = user ? "block" : "none";
 });
 
 </script>
 
 </body>
 </html>
-
