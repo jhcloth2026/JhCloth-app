@@ -19,13 +19,14 @@ header{
   color:#00e5ff;
 }
 
-/* FEED TIKTOK STYLE */
+/* FEED */
 #feed{
   height:100vh;
   overflow-y:auto;
   scroll-snap-type:y mandatory;
 }
 
+/* POST */
 .post{
   background:#111;
   margin:10px;
@@ -50,7 +51,7 @@ button{
   font-weight:bold;
 }
 
-/* LIKE GOD MODE */
+/* LIKE */
 .like-btn{
   background:#222;
   color:white;
@@ -113,6 +114,7 @@ button{
 
 </div>
 
+<!-- NAV -->
 <div class="nav">
 <div>🏠</div>
 <div>🔎</div>
@@ -146,6 +148,7 @@ arrayUnion,
 arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
   authDomain: "jhcloth-app.firebaseapp.com",
@@ -160,6 +163,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
+const authDiv = document.getElementById("auth");
+const appDiv = document.getElementById("app");
 
 /* AUTH */
 window.register = async () => {
@@ -175,6 +180,7 @@ window.logout = () => signOut(auth);
 /* CREATE POST */
 window.createPost = async () => {
   if(!text.value.trim()) return;
+  if(!auth.currentUser) return alert("Inicia sesión");
 
   await addDoc(collection(db,"posts"),{
     text:text.value,
@@ -192,7 +198,7 @@ window.createPost = async () => {
   video.value="";
 };
 
-/* LIKE SYSTEM GOD MODE */
+/* LIKE SYSTEM */
 window.likePost = async (id)=>{
 
   const ref = doc(db,"posts",id);
@@ -212,7 +218,7 @@ window.likePost = async (id)=>{
   }
 };
 
-/* FEED REAL TIME */
+/* FEED */
 const q = query(collection(db,"posts"),orderBy("time","desc"));
 
 onSnapshot(q,(snap)=>{
@@ -250,8 +256,13 @@ onSnapshot(q,(snap)=>{
 
 /* AUTH STATE */
 onAuthStateChanged(auth,(user)=>{
-  auth.style.display = user ? "none" : "block";
-  app.style.display = user ? "block" : "none";
+  if(user){
+    authDiv.style.display="none";
+    appDiv.style.display="block";
+  }else{
+    authDiv.style.display="block";
+    appDiv.style.display="none";
+  }
 });
 
 </script>
