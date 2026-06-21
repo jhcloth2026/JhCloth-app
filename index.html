@@ -35,9 +35,12 @@ header{
   scroll-snap-align:start;
 }
 
-.post img, .post video{
+/* MEDIA */
+.post img,
+.post video{
   width:100%;
   border-radius:10px;
+  margin-top:10px;
 }
 
 /* BUTTONS */
@@ -150,12 +153,12 @@ arrayRemove
 
 /* FIREBASE */
 const firebaseConfig = {
-  apiKey: "AIzaSyBQtm1v6ftwVbdtr8me3bK-fNq2gOmGjvk",
-  authDomain: "jhcloth-app.firebaseapp.com",
-  projectId: "jhcloth-app",
-  storageBucket: "jhcloth-app.firebasestorage.app",
-  messagingSenderId: "683518974253",
-  appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH",
+  projectId: "TU_PROJECT",
+  storageBucket: "TU_BUCKET",
+  messagingSenderId: "TU_ID",
+  appId: "TU_APP"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -189,8 +192,7 @@ window.createPost = async () => {
     user:auth.currentUser.email,
     username:auth.currentUser.email.split("@")[0],
     time:Date.now(),
-    likes:[],
-    comments:[]
+    likes:[]
   });
 
   text.value="";
@@ -206,8 +208,9 @@ window.likePost = async (id)=>{
   const data = snap.data();
 
   const user = auth.currentUser.email;
+  const liked = (data.likes || []).includes(user);
 
-  if((data.likes || []).includes(user)){
+  if(liked){
     await updateDoc(ref,{
       likes: arrayRemove(user)
     });
@@ -226,25 +229,29 @@ onSnapshot(q,(snap)=>{
   feed.innerHTML="";
 
   snap.forEach(d=>{
-    const p=d.data();
-    const user=p.user.split("@")[0];
+    const p = d.data();
+    const user = p.user.split("@")[0];
 
-    let media="";
-    if(p.img) media+=`<img src="${p.img}">`;
-    if(p.video) media+=`<video src="${p.video}" controls></video>`;
+    const currentUser = auth.currentUser?.email;
+    const isLiked = (p.likes || []).includes(currentUser);
 
-    feed.innerHTML+=`
+    let media = "";
+    if(p.img) media += `<img src="${p.img}">`;
+    if(p.video) media += `<video src="${p.video}" controls></video>`;
+
+    feed.innerHTML += `
       <div class="post">
 
-        <div class="profile" onclick="alert('Perfil de ${user}')">
-          @${user}
-        </div>
+        <div class="profile">@${user}</div>
 
         <p>${p.text}</p>
 
         ${media}
 
-        <button class="like-btn" onclick="likePost('${d.id}')">
+        <button 
+          class="like-btn ${isLiked ? "active" : ""}" 
+          onclick="likePost('${d.id}')"
+        >
           ❤️ ${(p.likes||[]).length}
         </button>
 
