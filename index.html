@@ -121,7 +121,7 @@ button{
 <div>🔎</div>
 <div>➕</div>
 <div>❤️</div>
-<div onclick="alert('Perfil próximamente')">👤</div>
+<div onclick="showProfile()">👤</div>
 </div>
 <script type="module">
 
@@ -184,20 +184,14 @@ window.register = async () => {
     alert(e.message);
   }
 };
-
-window.login = async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("Bienvenido a JhCloth 🚀");
-  } catch (e) {
-    alert(e.message);
-  }
+window.showProfile = () => {
+  const user = auth.currentUser?.email.split("@")[0] || "Usuario";
+  alert(
+    "👤 Perfil JhCloth\n\n" +
+    "Usuario: @" + user + "\n" +
+    "Bio: Elegancia • Disciplina • Presencia"
+  );
 };
-
-window.logout = () => signOut(auth);
 
 /* ---------------- POST ---------------- */
 
@@ -248,7 +242,7 @@ window.commentPost = async (id) => {
   const comment = auth.currentUser.email + ": " + input.value;
 
   await updateDoc(ref, {
-    comments: [...(data.comments || []), comment]
+    comments: [...(data.comments || []), comment]ñ0p
   });
 
   input.value = "";
