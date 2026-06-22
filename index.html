@@ -131,7 +131,8 @@ doc,
 getDoc,
 updateDoc,
 arrayUnion,
-arrayRemove
+arrayRemove,
+deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* 🔥 FIREBASE CONFIG */
@@ -149,6 +150,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const feed = document.getElementById("feed");
+  window.deletePost = async (id) => {
+  const ok = confirm("¿Seguro que quieres eliminar este post?");
+  if (!ok) return;
+
+  await deleteDoc(doc(db, "posts", id));
+};
 
 /* ---------------- AUTH ---------------- */
 
@@ -255,7 +262,10 @@ onSnapshot(q, (snap) => {
         <p>${p.text}</p>
 
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
-
+        
+${p.user === auth.currentUser.email ? `
+<button onclick="deletePost('${d.id}')">🗑️ Eliminar</button>
+` : ""}
         <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
   ❤️ ${(p.likes || []).length}
 </button>
@@ -271,6 +281,7 @@ onSnapshot(q, (snap) => {
   `).join("")}
 </div>
 
+</div>
     `;
   });
 });
