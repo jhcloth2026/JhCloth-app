@@ -49,10 +49,6 @@ button{
   font-size:12px;
   opacity:0.7;
 }
-
-.like-btn.active{
-  background:red;
-}
   .like{
   background:white;
   color:black;
@@ -266,26 +262,21 @@ onSnapshot(q, (snap) => {
         <p>${p.text}</p>
 
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
-        
-${p.user === auth.currentUser.email ? `
-<button class="delete-btn" onclick="deletePost('${d.id}')">
-🗑️ Eliminar
-</button>
-` : ""}
-        <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
-  ❤️ ${(p.likes || []).length}
-</button>
+        <div class="actions">
 
-        <input id="c-${d.id}" placeholder="Comentario">
-        <button onclick="commentPost('${d.id}')">Comentar</button>
+  <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
+    ❤️ ${(p.likes || []).length}
+  </button>
 
-        <div style="margin-top:10px">
-  ${(p.comments || []).map(c => `
-    <div style="font-size:13px; margin:5px 0; color:#ddd">
-      💬 ${c}
-    </div>
-  `).join("")}
-</div>
+  <button onclick="commentPost('${d.id}')">
+    💬 Comentar
+  </button>
+
+  ${p.user === auth.currentUser.email ? `
+    <button class="delete-btn" onclick="deletePost('${d.id}')">
+      🗑️ Eliminar
+    </button>
+  ` : ""}
 
 </div>
     `;
