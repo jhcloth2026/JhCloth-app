@@ -57,7 +57,11 @@ button{
   background:white;
   color:black;
 }
-
+  .delete-btn{
+  background:red;
+  color:white;
+  margin-top:5px;
+}
 .like.active{
   background:red;
   color:white;
@@ -264,7 +268,9 @@ onSnapshot(q, (snap) => {
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
         
 ${p.user === auth.currentUser.email ? `
-<button onclick="deletePost('${d.id}')">🗑️ Eliminar</button>
+<button class="delete-btn" onclick="deletePost('${d.id}')">
+🗑️ Eliminar
+</button>
 ` : ""}
         <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
   ❤️ ${(p.likes || []).length}
