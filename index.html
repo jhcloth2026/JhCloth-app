@@ -263,9 +263,14 @@ onSnapshot(q, (snap) => {
         <input id="c-${d.id}" placeholder="Comentario">
         <button onclick="commentPost('${d.id}')">Comentar</button>
 
-        ${(p.comments || []).map(c => `<p>💬 ${c}</p>`).join("")}
+        <div style="margin-top:10px">
+  ${(p.comments || []).map(c => `
+    <div style="font-size:13px; margin:5px 0; color:#ddd">
+      💬 ${c}
+    </div>
+  `).join("")}
+</div>
 
-      </div>
     `;
   });
 });
