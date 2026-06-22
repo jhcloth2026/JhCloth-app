@@ -72,6 +72,20 @@ button{
   background:#000;
   padding:10px;
 }
+  .actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+
+.actions button{
+  width:auto;
+  padding:8px 12px;
+  font-size:13px;
+  border-radius:8px;
+}
 </style>
   
 </head>
@@ -263,6 +277,8 @@ onSnapshot(q, (snap) => {
 
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
         <div class="actions">
+
+  <div class="actions">
 
   <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
     ❤️ ${(p.likes || []).length}
