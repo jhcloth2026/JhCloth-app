@@ -104,8 +104,14 @@ button{
   <button onclick="register()">Registrar</button>
 </div>
 
-<div id="app" style="display:none">
+<div id="profilePage" style="display:none; padding:10px; background:#111; margin:10px; border-radius:10px;">
+  <h2>👤 Perfil</h2>
 
+  <p id="profileUser"></p>
+  <p>Bio: Elegancia • Disciplina • Presencia</p>
+
+  <button onclick="closeProfile()">Cerrar</button>
+</div>
 <h3>Crear Post</h3>
 <input id="text" placeholder="Texto">
 <input id="img" placeholder="Imagen URL">
