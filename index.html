@@ -107,8 +107,15 @@ button{
 <div id="profilePage" style="display:none; padding:10px; background:#111; margin:10px; border-radius:10px;">
   <h2>👤 Perfil</h2>
 
+  <img id="profilePic" src="https://i.imgur.com/placeholder.png" width="80" style="border-radius:50%">
+
   <p id="profileUser"></p>
-  <p>Bio: Elegancia • Disciplina • Presencia</p>
+
+  <textarea id="bioInput" placeholder="Escribe tu bio..." style="width:95%; padding:8px; border-radius:8px;"></textarea>
+
+  <button onclick="saveBio()">Guardar bio</button>
+
+  <p id="bioText">Bio: Elegancia • Disciplina • Presencia</p>
 
   <button onclick="closeProfile()">Cerrar</button>
 </div>
@@ -206,13 +213,29 @@ window.login = async () => {
     alert(e.message);
   }
 };
+
 window.showProfile = () => {
   const user = auth.currentUser?.email.split("@")[0] || "Usuario";
 
   document.getElementById("profileUser").textContent = "@" + user;
   document.getElementById("profilePage").style.display = "block";
 };
-  window.closeProfile = () => {
+window.saveBio = async () => {
+  const bio = document.getElementById("bioInput").value;
+
+  await addDoc(collection(db, "bios"), {
+    user: auth.currentUser.email,
+    bio: bio
+  });
+
+  document.getElementById("bioText").textContent = "Bio: " + bio;
+};
+
+window.logout = async () => {
+  await signOut(auth);
+};
+
+window.closeProfile = () => {
   document.getElementById("profilePage").style.display = "none";
 };
 
@@ -293,24 +316,29 @@ onSnapshot(q, (snap) => {
         <p>${p.text}</p>
 
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
+
+        ${(p.comments || []).map(c => `<p style="font-size:12px">💬 ${c}</p>`).join("")}
+
         <div class="actions">
 
+          <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
+            ❤️ ${(p.likes || []).length}
+          </button>
 
-  <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
-    ❤️ ${(p.likes || []).length}
-  </button>
+          <input id="c-${d.id}" placeholder="Escribe comentario">
 
-  <button onclick="commentPost('${d.id}')">
-    💬 Comentar
-  </button>
+          <button onclick="commentPost('${d.id}')">
+            💬 Comentar
+          </button>
 
-  ${p.user === auth.currentUser.email ? `
-    <button class="delete-btn" onclick="deletePost('${d.id}')">
-      🗑️ Eliminar
-    </button>
-  ` : ""}
+          ${p.user === auth.currentUser.email ? `
+            <button class="delete-btn" onclick="deletePost('${d.id}')">
+              🗑️ Eliminar
+            </button>
+          ` : ""}
 
-</div>
+        </div>
+      </div>
     `;
   });
 });
