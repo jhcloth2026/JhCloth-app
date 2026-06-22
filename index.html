@@ -112,14 +112,18 @@ button{
 
   <button onclick="closeProfile()">Cerrar</button>
 </div>
-<h3>Crear Post</h3>
-<input id="text" placeholder="Texto">
-<input id="img" placeholder="Imagen URL">
-<button onclick="createPost()">Publicar</button>
 
-<div id="feed"></div>
+<div id="app" style="display:none">
 
-<button onclick="logout()">Salir</button>
+  <h3>Crear Post</h3>
+  <input id="text" placeholder="Texto">
+  <input id="img" placeholder="Imagen URL">
+  <button onclick="createPost()">Publicar</button>
+
+  <div id="feed"></div>
+
+  <button onclick="logout()">Salir</button>
+
 </div>
 
 <div class="nav">
@@ -202,15 +206,14 @@ window.login = async () => {
     alert(e.message);
   }
 };
-
 window.showProfile = () => {
   const user = auth.currentUser?.email.split("@")[0] || "Usuario";
 
-  alert(
-    "👤 Perfil JhCloth\n\n" +
-    "Usuario: @" + user + "\n" +
-    "Bio: Elegancia • Disciplina • Presencia"
-  );
+  document.getElementById("profileUser").textContent = "@" + user;
+  document.getElementById("profilePage").style.display = "block";
+};
+  window.closeProfile = () => {
+  document.getElementById("profilePage").style.display = "none";
 };
 
 /* ---------------- POST ---------------- */
