@@ -220,8 +220,17 @@ window.showProfile = () => {
   const user = auth.currentUser?.email.split("@")[0] || "Usuario";
 
   document.getElementById("profileUser").textContent = "@" + user;
+
+  const posts = document.querySelectorAll(".post").length;
+  document.getElementById("postCount").textContent =
+    "📸 Publicaciones: " + posts;
+
   document.getElementById("profilePage").style.display = "block";
 };
+
+
+
+    
 
 window.saveBio = () => {
   const bio = document.getElementById("bioInput").value;
