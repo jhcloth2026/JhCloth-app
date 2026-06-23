@@ -221,17 +221,17 @@ window.showProfile = () => {
   document.getElementById("profileUser").textContent = "@" + user;
   document.getElementById("profilePage").style.display = "block";
 };
-window.saveBio = async () => {
-  const bio = document.getElementById("bioInput").value;
 
-  await addDoc(collection(db, "bios"), {
-    user: auth.currentUser.email,
-    bio: bio
-  });
+window.saveBio = () => {
+  const bio = document.getElementById("bioInput").value;
+  const foto = document.getElementById("photoURL").value;
 
   document.getElementById("bioText").textContent = "Bio: " + bio;
-};
 
+  if(foto){
+    document.getElementById("profilePic").src = foto;
+  }
+};
 window.logout = async () => {
   await signOut(auth);
 };
