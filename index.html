@@ -312,7 +312,10 @@ onSnapshot(q, (snap) => {
     feed.innerHTML += `
       <div class="post">
 
-        <div class="profile">👤 @${name}</div>
+ <div class="profile">
+  👤 @${name}<br>
+  🕒 ${new Date(p.time).toLocaleString()}
+</div>
 
         <p>${p.text}</p>
 
