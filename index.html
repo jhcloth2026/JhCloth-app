@@ -235,13 +235,14 @@ document.querySelectorAll(".like").forEach(btn => {
 
 document.getElementById("likesCount").textContent =
   "❤️ Likes recibidos: " + likes;
+  
+document.getElementById("followersCount").textContent =
+  "👥 Seguidores: 0";
 
+document.getElementById("followingCount").textContent =
+  "➡️ Siguiendo: 0";
   document.getElementById("profilePage").style.display = "block";
 };
-
-
-
-    
 
 window.saveBio = () => {
   const bio = document.getElementById("bioInput").value;
