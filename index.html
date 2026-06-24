@@ -132,6 +132,19 @@ button:hover{
 
   <button onclick="closeProfile()">Cerrar</button>
 </div>
+  <div id="searchPage" style="display:none; padding:10px; background:#111; margin:10px; border-radius:10px;">
+
+<h2>🔎 Buscar usuarios</h2>
+
+<input id="searchInput" placeholder="Buscar usuario">
+
+<button onclick="searchUser()">Buscar</button>
+
+<p id="searchResult"></p>
+
+<button onclick="closeSearch()">Cerrar</button>
+
+</div>
 
 <div id="app" style="display:none">
 
@@ -268,6 +281,20 @@ window.logout = async () => {
 
 window.closeProfile = () => {
   document.getElementById("profilePage").style.display = "none";
+};
+  window.showSearch = () => {
+  document.getElementById("searchPage").style.display = "block";
+};
+
+window.closeSearch = () => {
+  document.getElementById("searchPage").style.display = "none";
+};
+
+window.searchUser = () => {
+  const user = document.getElementById("searchInput").value;
+
+  document.getElementById("searchResult").textContent =
+    "Usuario encontrado: @" + user;
 };
 
 /* ---------------- POST ---------------- */
