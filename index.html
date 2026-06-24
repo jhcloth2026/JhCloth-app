@@ -225,6 +225,14 @@ window.showProfile = () => {
   const posts = document.querySelectorAll(".post").length;
   document.getElementById("postCount").textContent =
     "📸 Publicaciones: " + posts;
+  let likes = 0;
+
+document.querySelectorAll(".like").forEach(btn => {
+  likes += parseInt(btn.textContent.replace("❤️","")) || 0;
+});
+
+document.getElementById("likesCount").textContent =
+  "❤️ Likes recibidos: " + likes;
 
   document.getElementById("profilePage").style.display = "block";
 };
