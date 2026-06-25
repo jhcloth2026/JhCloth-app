@@ -292,7 +292,8 @@ window.closeSearch = () => {
 
 window.searchUser = () => {
   const user = document.getElementById("searchInput").value;
-
+  
+  
  document.getElementById("searchResult").innerHTML = `
   <h3>👤 @${user}</h3>
   <p>📸 Publicaciones: 0</p>
@@ -300,6 +301,9 @@ window.searchUser = () => {
   <button onclick="followUser()">👥 Seguir</button>
 `; 
 }
+  window.followUser = () => {
+  alert("Ahora sigues a este usuario 👥");
+};
 
 /* ---------------- POST ---------------- */
 
