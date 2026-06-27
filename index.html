@@ -311,12 +311,13 @@ window.searchUser = () => {
 window.createPost = async () => {
   const text = document.getElementById("text").value;
   const img = document.getElementById("img").value;
-
+const video = document.getElementById("video").value;
   if (!auth.currentUser) return alert("Inicia sesión");
 
   await addDoc(collection(db, "posts"), {
     text,
     img,
+    video,
     user: auth.currentUser.email,
     time: Date.now(),
     likes: [],
@@ -325,6 +326,7 @@ window.createPost = async () => {
 
   document.getElementById("text").value = "";
   document.getElementById("img").value = "";
+document.getElementById("video").value = "";
 };
 
 /* ---------------- LIKE ---------------- */
@@ -389,7 +391,8 @@ onSnapshot(q, (snap) => {
         <p>${p.text}</p>
 
         ${p.img ? `<img src="${p.img}" width="100%">` : ""}
-
+        
+${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:10px; margin-top:10px;"></video>` : ""}
         ${(p.comments || []).map(c => `<p style="font-size:12px">💬 ${c}</p>`).join("")}
 
         <div class="actions">
