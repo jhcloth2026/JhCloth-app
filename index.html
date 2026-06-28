@@ -320,10 +320,19 @@ window.searchUser = () => {
   <button onclick="followUser()">👥 Seguir</button>
 `; 
 }
-  window.followUser = () => {
+  
+window.followUser = () => {
+  let followers = parseInt(
+    document.getElementById("followersCount").textContent.replace(/\D/g, "")
+  ) || 0;
+
+  followers++;
+
+  document.getElementById("followersCount").textContent =
+    "👥 Seguidores: " + followers;
+
   alert("Ahora sigues a este usuario 👥");
 };
-
 /* ---------------- POST ---------------- */
 
 window.createPost = async () => {
