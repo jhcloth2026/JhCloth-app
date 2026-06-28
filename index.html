@@ -132,6 +132,17 @@ button:hover{
 
   <button onclick="closeProfile()">Cerrar</button>
 </div>
+  <div id="activityPage" style="display:none; padding:15px; background:#111; margin:10px; border-radius:15px;">
+
+  <h2>❤️ Actividad</h2>
+
+  <p>👍 A alguien le gustó tu publicación.</p>
+  <p>💬 Alguien comentó tu publicación.</p>
+  <p>👥 Un usuario empezó a seguirte.</p>
+
+  <button onclick="closeActivity()">Cerrar</button>
+
+</div>
   <div id="searchPage" style="display:none; padding:10px; background:#111; margin:10px; border-radius:10px;">
 
 <h2>🔎 Buscar usuarios</h2>
@@ -164,7 +175,7 @@ button:hover{
 <div>🏠</div>
 <div onclick="showSearch()">🔎</div>
 <div>➕</div>
-<div>❤️</div>
+<div onclick="showActivity()">❤️</div>
 <div onclick="showProfile()">👤</div>
 </div>
 <script type="module">
