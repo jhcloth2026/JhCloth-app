@@ -301,6 +301,13 @@ window.closeProfile = () => {
 window.closeSearch = () => {
   document.getElementById("searchPage").style.display = "none";
 };
+  window.showActivity = () => {
+  document.getElementById("activityPage").style.display = "block";
+};
+
+window.closeActivity = () => {
+  document.getElementById("activityPage").style.display = "none";
+};
 
 window.searchUser = () => {
   const user = document.getElementById("searchInput").value;
