@@ -210,6 +210,7 @@ query,
 orderBy,
 doc,
 getDoc,
+  setDoc,
 updateDoc,
 arrayUnion,
 arrayRemove,
@@ -245,7 +246,17 @@ window.register = async () => {
   const password = document.getElementById("password").value;
 
   try {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", cred.user.uid), {
+      email: email,
+      username: email.split("@")[0],
+      followers: 0,
+      following: 0,
+      bio: "",
+      photo: ""
+    });
+
     alert("Usuario creado ✔");
   } catch (e) {
     alert(e.message);
