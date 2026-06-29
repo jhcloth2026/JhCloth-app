@@ -325,7 +325,8 @@ window.saveBio = async () => {
     if (foto) {
       document.getElementById("profilePic").src = foto;
     }
-
+document.getElementById("photoURL").value = "";
+document.getElementById("bioInput").value = "";
     alert("Perfil actualizado ✔");
 
   } catch (e) {
