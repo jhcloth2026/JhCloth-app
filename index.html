@@ -100,9 +100,15 @@ button:hover{
   
 <body>
 
-<header>
-  JhCloth<br>
-  <small>Elegancia • Disciplina • Presencia</small>
+<header style="display:flex;justify-content:space-between;align-items:center;padding:15px;">
+  <div>
+    <div style="font-size:24px;font-weight:bold;color:#00e5ff;">JhCloth</div>
+    <small>Elegancia • Disciplina • Presencia</small>
+  </div>
+
+  <button onclick="logout()" style="background:#444;color:white;width:auto;padding:10px 15px;">
+    🚪 Cerrar sesión
+  </button>
 </header>
   
 <div style="background:#1b1b1b; border:2px solid #c62828; border-radius:15px; padding:15px; margin:15px 0; text-align:center;">
@@ -172,18 +178,14 @@ button:hover{
   </div>
 
   <h3>Crear Post</h3>
-  <input id="text" placeholder="Texto">
-  <input id="img" placeholder="Imagen URL">
-  <input id="video" placeholder="Video URL (MP4)">
-  <button onclick="createPost()">Publicar</button>
 
-  <div id="feed"></div>
+<input id="text" placeholder="Texto">
 
-  
+<input id="img" placeholder="Imagen URL">
 
-<button onclick="logout()" style="background:#444;color:white;width:auto;padding:10px 18px;">
-🚪 Cerrar sesión
-</button>a
+<input id="video" placeholder="Video URL (MP4)">
+
+<button onclick="createPost()">Publicar</button>
 
 <div class="nav">
 <div>🏠</div>
