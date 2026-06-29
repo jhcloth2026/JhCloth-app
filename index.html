@@ -311,21 +311,27 @@ document.getElementById("followingCount").textContent =
 };
 
 window.saveBio = async () => {
-  const bio = document.getElementById("bioInput").value;
-  const foto = document.getElementById("photoURL").value;
+  try {
+    const bio = document.getElementById("bioInput").value;
+    const foto = document.getElementById("photoURL").value;
 
-  document.getElementById("bioText").textContent = "Bio: " + bio;
+    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      bio: bio,
+      photo: foto
+    });
 
-  if (foto) {
-    document.getElementById("profilePic").src = foto;
+    document.getElementById("bioText").textContent = "Bio: " + bio;
+
+    if (foto) {
+      document.getElementById("profilePic").src = foto;
+    }
+
+    alert("Perfil actualizado ✔");
+
+  } catch (e) {
+    alert(e.message);
+    console.log(e);
   }
-
-  await updateDoc(doc(db, "users", auth.currentUser.uid), {
-    bio: bio,
-    photo: foto
-  });
-
-  alert("Perfil actualizado ✔");
 };
                       
 window.logout = async () => {
