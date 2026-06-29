@@ -310,16 +310,24 @@ document.getElementById("followingCount").textContent =
   document.getElementById("profilePage").style.display = "block";
 };
 
-window.saveBio = () => {
+window.saveBio = async () => {
   const bio = document.getElementById("bioInput").value;
   const foto = document.getElementById("photoURL").value;
 
   document.getElementById("bioText").textContent = "Bio: " + bio;
 
-  if(foto){
+  if (foto) {
     document.getElementById("profilePic").src = foto;
   }
+
+  await updateDoc(doc(db, "users", auth.currentUser.uid), {
+    bio: bio,
+    photo: foto
+  });
+
+  alert("Perfil actualizado ✔");
 };
+                      
 window.logout = async () => {
   await signOut(auth);
 };
