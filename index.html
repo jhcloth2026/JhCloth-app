@@ -260,13 +260,15 @@ window.register = async () => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
 
     await setDoc(doc(db, "users", cred.user.uid), {
-      email: email,
-      username: email.split("@")[0],
-      followers: 0,
-      following: 0,
-      bio: "",
-      photo: ""
-    });
+  email: email,
+  username: email.split("@")[0],
+  followers: 0,
+  following: 0,
+  followersList: [],
+  followingList: [],
+  bio: "",
+  photo: ""
+});
 
     alert("Usuario creado ✔");
   } catch (e) {
@@ -359,18 +361,35 @@ window.closeSearch = () => {
 window.closeActivity = () => {
   document.getElementById("activityPage").style.display = "none";
 };
+let searchedUser = null;
+window.searchUser = async () => {
+  const user = document.getElementById("searchInput").value.toLowerCase();
 
-window.searchUser = () => {
-  const user = document.getElementById("searchInput").value;
-  
-  
- document.getElementById("searchResult").innerHTML = `
-  <h3>👤 @${user}</h3>
-  <p>📸 Publicaciones: 0</p>
-  <p>❤️ Likes: 0</p>
-  <button onclick="followUser()">👥 Seguir</button>
-`; 
-}
+  const snap = await getDocs(collection(db, "users"));
+
+  let encontrado = false;
+
+  snap.forEach((d) => {
+    const data = d.data();
+
+    if (data.username.toLowerCase() === user) {
+      searchedUser = d.id;
+
+      document.getElementById("searchResult").innerHTML = `
+        <h3>👤 @${data.username}</h3>
+        <p>${data.bio || "Sin biografía"}</p>
+        <button onclick="followUser()">👥 Seguir</button>
+      `;
+
+      encontrado = true;
+    }
+  });
+
+  if (!encontrado) {
+    document.getElementById("searchResult").innerHTML =
+      "❌ Usuario no encontrado";
+  }
+};
   
 window.followUser = () => {
   let followers = parseInt(
