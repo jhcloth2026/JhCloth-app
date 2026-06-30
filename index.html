@@ -223,6 +223,7 @@ getDoc,
   getDocs,
   setDoc,
 updateDoc,
+  increment,
 arrayUnion,
 arrayRemove,
 deleteDoc
@@ -391,17 +392,26 @@ window.searchUser = async () => {
   }
 };
   
-window.followUser = () => {
-  let followers = parseInt(
-    document.getElementById("followersCount").textContent.replace(/\D/g, "")
-  ) || 0;
+window.followUser = async () => {
+  if (!searchedUser) return alert("Busca un usuario primero");
 
-  followers++;
+  const myRef = doc(db, "users", auth.currentUser.uid);
+  const userRef = doc(db, "users", searchedUser);
+  
+if (searchedUser === auth.currentUser.uid) {
+  return alert("No puedes seguirte a ti mismo.");
+}
+  await updateDoc(userRef, {
+    followers: increment(1),
+    followersList: arrayUnion(auth.currentUser.uid)
+  });
 
-  document.getElementById("followersCount").textContent =
-    "👥 Seguidores: " + followers;
+  await updateDoc(myRef, {
+    following: increment(1),
+    followingList: arrayUnion(searchedUser)
+  });
 
-  alert("Ahora sigues a este usuario 👥");
+  alert("✅ Ahora sigues a este usuario");
 };
 /* ---------------- POST ---------------- */
 
