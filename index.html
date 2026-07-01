@@ -289,7 +289,7 @@ window.login = async () => {
   }
 };
 
-window.showProfile = () => {
+window.showProfile = async () => {
   const user = auth.currentUser?.email.split("@")[0] || "Usuario";
 
   document.getElementById("profileUser").textContent = "@" + user;
@@ -305,13 +305,25 @@ document.querySelectorAll(".like").forEach(btn => {
 
 document.getElementById("likesCount").textContent =
   "❤️ Likes recibidos: " + likes;
-  
-document.getElementById("followersCount").textContent =
-  "👥 Seguidores: 0";
+  const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
 
-document.getElementById("followingCount").textContent =
-  "➡️ Siguiendo: 0";
-  document.getElementById("profilePage").style.display = "block";
+if (userSnap.exists()) {
+  const data = userSnap.data();
+
+  document.getElementById("followersCount").textContent =
+    "👥 Seguidores: " + (data.followers || 0);
+
+  document.getElementById("followingCount").textContent =
+    "➡️ Siguiendo: " + (data.following || 0);
+
+  document.getElementById("bioText").textContent =
+    "Bio: " + (data.bio || "");
+
+  if (data.photo) {
+    document.getElementById("profilePic").src = data.photo;
+  }
+}
+document.getElementById("profilePage").style.display = "block";
 };
 
 window.saveBio = async () => {
@@ -491,8 +503,8 @@ onSnapshot(q, (snap) => {
   <img src="https://randomuser.me/api/portraits/men/32.jpg"
        width="35"
        style="border-radius:50%;vertical-align:middle;">
-  <strong style="color:#00e5ff;">@JhCloth 👑</strong><br>
-  <span style="color:#888;font-size:12px;">✔ Cuenta oficial de JhCloth</span><br>
+  <strong style="color:#00e5ff;">@${name}</strong><br>
+  <span style="color:#888;font-size:12px;">Miembro de JhCloth 👑</span><br>
   🕒 ${new Date(p.time).toLocaleString()}
 </div>
 
