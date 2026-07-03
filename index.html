@@ -188,10 +188,24 @@ button:hover{
 <input id="video" placeholder="Video URL (MP4)">
 
 <button onclick="createPost()">Publicar</button>
-  
+  <div id="featuredPost" style="
+background:#111;
+border:2px solid gold;
+border-radius:15px;
+padding:15px;
+margin-bottom:20px;
+color:white;
+text-align:center;
+">
+  <h2>⭐ Elegancia del Día</h2>
+
+  <p id="featuredText">
+    Todavía no hay una publicación destacada.
+  </p>
+</div>
+
 <div id="feed"></div>
-    
-  </div>
+  
   
 <div class="nav">
 <div>🏠</div>
@@ -490,13 +504,18 @@ const q = query(collection(db, "posts"), orderBy("time", "desc"));
 
 onSnapshot(q, (snap) => {
   feed.innerHTML = "";
-
+  let bestPost = null;
+let maxLikes = -1;
   snap.forEach((d) => {
     const p = d.data();
     const name = p.user.split("@")[0];
     const current = auth.currentUser?.email;
 
     const isLiked = (p.likes || []).includes(current);
+    if ((p.likes || []).length > maxLikes) {
+  maxLikes = (p.likes || []).length;
+  bestPost = p;
+}
 
     feed.innerHTML += `
       <div class="post">
