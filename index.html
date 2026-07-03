@@ -177,6 +177,30 @@ button:hover{
 
   </div>
   
+  <div id="userProfilePage" style="display:none; padding:20px; background:#111; border-radius:15px; margin:10px; color:white;">
+
+  <img id="userProfilePic"
+       src="https://randomuser.me/api/portraits/men/32.jpg"
+       width="90"
+       style="border-radius:50%; border:3px solid #00e5ff;">
+
+  <h2 id="userProfileName"></h2>
+
+  <p id="userProfileBio"></p>
+
+  <p id="userProfileFollowers"></p>
+
+  <p id="userProfileFollowing"></p>
+
+  <h3>📸 Publicaciones</h3>
+
+  <div id="userPosts"></div>
+
+  <button onclick="document.getElementById('userProfilePage').style.display='none'">
+    Cerrar
+  </button>
+
+</div>
 <div id="app" style="display:none;">
   
   <h3>Crear Post</h3>
@@ -425,20 +449,62 @@ window.searchUser = async () => {
       "❌ Usuario no encontrado";
   }
 };
-  window.viewProfile = async (uid) => {
-  const snap = await getDoc(doc(db, "users", uid));
+  
+window.viewProfile = async (uid) => {
 
-  if (!snap.exists()) return;
+  const userSnap = await getDoc(doc(db, "users", uid));
 
-  const data = snap.data();
+  if (!userSnap.exists()) return;
 
-  alert(
-    "👤 @" + data.username +
-    "\n\n📝 " + (data.bio || "Sin biografía") +
-    "\n\n👥 Seguidores: " + (data.followers || 0) +
-    "\n➡️ Siguiendo: " + (data.following || 0)
+  const data = userSnap.data();
+
+  document.getElementById("userProfilePage").style.display = "block";
+
+  document.getElementById("userProfileName").innerHTML =
+    "👤 @" + data.username;
+
+  document.getElementById("userProfileBio").innerHTML =
+    "📝 " + (data.bio || "Sin biografía");
+
+  document.getElementById("userProfileFollowers").innerHTML =
+    "👥 Seguidores: " + (data.followers || 0);
+
+  document.getElementById("userProfileFollowing").innerHTML =
+    "➡️ Siguiendo: " + (data.following || 0);
+
+  document.getElementById("userPosts").innerHTML = "";
+
+  const postSnap = await getDocs(
+    query(collection(db, "posts"), orderBy("time", "desc"))
   );
+
+  postSnap.forEach((docu) => {
+
+    const post = docu.data();
+
+    if (post.uid === uid) {
+
+      document.getElementById("userPosts").innerHTML += `
+        <div class="post">
+          <p>${post.text}</p>
+
+          ${post.img ? `<img src="${post.img}" width="100%">` : ""}
+
+          ${post.video ? `
+            <video src="${post.video}" width="100%" controls></video>
+          ` : ""}
+
+          ❤️ ${(post.likes || []).length}
+        </div>
+      `;
+    }
+
+  });
+
 };
+
+  
+
 window.followUser = async () => {
   if (!searchedUser) return alert("Busca un usuario primero");
 
