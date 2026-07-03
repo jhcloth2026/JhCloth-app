@@ -563,8 +563,15 @@ ${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:
       </div>
     `;
   });
+  
+if (bestPost) {
+  document.getElementById("featuredText").innerHTML = `
+    <strong>@${bestPost.user.split("@")[0]}</strong><br><br>
+    ${bestPost.text}<br><br>
+    ❤️ ${(bestPost.likes || []).length} Me gusta
+  `;
+}
 });
-
 /* ---------------- AUTH STATE ---------------- */
 
 onAuthStateChanged(auth, (user) => {
