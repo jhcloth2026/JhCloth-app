@@ -444,10 +444,18 @@ window.followUser = async () => {
 
   const myRef = doc(db, "users", auth.currentUser.uid);
   const userRef = doc(db, "users", searchedUser);
-  
-if (searchedUser === auth.currentUser.uid) {
-  return alert("No puedes seguirte a ti mismo.");
-}
+
+  if (searchedUser === auth.currentUser.uid) {
+    return alert("No puedes seguirte a ti mismo.");
+  }
+
+  const mySnap = await getDoc(myRef);
+  const myData = mySnap.data();
+
+  if ((myData.followingList || []).includes(searchedUser)) {
+    return alert("Ya sigues a este usuario.");
+  }
+
   await updateDoc(userRef, {
     followers: increment(1),
     followersList: arrayUnion(auth.currentUser.uid)
@@ -460,6 +468,7 @@ if (searchedUser === auth.currentUser.uid) {
 
   alert("✅ Ahora sigues a este usuario");
 };
+  
 /* ---------------- POST ---------------- */
 
 window.createPost = async () => {
