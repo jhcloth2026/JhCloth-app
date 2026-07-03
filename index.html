@@ -268,7 +268,8 @@ window.register = async () => {
   followersList: [],
   followingList: [],
   bio: "",
-  photo: ""
+  photo: "",
+createdAt: Date.now()
 });
 
     alert("Usuario creado ✔");
@@ -505,7 +506,10 @@ onSnapshot(q, (snap) => {
        width="35"
        style="border-radius:50%;vertical-align:middle;">
   <strong style="color:#00e5ff;">@${name}</strong><br>
-  <span style="color:#888;font-size:12px;">Miembro de JhCloth 👑</span><br>
+  <span style="color:#888;font-size:12px;">
+${name === "soyjahir2006" ? "Miembro de JhCloth 👑" : "Miembro de JhCloth"}
+</span><br>
+  
   🕒 ${new Date(p.time).toLocaleString()}
 </div>
 
