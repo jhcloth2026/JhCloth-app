@@ -404,10 +404,17 @@ window.searchUser = async () => {
       searchedUser = d.id;
 
       document.getElementById("searchResult").innerHTML = `
-        <h3>👤 @${data.username}</h3>
-        <p>${data.bio || "Sin biografía"}</p>
-        <button onclick="followUser()">👥 Seguir</button>
-      `;
+  <h3>👤 @${data.username}</h3>
+  <p>${data.bio || "Sin biografía"}</p>
+
+  <button onclick="viewProfile('${d.id}')">
+    👤 Ver perfil
+  </button>
+
+  <button onclick="followUser()">
+    👥 Seguir
+  </button>
+`;
 
       encontrado = true;
     }
@@ -418,7 +425,20 @@ window.searchUser = async () => {
       "❌ Usuario no encontrado";
   }
 };
-  
+  window.viewProfile = async (uid) => {
+  const snap = await getDoc(doc(db, "users", uid));
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  alert(
+    "👤 @" + data.username +
+    "\n\n📝 " + (data.bio || "Sin biografía") +
+    "\n\n👥 Seguidores: " + (data.followers || 0) +
+    "\n➡️ Siguiendo: " + (data.following || 0)
+  );
+};
 window.followUser = async () => {
   if (!searchedUser) return alert("Busca un usuario primero");
 
