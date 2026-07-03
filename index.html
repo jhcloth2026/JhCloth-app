@@ -438,6 +438,7 @@ const video = document.getElementById("video").value;
     img,
     video,
     user: auth.currentUser.email,
+    uid: auth.currentUser.uid,
     time: Date.now(),
     likes: [],
     comments: []
@@ -523,9 +524,11 @@ ${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:
 
           <input id="c-${d.id}" placeholder="Escribe comentario">
 
+          
           <button onclick="commentPost('${d.id}')">
-            💬 Comentar
-          </button>
+  💬 Comentar (${(p.comments || []).length})
+</button>
+    
 
           ${p.user === auth.currentUser.email ? `
             <button class="delete-btn" onclick="deletePost('${d.id}')">
