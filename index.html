@@ -517,6 +517,12 @@ window.viewProfile = async (uid) => {
 
   document.getElementById("userProfileFollowing").innerHTML =
     "➡️ Siguiendo: " + (data.following || 0);
+  document.getElementById("userProfileBio").innerHTML += `
+<br><br>
+<button onclick="startChat('${uid}')">
+💬 Enviar mensaje
+</button>
+`;
 
   document.getElementById("userPosts").innerHTML = "";
   
@@ -752,7 +758,26 @@ window.openVideos = () => {
 window.closeVideos = () => {
   document.getElementById("videosPage").style.display = "none";
 };
+  
+window.startChat = async (uid) => {
 
+  closeProfile();
+
+  openMessages();
+
+  document.getElementById("messagesList").innerHTML = `
+    <h3>💬 Conversación</h3>
+
+    <p>Próximamente podrás chatear con este usuario.</p>
+
+    <input id="messageInput" placeholder="Escribe un mensaje...">
+
+    <button>
+      Enviar
+    </button>
+  `;
+
+};
 onAuthStateChanged(auth, (user) => {
   document.getElementById("auth").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
