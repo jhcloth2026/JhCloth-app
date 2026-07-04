@@ -717,14 +717,28 @@ if (bestPost) {
   /* ---------------- AUTH STATE ---------------- */
   
 window.openMessages = () => {
-  document.getElementById("app").style.display = "none";
+
+  document.getElementById("profilePage").style.display = "none";
+  document.getElementById("searchPage").style.display = "none";
+  document.getElementById("activityPage").style.display = "none";
+
+  document.getElementById("feed").style.display = "none";
+  document.getElementById("featuredPost").style.display = "none";
+
   document.getElementById("messagesPage").style.display = "block";
 };
 
 window.closeMessages = () => {
+
   document.getElementById("messagesPage").style.display = "none";
-  document.getElementById("app").style.display = "block";
+
+  document.getElementById("feed").style.display = "block";
+  document.getElementById("featuredPost").style.display = "block";
 };
+
+
+  
+
 window.openVideos = () => {
   document.getElementById("videosPage").style.display = "block";
 };
