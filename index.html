@@ -244,6 +244,8 @@ style="font-style:italic; color:#ddd;">
 
 <div id="app" style="display:none;">
   
+  <div id="createPostBox">
+    
   <h3>Crear Post</h3>
 
 <input id="text" placeholder="Texto">
@@ -253,6 +255,7 @@ style="font-style:italic; color:#ddd;">
 <input id="video" placeholder="Video URL (MP4)">
 
 <button onclick="createPost()">Publicar</button>
+  </div>
   <div id="featuredPost" style="
 background:#111;
 border:2px solid gold;
@@ -729,6 +732,8 @@ window.openMessages = () => {
 };
 
 window.closeMessages = () => {
+  
+  document.getElementById("createPostBox").style.display = "block";
 
   document.getElementById("messagesPage").style.display = "none";
 
