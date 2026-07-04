@@ -266,6 +266,7 @@ text-align:center;
 <div>➕</div>
 <div onclick="showActivity()">❤️</div>
 <div onclick="showProfile()">👤</div>
+<div onclick="openVideos()">🎥</div>
 </div>
 <script type="module">
 
@@ -699,15 +700,35 @@ if (bestPost) {
   `;
 }
 });
-/* ---------------- AUTH STATE ---------------- */
+
+  /* ---------------- AUTH STATE ---------------- */
+
+window.openVideos = () => {
+  document.getElementById("videosPage").style.display = "block";
+};
+
+window.closeVideos = () => {
+  document.getElementById("videosPage").style.display = "none";
+};
 
 onAuthStateChanged(auth, (user) => {
   document.getElementById("auth").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
 });
-  
 
 </script>
+
+<div id="videosPage" style="display:none; background:#000; color:white; min-height:100vh; padding:15px;">
+
+  <h2 style="text-align:center;">🎥 JhCloth Videos</h2>
+
+  <div id="videosFeed"></div>
+
+  <button onclick="closeVideos()" style="margin-top:20px; width:100%;">
+    ⬅️ Volver
+  </button>
+
+</div>
 
 </body>
 </html>
