@@ -230,6 +230,18 @@ style="font-style:italic; color:#ddd;">
   </button>
 
 </div>
+  <div id="messagesPage" style="display:none; padding:15px; background:#111; margin:10px; border-radius:15px;">
+
+  <h2>💬 Mensajes</h2>
+
+  <div id="messagesList">
+    <p>No tienes conversaciones todavía.</p>
+  </div>
+
+  <button onclick="closeMessages()">Cerrar</button>
+
+</div>
+
 <div id="app" style="display:none;">
   
   <h3>Crear Post</h3>
@@ -265,6 +277,7 @@ text-align:center;
 <div onclick="showSearch()">🔎</div>
 <div>➕</div>
 <div onclick="showActivity()">❤️</div>
+  <div onclick="openMessages()">💬</div>
 <div onclick="showProfile()">👤</div>
 <div onclick="openVideos()">🎥</div>
 </div>
@@ -702,7 +715,14 @@ if (bestPost) {
 });
 
   /* ---------------- AUTH STATE ---------------- */
+  
+window.openMessages = () => {
+  document.getElementById("messagesPage").style.display = "block";
+};
 
+window.closeMessages = () => {
+  document.getElementById("messagesPage").style.display = "none";
+};
 window.openVideos = () => {
   document.getElementById("videosPage").style.display = "block";
 };
