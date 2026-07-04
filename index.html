@@ -772,10 +772,30 @@ window.startChat = async (uid) => {
 
     <input id="messageInput" placeholder="Escribe un mensaje...">
 
-    <button>
-      Enviar
-    </button>
+    
+      <button onclick="sendMessage('${uid}')">
+  Enviar
+</button>
+    
   `;
+
+};
+  window.sendMessage = async (uid) => {
+
+  const input = document.getElementById("messageInput");
+
+  if (!input.value.trim()) return;
+
+  await addDoc(collection(db, "chats"), {
+    from: auth.currentUser.uid,
+    to: uid,
+    message: input.value,
+    time: Date.now()
+  });
+
+  input.value = "";
+
+  alert("Mensaje enviado ✔");
 
 };
 onAuthStateChanged(auth, (user) => {
