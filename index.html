@@ -717,11 +717,13 @@ if (bestPost) {
   /* ---------------- AUTH STATE ---------------- */
   
 window.openMessages = () => {
+  document.getElementById("app").style.display = "none";
   document.getElementById("messagesPage").style.display = "block";
 };
 
 window.closeMessages = () => {
   document.getElementById("messagesPage").style.display = "none";
+  document.getElementById("app").style.display = "block";
 };
 window.openVideos = () => {
   document.getElementById("videosPage").style.display = "block";
