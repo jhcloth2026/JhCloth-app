@@ -751,17 +751,22 @@ onSnapshot(q, (snap) => {
       m.to === auth.currentUser.uid
     ) {
 
-      const other =
-        m.from === auth.currentUser.uid ? m.to : m.from;
+  
+     html += `
+  <div onclick="startChat('${other}')"
+  style="padding:12px;border-bottom:1px solid #333;cursor:pointer;display:flex;align-items:center;gap:10px;">
 
-      html += `
-        <div onclick="startChat('${other}')"
-        style="padding:12px;border-bottom:1px solid #333;cursor:pointer;">
-          <b>💬 Conversación</b><br>
-          <small>${m.message}</small>
-        </div>
-      `;
+    <img src="https://randomuser.me/api/portraits/men/32.jpg"
+    width="45"
+    style="border-radius:50%;">
 
+    <div>
+      <b>👤 @${m.fromName || "Usuario"}</b><br>
+      <small>${m.message}</small>
+    </div>
+
+  </div>
+`; 
     }
 
   });
@@ -848,11 +853,17 @@ onSnapshot(q, (snap) => {
   if (!input.value.trim()) return;
 
   await addDoc(collection(db, "chats"), {
-    from: auth.currentUser.uid,
-    to: uid,
-    message: input.value,
-    time: Date.now()
-  });
+  from: auth.currentUser.uid,
+  fromName: auth.currentUser.email.split("@")[0],
+  to: uid,
+  message: input.value,
+  time: Date.now()
+});
+  
+    
+    
+    
+  
 
   input.value = "";
 
