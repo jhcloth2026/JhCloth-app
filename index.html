@@ -835,9 +835,30 @@ onSnapshot(q, (snap) => {
       (m.from === uid && m.to === auth.currentUser.uid)
     ) {
 
-      html += `<p><b>${m.from === auth.currentUser.uid ? "Tú" : "Él/Ella"}:</b> ${m.message}</p>`;
+      html += `
+<div style="
+margin:10px 0;
+padding:10px;
+background:${m.from === auth.currentUser.uid ? "#0084ff" : "#333"};
+color:white;
+border-radius:12px;
+max-width:75%;
+margin-left:${m.from === auth.currentUser.uid ? "auto" : "0"};
+">
 
-    }
+<b>${m.from === auth.currentUser.uid ? "Tú" : "Él/Ella"}</b><br>
+
+${m.message}
+
+<br>
+
+<small style="opacity:.7;">
+${new Date(m.time).toLocaleTimeString()}
+</small>
+
+</div>
+`;
+  }
 
   });
 
