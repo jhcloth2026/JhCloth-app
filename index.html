@@ -235,7 +235,7 @@ style="font-style:italic; color:#ddd;">
   <h2>💬 Mensajes</h2>
 
   <div id="messagesList">
-    <p>No tienes conversaciones todavía.</p>
+    <div id="messagesList"></div>
   </div>
 
   <button onclick="closeMessages()">Cerrar</button>
@@ -736,6 +736,39 @@ window.openMessages = () => {
   document.getElementById("featuredPost").style.display = "none";
 
   document.getElementById("messagesPage").style.display = "block";
+  const q = query(collection(db, "chats"), orderBy("time", "desc"));
+
+onSnapshot(q, (snap) => {
+
+  let html = "";
+
+  snap.forEach((d) => {
+
+    const m = d.data();
+
+    if (
+      m.from === auth.currentUser.uid ||
+      m.to === auth.currentUser.uid
+    ) {
+
+      const other =
+        m.from === auth.currentUser.uid ? m.to : m.from;
+
+      html += `
+        <div onclick="startChat('${other}')"
+        style="padding:12px;border-bottom:1px solid #333;cursor:pointer;">
+          <b>💬 Conversación</b><br>
+          <small>${m.message}</small>
+        </div>
+      `;
+
+    }
+
+  });
+
+  document.getElementById("messagesList").innerHTML = html;
+
+});
 };
 
 window.closeMessages = () => {
