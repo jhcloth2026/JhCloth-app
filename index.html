@@ -846,7 +846,7 @@ max-width:75%;
 margin-left:${m.from === auth.currentUser.uid ? "auto" : "0"};
 ">
 
-<b>${m.from === auth.currentUser.uid ? "Tú" : "Él/Ella"}</b><br>
+<b>${m.from === auth.currentUser.uid ? "🖤 Tú" : "👤 " + (m.fromName || "Usuario")}</b><br>
 
 ${m.message}
 
