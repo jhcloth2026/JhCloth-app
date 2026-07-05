@@ -857,7 +857,8 @@ onSnapshot(q, (snap) => {
   fromName: auth.currentUser.email.split("@")[0],
   to: uid,
   message: input.value,
-  time: Date.now()
+  time: Date.now(),
+    read: false
 });
   
     
