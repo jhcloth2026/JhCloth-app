@@ -109,6 +109,9 @@ button:hover{
   <button onclick="logout()" style="background:#444;color:white;width:auto;padding:10px 15px;">
     🚪 Cerrar sesión
   </button>
+  <button onclick="fixMyUser()">
+🛠 Reparar mi usuario
+</button>
 </header>
   
 <div style="background:#1b1b1b; border:2px solid #c62828; border-radius:15px; padding:15px; margin:15px 0; text-align:center;">
@@ -896,7 +899,23 @@ onAuthStateChanged(auth, (user) => {
   document.getElementById("auth").style.display = user ? "none" : "block";
   document.getElementById("app").style.display = user ? "block" : "none";
 });
+window.fixMyUser = async () => {
 
+  await setDoc(doc(db, "users", auth.currentUser.uid), {
+    email: auth.currentUser.email,
+    username: auth.currentUser.email.split("@")[0],
+    followers: 0,
+    following: 0,
+    followersList: [],
+    followingList: [],
+    bio: "",
+    photo: "",
+    createdAt: Date.now()
+  });
+
+  alert("✅ Tu usuario fue creado en Firestore");
+
+};
 </script>
 
 <div id="videosPage" style="display:none; background:#000; color:white; min-height:100vh; padding:15px;">
