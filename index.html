@@ -396,16 +396,24 @@ document.getElementById("likesCount").textContent =
   const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
 
 if (userSnap.exists()) {
-  const data = userSnap.data();
 
   
-    
-document.getElementById("followersCount").textContent =
+
+document.getElementById("userProfileName").innerHTML =
+  "👤 @" + data.username;
+
+document.getElementById("userProfileBio").innerHTML =
+  "📝 " + (data.bio || "Sin biografía") +
+  `<br><br>
+   <button onclick="startChat('${uid}')">
+     💬 Enviar mensaje
+   </button>`;
+
+document.getElementById("userProfileFollowers").innerHTML =
   "👥 Seguidores: " + ((data.followersList || []).length);
 
-document.getElementById("followingCount").textContent =
+document.getElementById("userProfileFollowing").innerHTML =
   "➡️ Siguiendo: " + ((data.followingList || []).length);
-
   
     
 
