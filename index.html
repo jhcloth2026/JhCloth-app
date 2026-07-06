@@ -495,10 +495,19 @@ window.searchUser = async () => {
   <p>${data.bio || "Sin biografía"}</p>
 
   <button id="followBtn" onclick="followUser()">
-  👥 Seguir
-</button>
+    👥 Seguir
+  </button>
 
+  <button onclick="viewProfile('${d.id}')">
+    👤 Ver perfil
+  </button>
+
+  <button onclick="startChat('${d.id}')">
+    💬 Enviar mensaje
+  </button>
 `;
+
+
       encontrado = true;
     }
   });
