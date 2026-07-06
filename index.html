@@ -682,7 +682,11 @@ let maxLikes = -1;
   <img src="https://randomuser.me/api/portraits/men/32.jpg"
        width="35"
        style="border-radius:50%;vertical-align:middle;">
-  <strong style="color:#00e5ff;">@${name}</strong><br>
+  <strong
+style="color:#00e5ff;cursor:pointer;"
+onclick="viewProfile('${p.uid}')">
+@${name}
+</strong><br>
   <span style="color:#888;font-size:12px;">
 ${name === "soyjahir2006" ? "Miembro de JhCloth 👑" : "Miembro de JhCloth"}
 </span><br>
