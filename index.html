@@ -795,10 +795,51 @@ window.closeMessages = () => {
 
 
   
+window.openVideos = async () => {
 
-window.openVideos = () => {
   document.getElementById("videosPage").style.display = "block";
+
+  let html = "";
+
+  const snap = await getDocs(
+    query(collection(db, "posts"), orderBy("time", "desc"))
+  );
+
+  snap.forEach((d) => {
+
+    const p = d.data();
+
+    if (p.video) {
+
+      html += `
+      <div style="margin-bottom:25px;">
+
+        <h3>@${p.user.split("@")[0]}</h3>
+
+        <video
+          src="${p.video}"
+          controls
+          autoplay
+          muted
+          width="100%"
+          style="border-radius:15px;">
+        </video>
+
+        <p>${p.text}</p>
+
+        <p>❤️ ${(p.likes || []).length}</p>
+
+      </div>
+      `;
+
+    }
+
+  });
+
+  document.getElementById("videosFeed").innerHTML = html;
+
 };
+
 
 window.closeVideos = () => {
   document.getElementById("videosPage").style.display = "none";
