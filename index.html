@@ -780,7 +780,7 @@ onSnapshot(q, (snap) => {
 
   
      html += `
-  <div onclick="startChat('${other}')"
+  <div onclick="startChat('${m.from === auth.currentUser.uid ? m.to : m.from}')"
   style="padding:12px;border-bottom:1px solid #333;cursor:pointer;display:flex;align-items:center;gap:10px;">
 
     <img src="https://randomuser.me/api/portraits/men/32.jpg"
