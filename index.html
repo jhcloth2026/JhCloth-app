@@ -402,9 +402,7 @@ if (userSnap.exists()) {
 document.getElementById("userProfileName").innerHTML =
   "👤 @" + data.username;
 
-document.getElementById("userProfileBio").innerHTML =
-  "📝 " + (data.bio || "Sin biografía") +
-  `<br><br>
+
    <button onclick="startChat('${uid}')">
      💬 Enviar mensaje
    </button>`;
