@@ -366,16 +366,29 @@ createdAt: Date.now()
 };
 
 window.login = async () => {
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Completa el correo y la contraseña.");
+    return;
+  }
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
+
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("app").style.display = "block";
+
     alert("Bienvenido a JhCloth 🚀");
+
   } catch (e) {
-    alert(e.message);
+    console.log(e);
+    alert("Error al iniciar sesión:\n" + e.message);
   }
 };
+  
+
 
 window.showProfile = async () => {
   const user = auth.currentUser?.email.split("@")[0] || "Usuario";
