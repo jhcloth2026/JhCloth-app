@@ -618,6 +618,8 @@ window.createPost = async () => {
   const img = document.getElementById("img").value;
 const video = document.getElementById("video").value;
   if (!auth.currentUser) return alert("Inicia sesión");
+  const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+const userData = userSnap.data();
 
   await addDoc(collection(db, "posts"), {
     text,
@@ -692,7 +694,7 @@ let maxLikes = -1;
       <div class="post">
 
  <div class="profile">
-  <img src="https://randomuser.me/api/portraits/men/32.jpg"
+  <img src="${p.photo || 'https://randomuser.me/api/portraits/men/32.jpg'}"
        width="35"
        style="border-radius:50%;vertical-align:middle;">
   <strong
