@@ -396,31 +396,21 @@ document.getElementById("likesCount").textContent =
   const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
 
 if (userSnap.exists()) {
-
   
+const data = userSnap.data();
 
-document.getElementById("userProfileName").innerHTML =
-  "👤 @" + data.username;
-
-
-   <button onclick="startChat('${uid}')">
-     💬 Enviar mensaje
-   </button>`;
-
-document.getElementById("userProfileFollowers").innerHTML =
+document.getElementById("followersCount").textContent =
   "👥 Seguidores: " + ((data.followersList || []).length);
 
-document.getElementById("userProfileFollowing").innerHTML =
+document.getElementById("followingCount").textContent =
   "➡️ Siguiendo: " + ((data.followingList || []).length);
-  
-    
 
-  document.getElementById("bioText").textContent =
-    "Bio: " + (data.bio || "");
+document.getElementById("bioText").textContent =
+  "Bio: " + (data.bio || "");
 
-  if (data.photo) {
-    document.getElementById("profilePic").src = data.photo;
-  }
+if (data.photo) {
+  document.getElementById("profilePic").src = data.photo;
+}
 }
 document.getElementById("profilePage").style.display = "block";
 };
@@ -494,14 +484,8 @@ window.searchUser = async () => {
   <button id="followBtn" onclick="followUser()">
   👥 Seguir
 </button>
-    
-  
 
-  <button onclick="followUser()">
-    👥 Seguir
-  </button>
-`;
-
+';
       encontrado = true;
     }
   });
@@ -522,25 +506,36 @@ window.viewProfile = async (uid) => {
 
   document.getElementById("userProfilePage").style.display = "block";
 
+  document.getElementById("userProfileName").innerHTML =
+    "👤 @" + data.username;
+
+  document.getElementById("userProfileBio").innerHTML =
+    "📝 " + (data.bio || "Sin biografía") +
+    `<br><br>
+    <button onclick="startChat('${uid}')">
+      💬 Enviar mensaje
+    </button>`;
 
   document.getElementById("userProfileFollowers").innerHTML =
-  "👥 Seguidores: " + ((data.followersList || []).length);
+    "👥 Seguidores: " + ((data.followersList || []).length);
 
-document.getElementById("userProfileFollowing").innerHTML =
-  "➡️ Siguiendo: " + ((data.followingList || []).length);
-  
-<br><br>
-<button onclick="startChat('${uid}')">
-💬 Enviar mensaje
-</button>
-`;
+  document.getElementById("userProfileFollowing").innerHTML =
+    "➡️ Siguiendo: " + ((data.followingList || []).length);
+
+  if (data.photo) {
+    document.getElementById("userProfilePic").src = data.photo;
+  }
 
   document.getElementById("userPosts").innerHTML = "";
-  
-let totalPosts = 0;
+
+  let totalPosts = 0;
+
   const postSnap = await getDocs(
     query(collection(db, "posts"), orderBy("time", "desc"))
   );
+
+
+  
 
   postSnap.forEach((docu) => {
 
