@@ -398,11 +398,16 @@ document.getElementById("likesCount").textContent =
 if (userSnap.exists()) {
   const data = userSnap.data();
 
-  document.getElementById("followersCount").textContent =
-    "👥 Seguidores: " + (data.followers || 0);
+  
+    
+document.getElementById("followersCount").textContent =
+  "👥 Seguidores: " + ((data.followersList || []).length);
 
-  document.getElementById("followingCount").textContent =
-    "➡️ Siguiendo: " + (data.following || 0);
+document.getElementById("followingCount").textContent =
+  "➡️ Siguiendo: " + ((data.followingList || []).length);
+
+  
+    
 
   document.getElementById("bioText").textContent =
     "Bio: " + (data.bio || "");
@@ -480,9 +485,11 @@ window.searchUser = async () => {
   <h3>👤 @${data.username}</h3>
   <p>${data.bio || "Sin biografía"}</p>
 
-  <button onclick="viewProfile('${d.id}')">
-    👤 Ver perfil
-  </button>
+  <button id="followBtn" onclick="followUser()">
+  👥 Seguir
+</button>
+    
+  
 
   <button onclick="followUser()">
     👥 Seguir
@@ -509,18 +516,13 @@ window.viewProfile = async (uid) => {
 
   document.getElementById("userProfilePage").style.display = "block";
 
-  document.getElementById("userProfileName").innerHTML =
-    "👤 @" + data.username;
-
-  document.getElementById("userProfileBio").innerHTML =
-    "📝 " + (data.bio || "Sin biografía");
 
   document.getElementById("userProfileFollowers").innerHTML =
-    "👥 Seguidores: " + (data.followers || 0);
+  "👥 Seguidores: " + ((data.followersList || []).length);
 
-  document.getElementById("userProfileFollowing").innerHTML =
-    "➡️ Siguiendo: " + (data.following || 0);
-  document.getElementById("userProfileBio").innerHTML += `
+document.getElementById("userProfileFollowing").innerHTML =
+  "➡️ Siguiendo: " + ((data.followingList || []).length);
+  
 <br><br>
 <button onclick="startChat('${uid}')">
 💬 Enviar mensaje
@@ -591,8 +593,10 @@ window.followUser = async () => {
   });
 
   alert("✅ Ahora sigues a este usuario");
+
+  document.getElementById("followBtn").innerHTML = "✅ Siguiendo";
+document.getElementById("followBtn").disabled = true;
 };
-  
 /* ---------------- POST ---------------- */
 
 window.createPost = async () => {
