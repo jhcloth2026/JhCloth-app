@@ -654,6 +654,7 @@ document.getElementById("video").value = "";
 /* ---------------- LIKE ---------------- */
 
 window.likePost = async (id) => {
+
   const ref = doc(db, "posts", id);
   const snap = await getDoc(ref);
   const data = snap.data();
@@ -664,6 +665,21 @@ window.likePost = async (id) => {
   await updateDoc(ref, {
     likes: liked ? arrayRemove(user) : arrayUnion(user)
   });
+
+  // Crear notificación solo si dio Me gusta
+  if (!liked && data.uid !== auth.currentUser.uid) {
+
+    await addDoc(collection(db, "notifications"), {
+      to: data.uid,
+      from: auth.currentUser.uid,
+      fromName: auth.currentUser.email.split("@")[0],
+      type: "like",
+      postId: id,
+      time: Date.now()
+    });
+
+  }
+
 };
 
 /* ---------------- COMMENT ---------------- */
@@ -972,6 +988,48 @@ ${new Date(m.time).toLocaleTimeString()}
 
   alert("Mensaje enviado ✔");
 
+};
+  window.showActivity = () => {
+
+  document.getElementById("activityPage").style.display = "block";
+
+  const box = document.getElementById("notifications");
+
+  onSnapshot(
+    query(collection(db, "notifications"), orderBy("time", "desc")),
+    (snap) => {
+
+      box.innerHTML = "";
+
+      snap.forEach((d) => {
+
+        const n = d.data();
+
+        if (n.to === auth.currentUser.uid) {
+
+          if (n.type === "follow") {
+            box.innerHTML += `
+              <p>👥 <b>${n.fromName}</b> empezó a seguirte.</p>
+            `;
+          }
+
+          if (n.type === "like") {
+            box.innerHTML += `
+              <p>❤️ <b>${n.fromName}</b> le dio Me gusta a tu publicación.</p>
+            `;
+          }
+
+        }
+
+      });
+
+    }
+  );
+
+};
+
+window.closeActivity = () => {
+  document.getElementById("activityPage").style.display = "none";
 };
 onAuthStateChanged(auth, (user) => {
   document.getElementById("auth").style.display = user ? "none" : "block";
