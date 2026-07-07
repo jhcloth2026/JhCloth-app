@@ -468,8 +468,50 @@ window.closeSearch = () => {
   document.getElementById("searchPage").style.display = "none";
 };
   window.showActivity = () => {
+
   document.getElementById("activityPage").style.display = "block";
+
+  const box = document.getElementById("notifications");
+
+  onSnapshot(
+    query(collection(db, "notifications"), orderBy("time", "desc")),
+    (snap) => {
+
+      box.innerHTML = "";
+
+      snap.forEach((d) => {
+
+        const n = d.data();
+
+        if (n.to === auth.currentUser.uid) {
+
+          if (n.type === "follow") {
+            box.innerHTML += `
+              <p>👥 <b>${n.fromName}</b> empezó a seguirte.</p>
+            `;
+          }
+
+          if (n.type === "like") {
+            box.innerHTML += `
+              <p>❤️ <b>${n.fromName}</b> le dio Me gusta a tu publicación.</p>
+            `;
+          }
+
+          if (n.type === "comment") {
+            box.innerHTML += `
+              <p>💬 <b>${n.fromName}</b> comentó: "${n.comment}"</p>
+            `;
+          }
+
+        }
+
+      });
+
+    }
+  );
+
 };
+
 
 window.closeActivity = () => {
   document.getElementById("activityPage").style.display = "none";
@@ -626,6 +668,8 @@ window.followUser = async () => {
     });
 
     document.getElementById("followBtn").innerHTML = "👥 Seguir";
+document.getElementById("followBtn").style.background = "#00e5ff";
+document.getElementById("followBtn").style.color = "black";
 
     alert("Has dejado de seguir a este usuario.");
 
@@ -650,6 +694,8 @@ window.followUser = async () => {
     });
 
     document.getElementById("followBtn").innerHTML = "✅ Siguiendo";
+document.getElementById("followBtn").style.background = "#444";
+document.getElementById("followBtn").style.color = "white";
 
     alert("Ahora sigues a este usuario.");
 
@@ -729,6 +775,19 @@ window.commentPost = async (id) => {
   await updateDoc(ref, {
     comments: [...(data.comments || []), comment]
   });
+  if (data.uid !== auth.currentUser.uid) {
+
+  await addDoc(collection(db, "notifications"), {
+    to: data.uid,
+    from: auth.currentUser.uid,
+    fromName: auth.currentUser.email.split("@")[0],
+    type: "comment",
+    postId: id,
+    comment: input.value,
+    time: Date.now()
+  });
+
+}
 
   input.value = "";
 };
