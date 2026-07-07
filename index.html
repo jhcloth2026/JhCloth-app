@@ -877,8 +877,7 @@ window.closeVideos = () => {
 window.startChat = async (uid) => {
 
   document.getElementById("userProfilePage").style.display = "none";
-
-  openMessages();
+  document.getElementById("messagesPage").style.display = "block";
 
   document.getElementById("messagesList").innerHTML = `
     <h3>💬 Conversación</h3>
@@ -887,17 +886,17 @@ window.startChat = async (uid) => {
 
     <input id="messageInput" placeholder="Escribe un mensaje...">
 
-    
-      <button onclick="sendMessage('${uid}')">
-  Enviar
-</button>
-<div id="chatMessages"></div>
-    
+    <button onclick="sendMessage('${uid}')">
+      Enviar
+    </button>
+
+    <div id="chatMessages"></div>
   `;
+
   const q = query(
-  collection(db, "chats"),
-  orderBy("time", "asc")
-);
+    collection(db, "chats"),
+    orderBy("time", "asc")
+  );
 
 onSnapshot(q, (snap) => {
 
