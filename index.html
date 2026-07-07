@@ -337,7 +337,10 @@ const feed = document.getElementById("feed");
   await deleteDoc(doc(db, "posts", id));
 };
 
-/* ---------------- AUTH ---------------- */
+/* =========================================================
+   🔐 AUTENTICACIÓN
+   Registro • Inicio de sesión • Cerrar sesión
+========================================================= */
 
 window.register = async () => {
   const email = document.getElementById("email").value;
@@ -387,7 +390,10 @@ window.login = async () => {
   }
 };
   
-
+/* =========================================================
+   👤 PERFIL
+   Perfil • Bio • Foto • Estadísticas
+========================================================= */
 
 window.showProfile = async () => {
   const user = auth.currentUser?.email.split("@")[0] || "Usuario";
@@ -461,6 +467,10 @@ window.helpVenezuela = () => {
 window.closeProfile = () => {
   document.getElementById("profilePage").style.display = "none";
 };
+  /* =========================================================
+   🔎 BUSCADOR DE USUARIOS
+   Buscar • Ver perfil • Seguir • Mensajes
+========================================================= */
   window.showSearch = () => {
   document.getElementById("searchPage").style.display = "block";
 };
@@ -468,6 +478,10 @@ window.closeProfile = () => {
 window.closeSearch = () => {
   document.getElementById("searchPage").style.display = "none";
 };
+  /* =========================================================
+   ❤️ NOTIFICACIONES
+   Seguidores • Me gusta • Comentarios
+========================================================= */
   window.showActivity = () => {
 
   document.getElementById("activityPage").style.display = "block";
@@ -987,6 +1001,10 @@ window.closeVideos = () => {
   document.getElementById("videosPage").style.display = "none";
 };
   
+  /* =========================================================
+   💬 MENSAJES Y CHAT
+   Conversaciones • Enviar mensajes
+========================================================= */
 window.startChat = async (uid) => {
 
   document.getElementById("userProfilePage").style.display = "none";
