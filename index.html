@@ -159,11 +159,9 @@ button:hover{
 
   <h2>❤️ Actividad</h2>
 
-  <p>👍 A alguien le gustó tu publicación.</p>
-  <p>💬 Alguien comentó tu publicación.</p>
-  <p>👥 Un usuario empezó a seguirte.</p>
+<div id="notifications"></div>
 
-  <button onclick="closeActivity()">Cerrar</button>
+<button onclick="closeActivity()">Cerrar</button>
 
 </div>
   <div id="searchPage" style="display:none; padding:10px; background:#111; margin:10px; border-radius:10px;">
@@ -609,6 +607,13 @@ window.followUser = async () => {
     followers: increment(1),
     followersList: arrayUnion(auth.currentUser.uid)
   });
+    await addDoc(collection(db, "notifications"), {
+  to: searchedUser,
+  from: auth.currentUser.uid,
+  fromName: auth.currentUser.email.split("@")[0],
+  type: "follow",
+  time: Date.now()
+});
 
   await updateDoc(myRef, {
     following: increment(1),
