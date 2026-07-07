@@ -475,45 +475,57 @@ window.closeActivity = () => {
   document.getElementById("activityPage").style.display = "none";
 };
 let searchedUser = null;
+  
 window.searchUser = async () => {
+
   const user = document.getElementById("searchInput").value.toLowerCase();
 
-  const snap = await getDocs(collection(db, "users"));
+  const usersSnap = await getDocs(collection(db, "users"));
+
+  const mySnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+  const myData = mySnap.data();
 
   let encontrado = false;
 
-  snap.forEach((d) => {
+  usersSnap.forEach((d) => {
+
     const data = d.data();
 
     if (data.username.toLowerCase() === user) {
+
       searchedUser = d.id;
 
+      const yaLoSigo = (myData.followingList || []).includes(d.id);
+
       document.getElementById("searchResult").innerHTML = `
-  <h3>👤 @${data.username}</h3>
-  <p>${data.bio || "Sin biografía"}</p>
+        <h3>👤 @${data.username}</h3>
 
-  <button id="followBtn" onclick="followUser()">
-    👥 Seguir
-  </button>
+        <p>${data.bio || "Sin biografía"}</p>
 
-  <button onclick="viewProfile('${d.id}')">
-    👤 Ver perfil
-  </button>
+        <button id="followBtn" onclick="followUser()">
+          ${yaLoSigo ? "✅ Siguiendo" : "👥 Seguir"}
+        </button>
 
-  <button onclick="startChat('${d.id}')">
-    💬 Enviar mensaje
-  </button>
-`;
+        <button onclick="viewProfile('${d.id}')">
+          👤 Ver perfil
+        </button>
 
+        <button onclick="startChat('${d.id}')">
+          💬 Enviar mensaje
+        </button>
+      `;
 
       encontrado = true;
+
     }
+
   });
 
   if (!encontrado) {
     document.getElementById("searchResult").innerHTML =
       "❌ Usuario no encontrado";
   }
+
 };
   
 window.viewProfile = async (uid) => {
@@ -585,8 +597,8 @@ document.getElementById("userPostsCount").textContent = totalPosts;
 };
 
   
-
 window.followUser = async () => {
+
   if (!searchedUser) return alert("Busca un usuario primero");
 
   const myRef = doc(db, "users", auth.currentUser.uid);
@@ -599,32 +611,52 @@ window.followUser = async () => {
   const mySnap = await getDoc(myRef);
   const myData = mySnap.data();
 
-  if ((myData.followingList || []).includes(searchedUser)) {
-    return alert("Ya sigues a este usuario.");
+  const siguiendo = (myData.followingList || []).includes(searchedUser);
+
+  if (siguiendo) {
+
+    await updateDoc(userRef, {
+      followers: increment(-1),
+      followersList: arrayRemove(auth.currentUser.uid)
+    });
+
+    await updateDoc(myRef, {
+      following: increment(-1),
+      followingList: arrayRemove(searchedUser)
+    });
+
+    document.getElementById("followBtn").innerHTML = "👥 Seguir";
+
+    alert("Has dejado de seguir a este usuario.");
+
+  } else {
+
+    await updateDoc(userRef, {
+      followers: increment(1),
+      followersList: arrayUnion(auth.currentUser.uid)
+    });
+
+    await addDoc(collection(db, "notifications"), {
+      to: searchedUser,
+      from: auth.currentUser.uid,
+      fromName: auth.currentUser.email.split("@")[0],
+      type: "follow",
+      time: Date.now()
+    });
+
+    await updateDoc(myRef, {
+      following: increment(1),
+      followingList: arrayUnion(searchedUser)
+    });
+
+    document.getElementById("followBtn").innerHTML = "✅ Siguiendo";
+
+    alert("Ahora sigues a este usuario.");
+
   }
 
-  await updateDoc(userRef, {
-    followers: increment(1),
-    followersList: arrayUnion(auth.currentUser.uid)
-  });
-    await addDoc(collection(db, "notifications"), {
-  to: searchedUser,
-  from: auth.currentUser.uid,
-  fromName: auth.currentUser.email.split("@")[0],
-  type: "follow",
-  time: Date.now()
-});
-
-  await updateDoc(myRef, {
-    following: increment(1),
-    followingList: arrayUnion(searchedUser)
-  });
-
-  alert("✅ Ahora sigues a este usuario");
-
-  document.getElementById("followBtn").innerHTML = "✅ Siguiendo";
-document.getElementById("followBtn").disabled = true;
 };
+
 /* ---------------- POST ---------------- */
 
 window.createPost = async () => {
@@ -903,7 +935,7 @@ window.startChat = async (uid) => {
   document.getElementById("messagesList").innerHTML = `
     <h3>💬 Conversación</h3>
 
-    <p>Próximamente podrás chatear con este usuario.</p>
+    
 
     <input id="messageInput" placeholder="Escribe un mensaje...">
 
