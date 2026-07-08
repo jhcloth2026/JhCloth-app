@@ -3,72 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <title>JhCloth PRO FINAL</title>
-
-<style>
+  
+  <style>
 body{
   margin:0;
-  font-family:Arial;
-  background:#000;
+  font-family:Arial,sans-serif;
+  background:#050505;
   color:#fff;
 }
 
 header{
   text-align:center;
-  padding:15px;
+  padding:20px;
   color:#00e5ff;
+  font-size:28px;
   font-weight:bold;
+  letter-spacing:1px;
 }
 
-#auth, #app{
-  padding:10px;
+#auth,#app{
+  padding:15px;
 }
 
-input, button{
+input{
   width:95%;
-  margin:5px auto;
-  padding:10px;
-  border-radius:8px;
-  border:none;
+  margin:8px auto;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #333;
+  background:#111;
+  color:white;
   display:block;
 }
 
 button{
+  width:95%;
+  margin:8px auto;
+  padding:12px;
+  border:none;
+  border-radius:12px;
   background:#00e5ff;
-  color:black;
+  color:#000;
   font-weight:bold;
   cursor:pointer;
-  transition:0.3s;
+  transition:.25s;
 }
 
 button:hover{
-  transform:scale(1.03);
+  transform:scale(1.02);
 }
 
 .post{
-  background:#111;
-  margin:15px 0;
-  padding:15px;
-  border-radius:15px;
-  border:1px solid #00e5ff;
-  box-shadow:0 0 10px rgba(0,229,255,0.3);
+  background:#121212;
+  margin:18px 0;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid #222;
+  box-shadow:0 4px 20px rgba(0,229,255,.15);
 }
 
 .profile{
-  font-size:12px;
-  opacity:0.7;
+  color:#bdbdbd;
+  font-size:13px;
+  margin-bottom:8px;
 }
-  .like{
-  background:white;
-  color:black;
+
+.like{
+  background:#222;
+  color:white;
 }
-  .delete-btn{
+
+.like.active{
+  background:#ff2b55;
+  color:white;
+}
+
+.delete-btn{
   background:#444;
   color:white;
-  margin-top:5px;
 }
-.like.active{
-  background:red;
-  color:white;
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+}
+
+.actions button{
+  width:auto;
 }
 
 .nav{
@@ -77,28 +100,19 @@ button:hover{
   width:100%;
   display:flex;
   justify-content:space-around;
-  background:#000;
-  padding:10px;
-}
-  .actions{
-  display:flex;
   align-items:center;
-  gap:10px;
-  margin-top:8px;
-  flex-wrap:wrap;
-  }
-
-.actions button{
-  width:auto;
-  padding:8px 12px;
-  font-size:13px;
-  border-radius:8px;
+  background:#090909;
+  border-top:1px solid #222;
+  padding:12px 0;
+  font-size:24px;
 }
 </style>
-  
 </head>
+    
+    <body>
+
   
-<body>
+
 
 <header style="display:flex;justify-content:space-between;align-items:center;padding:15px;">
   <div>
