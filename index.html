@@ -377,6 +377,7 @@ text-align:center;
 <div onclick="showActivity()">❤️</div>
   <div onclick="openMessages()">💬</div>
 <div onclick="showProfile()">👤</div>
+<div onclick="openSavedPosts()">📚</div>
 <div onclick="openVideos()">🎥</div>
 </div>
 <script type="module">
@@ -971,6 +972,9 @@ ${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:
    <button onclick="sharePost('${d.id}')">
   📤 Compartir
 </button> 
+<button onclick="savePost('${d.id}')">
+  🔖 Guardar
+</button>
 
           ${p.user === auth.currentUser.email ? `
             <button class="delete-btn" onclick="deletePost('${d.id}')">
@@ -1326,8 +1330,47 @@ document.getElementById("previewImg").style.display = "none";
   }
 
 };
-  
+  window.savePost = async (id) => {
+
+  if (!auth.currentUser) {
+    alert("Inicia sesión.");
+    return;
+  }
+
+  try {
+
+    await updateDoc(
+      doc(db, "users", auth.currentUser.uid),
+      {
+        savedPosts: arrayUnion(id)
+      }
+    );
+
+    alert("🔖 Publicación guardada.");
+
+  } catch (e) {
+
+    console.log(e);
+    alert("Error al guardar.");
+
+  }
+
+};
 </script>
+
+<div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
+
+  <h2 style="text-align:center;color:#00e5ff;">
+    📚 Publicaciones guardadas
+  </h2>
+
+  <div id="savedPostsFeed"></div>
+
+  <button onclick="closeSavedPosts()" style="margin-top:20px; width:100%;">
+    ⬅️ Volver
+  </button>
+
+</div>
 
 <div id="videosPage" style="display:none; background:#000; color:white; min-height:100vh; padding:15px;">
 
@@ -1342,4 +1385,5 @@ document.getElementById("previewImg").style.display = "none";
 </div>
 
 </body>
-</html>
+</html>  
+
