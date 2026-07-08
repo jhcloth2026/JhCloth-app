@@ -1358,13 +1358,51 @@ window.savePost = async (id) => {
 
 };
 
-window.openSavedPosts = () => {
+window.openSavedPosts = async () => {
 
   document.getElementById("savedPostsPage").style.display = "block";
 
   document.getElementById("createPostBox").style.display = "none";
   document.getElementById("featuredPost").style.display = "none";
   document.getElementById("feed").style.display = "none";
+
+  const box = document.getElementById("savedPostsFeed");
+  box.innerHTML = "";
+
+  const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+
+  const saved = userSnap.data().savedPosts || [];
+
+  if (saved.length === 0) {
+    box.innerHTML = "<p>No tienes publicaciones guardadas.</p>";
+    return;
+  }
+
+  for (const id of saved) {
+
+    const postSnap = await getDoc(doc(db, "posts", id));
+
+    if (postSnap.exists()) {
+
+      const p = postSnap.data();
+
+      box.innerHTML += `
+        <div class="post">
+
+          <strong>@${p.user.split("@")[0]}</strong>
+
+          <p>${p.text}</p>
+
+          ${p.img ? `<img src="${p.img}" width="100%">` : ""}
+
+          ${p.video ? `<video src="${p.video}" controls width="100%"></video>` : ""}
+
+          ❤️ ${(p.likes || []).length}
+
+        </div>
+      `;
+    }
+  }
 
 };
 
@@ -1378,7 +1416,7 @@ window.closeSavedPosts = () => {
 
 };
 
-</script>
+  
 
 <div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
 
