@@ -1330,7 +1330,8 @@ document.getElementById("previewImg").style.display = "none";
   }
 
 };
-  window.savePost = async (id) => {
+
+window.savePost = async (id) => {
 
   if (!auth.currentUser) {
     alert("Inicia sesión.");
@@ -1356,6 +1357,27 @@ document.getElementById("previewImg").style.display = "none";
   }
 
 };
+
+window.openSavedPosts = () => {
+
+  document.getElementById("savedPostsPage").style.display = "block";
+
+  document.getElementById("createPostBox").style.display = "none";
+  document.getElementById("featuredPost").style.display = "none";
+  document.getElementById("feed").style.display = "none";
+
+};
+
+window.closeSavedPosts = () => {
+
+  document.getElementById("savedPostsPage").style.display = "none";
+
+  document.getElementById("createPostBox").style.display = "block";
+  document.getElementById("featuredPost").style.display = "block";
+  document.getElementById("feed").style.display = "block";
+
+};
+
 </script>
 
 <div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
