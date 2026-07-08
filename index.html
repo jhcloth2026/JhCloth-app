@@ -338,10 +338,17 @@ Inspira a la comunidad JhCloth con tu elegancia.
 
 <input id="text" placeholder="Texto">
 
-<input id="img" placeholder="Imagen URL">
+<input id="img" type="file" accept="image/*">
 
-<input id="video" placeholder="Video URL (MP4)">
+<input id="video" type="file" accept="video/*">
+  
+<img id="previewImg"
+style="display:none;width:100%;border-radius:15px;margin-top:10px;">
 
+<video id="previewVideo"
+controls
+style="display:none;width:100%;border-radius:15px;margin-top:10px;">
+</video>
 <button onclick="createPost()">Publicar</button>
   </div>
   <div id="featuredPost" style="
@@ -811,17 +818,23 @@ document.getElementById("followBtn").style.color = "white";
 ========================================================= */
 
 window.createPost = async () => {
+
   const text = document.getElementById("text").value;
-  const img = document.getElementById("img").value;
-const video = document.getElementById("video").value;
+
+  const imgFile = document.getElementById("img").files[0];
+  const videoFile = document.getElementById("video").files[0];
+
+  if (imgFile || videoFile) {
+    alert("📂 El archivo fue seleccionado correctamente.\n\nLa subida estará disponible cuando JhCloth active Firebase Storage.");
+    return;
+  }
+
   if (!auth.currentUser) return alert("Inicia sesión");
-  const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
-const userData = userSnap.data();
 
   await addDoc(collection(db, "posts"), {
     text,
-    img,
-    video,
+    img: "",
+    video: "",
     user: auth.currentUser.email,
     uid: auth.currentUser.uid,
     time: Date.now(),
@@ -831,7 +844,7 @@ const userData = userSnap.data();
 
   document.getElementById("text").value = "";
   document.getElementById("img").value = "";
-document.getElementById("video").value = "";
+  document.getElementById("video").value = "";
 };
 
 /* ---------------- LIKE ---------------- */
@@ -1255,7 +1268,40 @@ window.fixMyUser = async () => {
 
   alert("✅ Tu usuario fue creado en Firestore");
 
-};
+};  
+document.getElementById("img").addEventListener("change", function(){
+
+const file = this.files[0];
+
+if(!file) return;
+
+const url = URL.createObjectURL(file);
+
+const img = document.getElementById("previewImg");
+
+img.src = url;
+img.style.display = "block";
+
+document.getElementById("previewVideo").style.display = "none";
+
+});
+
+document.getElementById("video").addEventListener("change", function(){
+
+const file = this.files[0];
+
+if(!file) return;
+
+const url = URL.createObjectURL(file);
+
+const video = document.getElementById("previewVideo");
+
+video.src = url;
+video.style.display = "block";
+
+document.getElementById("previewImg").style.display = "none";
+
+});
 </script>
 
 <div id="videosPage" style="display:none; background:#000; color:white; min-height:100vh; padding:15px;">
