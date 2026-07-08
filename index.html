@@ -967,7 +967,10 @@ ${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:
           <button onclick="commentPost('${d.id}')">
   💬 Comentar (${(p.comments || []).length})
 </button>
-    
+
+   <button onclick="sharePost('${d.id}')">
+  📤 Compartir
+</button> 
 
           ${p.user === auth.currentUser.email ? `
             <button class="delete-btn" onclick="deletePost('${d.id}')">
@@ -1302,6 +1305,28 @@ video.style.display = "block";
 document.getElementById("previewImg").style.display = "none";
 
 });
+  window.sharePost = async (id) => {
+
+  const link = window.location.href + "#post-" + id;
+
+  if (navigator.share) {
+
+    navigator.share({
+      title: "JhCloth",
+      text: "Mira esta publicación en JhCloth",
+      url: link
+    });
+
+  } else {
+
+    navigator.clipboard.writeText(link);
+
+    alert("📋 Enlace copiado al portapapeles.");
+
+  }
+
+};
+  
 </script>
 
 <div id="videosPage" style="display:none; background:#000; color:white; min-height:100vh; padding:15px;">
