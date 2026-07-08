@@ -261,13 +261,51 @@ style="font-style:italic; color:#ddd;">
 </div>
   <div id="messagesPage" style="display:none; padding:15px; background:#111; margin:10px; border-radius:15px;">
 
-  <h2>💬 Mensajes</h2>
+  <div id="messagesPage" style="
+display:none;
+background:#0d0d0d;
+border-radius:20px;
+margin:15px;
+overflow:hidden;
+border:1px solid #222;
+">
 
-  <div id="messagesList">
-    <div id="messagesList"></div>
-  </div>
+<div style="
+padding:15px;
+background:#111;
+border-bottom:1px solid #222;
+display:flex;
+justify-content:space-between;
+align-items:center;
+">
 
-  <button onclick="closeMessages()">Cerrar</button>
+<h2 style="margin:0;color:#00e5ff;">
+💬 Mensajes
+</h2>
+
+<button onclick="closeMessages()"
+style="
+width:auto;
+background:#ff2b55;
+color:white;
+padding:8px 15px;
+border-radius:10px;
+">
+✕
+</button>
+
+</div>
+
+<div id="messagesList"
+style="
+padding:15px;
+min-height:350px;
+max-height:450px;
+overflow-y:auto;
+background:#090909;
+">
+
+</div>
 
 </div>
 
