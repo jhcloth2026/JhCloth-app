@@ -1119,23 +1119,41 @@ window.closeVideos = () => {
    Conversaciones • Enviar mensajes
 ========================================================= */
 window.startChat = async (uid) => {
-
-  document.getElementById("userProfilePage").style.display = "none";
-  document.getElementById("messagesPage").style.display = "block";
-
   document.getElementById("messagesList").innerHTML = `
-    <h3>💬 Conversación</h3>
+<div style="display:flex;align-items:center;gap:12px;padding-bottom:15px;border-bottom:1px solid #222;">
 
-    
+<button onclick="closeMessages()"
+style="width:auto;padding:8px 12px;background:#222;color:white;border-radius:10px;">
+⬅️
+</button>
 
-    <input id="messageInput" placeholder="Escribe un mensaje...">
+<img src="https://randomuser.me/api/portraits/men/32.jpg"
+width="50"
+style="border-radius:50%;">
 
-    <button onclick="sendMessage('${uid}')">
-      Enviar
-    </button>
+<div>
+<b>@Usuario</b><br>
+<span style="color:#00ff66;font-size:12px;">● En línea</span>
+</div>
 
-    <div id="chatMessages"></div>
-  `;
+</div>
+
+<div id="chatMessages"
+style="margin-top:15px;min-height:320px;"></div>
+
+<div style="display:flex;gap:10px;margin-top:15px;">
+
+<input id="messageInput"
+placeholder="Escribe un mensaje..."
+style="flex:1;">
+
+<button onclick="sendMessage('${uid}')"
+style="width:auto;padding:12px 18px;">
+➤
+</button>
+
+</div>
+`;
 
   const q = query(
     collection(db, "chats"),
