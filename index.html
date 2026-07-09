@@ -1132,7 +1132,7 @@ width="50"
 style="border-radius:50%;">
 
 <div>
-<b>@Usuario</b><br>
+<b id="chatUserName">Cargando...</b><br>
 <span style="color:#00ff66;font-size:12px;">● En línea</span>
 </div>
 
@@ -1159,6 +1159,12 @@ style="width:auto;padding:12px 18px;">
     collection(db, "chats"),
     orderBy("time", "asc")
   );
+  const userSnap = await getDoc(doc(db, "users", uid));
+
+if (userSnap.exists()) {
+  document.getElementById("chatUserName").innerHTML =
+    "@" + userSnap.data().username;
+}
 
 onSnapshot(q, (snap) => {
 
