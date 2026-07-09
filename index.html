@@ -1371,7 +1371,8 @@ window.openSavedPosts = async () => {
 
   const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
 
-  const saved = userSnap.data().savedPosts || [];
+  const userData = userSnap.data() || {};
+const saved = userData.savedPosts || [];
 
   if (saved.length === 0) {
     box.innerHTML = "<p>No tienes publicaciones guardadas.</p>";
