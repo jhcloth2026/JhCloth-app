@@ -1013,7 +1013,7 @@ window.openMessages = () => {
 onSnapshot(q, (snap) => {
 
   let html = "";
-
+  const conversaciones = {};
   snap.forEach((d) => {
 
     const m = d.data();
@@ -1023,8 +1023,17 @@ onSnapshot(q, (snap) => {
       m.to === auth.currentUser.uid
     ) {
 
+      const otro =
+        m.from === auth.currentUser.uid ? m.to : m.from;
+
+      conversaciones[otro] = m;
+
+    }
+
   
-     html += `
+     Object.values(conversaciones).forEach((m) => {
+
+  html += `
   <div onclick="startChat('${m.from === auth.currentUser.uid ? m.to : m.from}')"
   style="padding:12px;border-bottom:1px solid #333;cursor:pointer;display:flex;align-items:center;gap:10px;">
 
@@ -1033,20 +1042,18 @@ onSnapshot(q, (snap) => {
     style="border-radius:50%;">
 
     <div>
-      <b>👤 @${m.fromName || "Usuario"}</b><br>
+      <b>👤 @${m.from === auth.currentUser.uid ? (m.toName || "Usuario") : (m.fromName || "Usuario")}</b><br>
       <small>${m.message}</small>
     </div>
 
   </div>
-`; 
-    }
+  `;
 
-  });
+}); 
 
   document.getElementById("messagesList").innerHTML = html;
 
 });
-};
 
 window.closeMessages = () => {
   
