@@ -414,6 +414,7 @@ appId: "1:683518974253:web:c9f2e789d00f5a2e6f9ba4"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+console.log("SCRIPT CARGADO");
 
 const feed = document.getElementById("feed");
   window.deletePost = async (id) => {
