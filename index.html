@@ -1210,7 +1210,8 @@ ${new Date(m.time).toLocaleTimeString()}
   });
 
   document.getElementById("chatMessages").innerHTML = html;
-
+const chat = document.getElementById("chatMessages");
+chat.scrollTop = chat.scrollHeight;
 });
 
 };
@@ -1218,23 +1219,21 @@ ${new Date(m.time).toLocaleTimeString()}
 
   const input = document.getElementById("messageInput");
 
-  if (!input.value.trim()) return;
+if (!input.value.trim()) return;
 
-  await addDoc(collection(db, "chats"), {
+const userSnap = await getDoc(doc(db, "users", uid));
+
+await addDoc(collection(db, "chats"), {
   from: auth.currentUser.uid,
   fromName: auth.currentUser.email.split("@")[0],
   to: uid,
+  toName: userSnap.data().username,
   message: input.value,
   time: Date.now(),
-    read: false
+  read: false
 });
-  
-    
-    
-    
-  
 
-  input.value = "";
+input.value = ""; 
 
   alert("Mensaje enviado ✔");
 
