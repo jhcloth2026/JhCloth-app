@@ -1238,48 +1238,7 @@ ${new Date(m.time).toLocaleTimeString()}
   alert("Mensaje enviado ✔");
 
 };
-  window.showActivity = () => {
-
-  document.getElementById("activityPage").style.display = "block";
-
-  const box = document.getElementById("notifications");
-
-  onSnapshot(
-    query(collection(db, "notifications"), orderBy("time", "desc")),
-    (snap) => {
-
-      box.innerHTML = "";
-
-      snap.forEach((d) => {
-
-        const n = d.data();
-
-        if (n.to === auth.currentUser.uid) {
-
-          if (n.type === "follow") {
-            box.innerHTML += `
-              <p>👥 <b>${n.fromName}</b> empezó a seguirte.</p>
-            `;
-          }
-
-          if (n.type === "like") {
-            box.innerHTML += `
-              <p>❤️ <b>${n.fromName}</b> le dio Me gusta a tu publicación.</p>
-            `;
-          }
-
-        }
-
-      });
-
-    }
-  );
-
-};
-
-window.closeActivity = () => {
-  document.getElementById("activityPage").style.display = "none";
-};
+  
 onAuthStateChanged(auth, (user) => {
 
   document.getElementById("auth").style.display = user ? "none" : "block";
