@@ -463,25 +463,19 @@ window.register = async () => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
 
     await setDoc(doc(db, "users", cred.user.uid), {
-      email: email,
-      username: email.split("@")[0],
-      followers: 0,
-      following: 0,
-      followersList: [],
-      followingList: [],
-      bio: "",
-      photo: "",
-      createdAt: Date.now(),
-      online: true,
-      lastSeen: Date.now()
-    });
-
-    alert("Usuario creado ✔");
-
-  } catch (error) {
-    alert(error.message);
-  }
-};
+  email: email,
+  username: email.split("@")[0],
+  followers: 0,
+  following: 0,
+  followersList: [],
+  followingList: [],
+  bio: "",
+  photo: "",
+  createdAt: Date.now(),
+  online: true,
+  lastSeen: Date.now()
+});
+      
 
 window.login = async () => {
   try {
@@ -493,7 +487,12 @@ window.login = async () => {
       return;
     }
 
-    await signInWithEmailAndPassword(auth, email, password);
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+
+await updateDoc(doc(db, "users", cred.user.uid), {
+  online: true,
+  lastSeen: Date.now()
+});
 
     document.getElementById("auth").style.display = "none";
     document.getElementById("app").style.display = "block";
