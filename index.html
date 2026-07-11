@@ -484,41 +484,49 @@ window.login = async () => {
 ========================================================= */
 
 window.showProfile = async () => {
-  const user = auth.currentUser?.email.split("@")[0] || "Usuario";
 
-  document.getElementById("profileUser").textContent = "@" + user;
+  const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+
+  if (!userSnap.exists()) return;
+
+  const data = userSnap.data();
+
+  document.getElementById("profilePage").style.display = "block";
+
+  document.getElementById("profileUser").innerHTML =
+    `<span style="font-size:28px;font-weight:bold;color:#00e5ff;">
+      @${data.username}
+    </span>
+    ${data.username === "soyjahir2006"
+      ? `<span style="color:gold;font-size:22px;"> 👑</span>`
+      : ""}`;
 
   const posts = document.querySelectorAll(".post").length;
   document.getElementById("postCount").textContent =
     "📸 Publicaciones: " + posts;
+
   let likes = 0;
 
-document.querySelectorAll(".like").forEach(btn => {
-  likes += parseInt(btn.textContent.replace("❤️","")) || 0;
-});
+  document.querySelectorAll(".like").forEach(btn => {
+    likes += parseInt(btn.textContent.replace("❤️","")) || 0;
+  });
 
-document.getElementById("likesCount").textContent =
-  "❤️ Likes recibidos: " + likes;
-  const userSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+  document.getElementById("likesCount").textContent =
+    "❤️ Likes recibidos: " + likes;
 
-if (userSnap.exists()) {
-  
-const data = userSnap.data();
+  document.getElementById("followersCount").innerHTML =
+    "👥 Seguidores: <b>" + ((data.followersList || []).length) + "</b>";
 
-document.getElementById("followersCount").textContent =
-  "👥 Seguidores: " + ((data.followersList || []).length);
+  document.getElementById("followingCount").innerHTML =
+    "➡️ Siguiendo: <b>" + ((data.followingList || []).length) + "</b>";
 
-document.getElementById("followingCount").textContent =
-  "➡️ Siguiendo: " + ((data.followingList || []).length);
+  document.getElementById("bioText").innerHTML =
+    "<b>Biografía</b><br>" + (data.bio || "Sin biografía");
 
-document.getElementById("bioText").textContent =
-  "Bio: " + (data.bio || "");
+  if (data.photo) {
+    document.getElementById("profilePic").src = data.photo;
+  }
 
-if (data.photo) {
-  document.getElementById("profilePic").src = data.photo;
-}
-}
-document.getElementById("profilePage").style.display = "block";
 };
 
 window.saveBio = async () => {
@@ -1130,9 +1138,10 @@ style="width:auto;padding:8px 12px;background:#222;color:white;border-radius:10p
 ⬅️
 </button>
 
-<img src="https://randomuser.me/api/portraits/men/32.jpg"
+<img id="chatUserPhoto"
+src="https://i.imgur.com/placeholder.png"
 width="50"
-style="border-radius:50%;">
+style="border-radius:50%;border:2px solid #00e5ff;">
 
 <div>
 <b id="chatUserName">Cargando...</b><br>
@@ -1165,9 +1174,16 @@ style="width:auto;padding:12px 18px;">
   const userSnap = await getDoc(doc(db, "users", uid));
 
 if (userSnap.exists()) {
+  const data = userSnap.data();
+
   document.getElementById("chatUserName").innerHTML =
-    "@" + userSnap.data().username;
+    "@" + data.username;
+
+  if (data.photo) {
+    document.getElementById("chatUserPhoto").src = data.photo;
+  }
 }
+
 
 onSnapshot(q, (snap) => {
 
