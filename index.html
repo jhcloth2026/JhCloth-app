@@ -619,11 +619,22 @@ window.closeProfile = () => {
    Buscar • Ver perfil • Seguir • Mensajes
 ========================================================= */
   window.showSearch = () => {
-  document.getElementById("searchPage").style.display = "block";
-};
 
+  document.getElementById("searchPage").style.display = "block";
+
+  document.getElementById("createPostBox").style.display = "none";
+  document.getElementById("featuredPost").style.display = "none";
+  document.getElementById("feed").style.display = "none";
+
+};
 window.closeSearch = () => {
+
   document.getElementById("searchPage").style.display = "none";
+
+  document.getElementById("createPostBox").style.display = "block";
+  document.getElementById("featuredPost").style.display = "block";
+  document.getElementById("feed").style.display = "block";
+
 };
   /* =========================================================
    ❤️ NOTIFICACIONES
