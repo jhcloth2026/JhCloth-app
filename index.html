@@ -388,7 +388,7 @@ text-align:center;
   
   
 <div class="nav">
-<div>🏠</div>
+<div onclick="goHome()">🏠</div>
 <div onclick="showSearch()">🔎</div>
 <div onclick="openCreatePost()">➕</div>
 <div onclick="showActivity()" style="position:relative;cursor:pointer;">
@@ -579,6 +579,26 @@ window.showProfile = async () => {
   }
 
 };
+window.goHome = () => {
+
+  document.getElementById("createPostBox").style.display = "none";
+
+  document.getElementById("featuredPost").style.display = "block";
+  document.getElementById("feed").style.display = "block";
+
+  document.getElementById("searchPage").style.display = "none";
+  document.getElementById("activityPage").style.display = "none";
+  document.getElementById("messagesPage").style.display = "none";
+  document.getElementById("profilePage").style.display = "none";
+  document.getElementById("savedPostsPage").style.display = "none";
+  document.getElementById("videosPage").style.display = "none";
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+};
   window.openCreatePost = () => {
 
   document.getElementById("createPostBox").style.display = "block";
@@ -592,6 +612,12 @@ window.showProfile = async () => {
   document.getElementById("profilePage").style.display = "none";
   document.getElementById("savedPostsPage").style.display = "none";
   document.getElementById("videosPage").style.display = "none";
+    document.getElementById("text").focus();
+
+window.scrollTo({
+  top: 0,
+  behavior: "smooth"
+});
 
 };
 
