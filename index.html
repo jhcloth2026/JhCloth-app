@@ -335,7 +335,7 @@ background:#090909;
 
 <div id="app" style="display:none;">
   
-  <div id="createPostBox">
+  <div id="createPostBox" style="display:none;">
     
   <div style="
 background:#111;
@@ -390,7 +390,7 @@ text-align:center;
 <div class="nav">
 <div>🏠</div>
 <div onclick="showSearch()">🔎</div>
-<div>➕</div>
+<div onclick="openCreatePost()">➕</div>
 <div onclick="showActivity()" style="position:relative;cursor:pointer;">
 
 ❤️
@@ -577,6 +577,21 @@ window.showProfile = async () => {
   if (data.photo) {
     document.getElementById("profilePic").src = data.photo;
   }
+
+};
+  window.openCreatePost = () => {
+
+  document.getElementById("createPostBox").style.display = "block";
+
+  document.getElementById("featuredPost").style.display = "none";
+  document.getElementById("feed").style.display = "none";
+
+  document.getElementById("searchPage").style.display = "none";
+  document.getElementById("activityPage").style.display = "none";
+  document.getElementById("messagesPage").style.display = "none";
+  document.getElementById("profilePage").style.display = "none";
+  document.getElementById("savedPostsPage").style.display = "none";
+  document.getElementById("videosPage").style.display = "none";
 
 };
 
