@@ -205,9 +205,12 @@ margin:20px 0;
   <button onclick="saveBio()">Guardar bio</button>
 
   <p id="bioText">Bio: Elegancia • Disciplina • Presencia</p>
-
+  
+  <div id="profilePosts"></div>
+  
   <button onclick="closeProfile()">Cerrar</button>
 </div>
+      
   <div id="activityPage" style="display:none; padding:15px; background:#111; margin:10px; border-radius:15px;">
 
   <h2>❤️ Actividad</h2>
@@ -553,23 +556,20 @@ window.showProfile = async () => {
     ${data.username === "soyjahir2006"
       ? `<span style="color:gold;font-size:22px;"> 👑</span>`
       : ""}`;
-  const posts = document.querySelectorAll(".post").length;
 
+  const posts = document.querySelectorAll(".post").length;
   document.getElementById("postCount").textContent = posts;
 
   let likes = 0;
-
   document.querySelectorAll(".like").forEach(btn => {
     likes += parseInt(btn.textContent.replace("❤️","")) || 0;
   });
 
   document.getElementById("likesCount").textContent = likes;
-
   document.getElementById("followersCount").textContent =
-  (data.followersList || []).length;
-
+    (data.followersList || []).length;
   document.getElementById("followingCount").textContent =
-  (data.followingList || []).length;
+    (data.followingList || []).length;
 
   document.getElementById("bioText").innerHTML =
     "<b>Biografía</b><br>" + (data.bio || "Sin biografía");
@@ -578,8 +578,34 @@ window.showProfile = async () => {
     document.getElementById("profilePic").src = data.photo;
   }
 
+  const profilePosts = document.getElementById("profilePosts");
+  profilePosts.innerHTML = "";
+
+  const postsSnap = await getDocs(
+    query(collection(db, "posts"), orderBy("time", "desc"))
+  );
+
+  postsSnap.forEach((postDoc) => {
+
+    const post = postDoc.data();
+
+    if (post.uid === auth.currentUser.uid) {
+
+      profilePosts.innerHTML += `
+        <div class="post">
+          <p>${post.text}</p>
+
+          ${post.img ? `<img src="${post.img}" width="100%">` : ""}
+
+          ${post.video ? `<video src="${post.video}" controls width="100%"></video>` : ""}
+        </div>
+      `;
+
+    }
+
+  });
+
 };
-window.goHome = () => {
 
   document.getElementById("createPostBox").style.display = "none";
 
