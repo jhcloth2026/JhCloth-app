@@ -548,7 +548,9 @@ window.showProfile = async () => {
   const data = userSnap.data();
 
   document.getElementById("profilePage").style.display = "block";
-
+document.getElementById("createPostBox").style.display = "none";
+document.getElementById("featuredPost").style.display = "none";
+document.getElementById("feed").style.display = "none";
   document.getElementById("profileUser").innerHTML =
     `<span style="font-size:28px;font-weight:bold;color:#00e5ff;">
       @${data.username}
@@ -679,9 +681,16 @@ window.logout = async () => {
 window.helpVenezuela = () => {
   window.open("https://www.ifrc.org/emergency/venezuela-earthquake-2026", "_blank");
 };
-window.closeProfile = () => {
+  window.closeProfile = () => {
+
   document.getElementById("profilePage").style.display = "none";
+
+  document.getElementById("createPostBox").style.display = "block";
+  document.getElementById("featuredPost").style.display = "block";
+  document.getElementById("feed").style.display = "block";
+
 };
+
   /* =========================================================
    🔎 BUSCADOR DE USUARIOS
    Buscar • Ver perfil • Seguir • Mensajes
