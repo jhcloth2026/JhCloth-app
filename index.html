@@ -1615,10 +1615,21 @@ window.closeSavedPosts = () => {
 <div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
 
   <h2 style="text-align:center;color:#00e5ff;">
-    📚 Publicaciones guardadas
-  </h2>
-  <button onclick="closeSavedPosts()" style="width:100%; margin-bottom:15px;">
-  ⬅️ Volver
+    📚 Publicaciones guardadas </h2>
+  <button
+onclick="closeSavedPosts()"
+style="display:block;
+position:fixed;
+top:80px;
+left:15px;
+right:15px;
+z-index:99999;
+background:#00e5ff;
+color:black;
+padding:15px;
+border:none;
+border-radius:12px;">
+⬅️ Volver
 </button>
 
   <div id="savedPostsFeed"></div>
