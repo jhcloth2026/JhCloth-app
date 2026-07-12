@@ -632,6 +632,9 @@ window.closeSearch = () => {
   window.showActivity = () => {
 
   document.getElementById("activityPage").style.display = "block";
+    document.getElementById("createPostBox").style.display = "none";
+document.getElementById("featuredPost").style.display = "none";
+document.getElementById("feed").style.display = "none";
 
   const box = document.getElementById("notifications");
 
@@ -682,8 +685,14 @@ window.closeSearch = () => {
 
 };
 
-window.closeActivity = () => {
+  window.closeActivity = () => {
+
   document.getElementById("activityPage").style.display = "none";
+
+  document.getElementById("createPostBox").style.display = "block";
+  document.getElementById("featuredPost").style.display = "block";
+  document.getElementById("feed").style.display = "block";
+
 };
 let searchedUser = null;
   
