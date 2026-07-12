@@ -391,7 +391,27 @@ text-align:center;
 <div>🏠</div>
 <div onclick="showSearch()">🔎</div>
 <div>➕</div>
-<div onclick="showActivity()">❤️</div>
+<div onclick="showActivity()" style="position:relative;cursor:pointer;">
+
+❤️
+
+<span id="notifyBadge"
+style="
+display:none;
+position:absolute;
+top:-6px;
+right:-8px;
+background:red;
+color:white;
+font-size:11px;
+padding:2px 6px;
+border-radius:50%;
+font-weight:bold;
+">
+0
+</span>
+
+</div>
   <div onclick="openMessages()">💬</div>
 <div onclick="showProfile()">👤</div>
 <div onclick="openSavedPosts()">📚</div>
@@ -617,15 +637,21 @@ window.closeSearch = () => {
 
   onSnapshot(
     query(collection(db, "notifications"), orderBy("time", "desc")),
-    (snap) => {
+    async (snap) => {
 
       box.innerHTML = "";
 
-      snap.forEach((d) => {
+      for (const d of snap.docs) {
 
         const n = d.data();
 
         if (n.to === auth.currentUser.uid) {
+
+          if (!n.read) {
+            await updateDoc(doc(db, "notifications", d.id), {
+              read: true
+            });
+          }
 
           if (n.type === "follow") {
             box.innerHTML += `
@@ -647,13 +673,14 @@ window.closeSearch = () => {
 
         }
 
-      });
+      }
+
+      document.getElementById("notifyBadge").style.display = "none";
 
     }
   );
 
 };
-
 
 window.closeActivity = () => {
   document.getElementById("activityPage").style.display = "none";
@@ -1286,6 +1313,35 @@ input.value = "";
 
 };
   
+  onSnapshot(
+  query(collection(db, "notifications"), orderBy("time", "desc")),
+  (snap) => {
+
+    if (!auth.currentUser) return;
+
+    let total = 0;
+
+    snap.forEach((d) => {
+
+      const n = d.data();
+
+      if (n.to === auth.currentUser.uid && !n.read) {
+        total++;
+      }
+
+    });
+
+    const badge = document.getElementById("notifyBadge");
+
+    if (total > 0) {
+      badge.style.display = "block";
+      badge.textContent = total;
+    } else {
+      badge.style.display = "none";
+    }
+
+  }
+);
 onAuthStateChanged(auth, (user) => {
 
   document.getElementById("auth").style.display = user ? "none" : "block";
