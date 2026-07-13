@@ -1221,11 +1221,14 @@ onSnapshot(q, (snap) => {
 
 window.openVideos = async () => {
 
-  alert("Entró a videos");
-
   document.getElementById("videosPage").style.display = "block";
 
-  let html = "";
+  document.getElementById("createPostBox").style.display = "none";
+  document.getElementById("featuredPost").style.display = "none";
+  document.getElementById("feed").style.display = "none";
+
+  const videosFeed = document.getElementById("videosFeed");
+  videosFeed.innerHTML = "";
 
   const snap = await getDocs(
     query(collection(db, "posts"), orderBy("time", "desc"))
@@ -1237,21 +1240,32 @@ window.openVideos = async () => {
 
     if (p.video) {
 
-      html += `
-      <div style="margin-bottom:25px;">
+      videosFeed.innerHTML += `
+        <div style="margin-bottom:25px;">
 
-        <h3>@${p.user.split("@")[0]}</h3>
+          <h3>@${p.user.split("@")[0]}</h3>
 
-        <video
-          src="${p.video}"
-          controls
-          autoplay
-          muted
-          width="100%"
-          style="border-radius:15px;">
-        </video>
+          <video
+            src="${p.video}"
+            controls
+            autoplay
+            muted
+            width="100%"
+            style="border-radius:15px;">
+          </video>
 
-        <
+          <p>${p.text || ""}</p>
+
+          <p>❤️ ${(p.likes || []).length}</p>
+
+        </div>
+      `;
+
+    }
+
+  });
+
+};
 
 /* =========================================================
    🎥 VIDEOS
