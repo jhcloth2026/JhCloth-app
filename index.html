@@ -538,6 +538,7 @@ window.login = async () => {
    👤 PERFIL
    Perfil • Bio • Foto • Estadísticas
 ========================================================= */
+  
 
 window.showProfile = async () => {
 
@@ -548,9 +549,10 @@ window.showProfile = async () => {
   const data = userSnap.data();
 
   document.getElementById("profilePage").style.display = "block";
-document.getElementById("createPostBox").style.display = "none";
-document.getElementById("featuredPost").style.display = "none";
-document.getElementById("feed").style.display = "none";
+  document.getElementById("createPostBox").style.display = "none";
+  document.getElementById("featuredPost").style.display = "none";
+  document.getElementById("feed").style.display = "none";
+
   document.getElementById("profileUser").innerHTML =
     `<span style="font-size:28px;font-weight:bold;color:#00e5ff;">
       @${data.username}
@@ -574,7 +576,20 @@ document.getElementById("feed").style.display = "none";
     (data.followingList || []).length;
 
   document.getElementById("bioText").innerHTML =
-    "<b>Biografía</b><br>" + (data.bio || "Sin biografía");
+    `<b>Biografía</b><br>
+    ${data.bio || "Sin biografía"}
+    <br><br>
+    <button onclick="openEditProfile()"
+      style="
+        background:#00e5ff;
+        color:#000;
+        border:none;
+        padding:10px 18px;
+        border-radius:10px;
+        font-weight:bold;
+        cursor:pointer;">
+      ✏️ Editar perfil
+    </button>`;
 
   if (data.photo) {
     document.getElementById("profilePic").src = data.photo;
@@ -608,6 +623,10 @@ document.getElementById("feed").style.display = "none";
   });
 
 };
+  window.openEditProfile = () => {
+  alert("Editor de perfil en construcción 🚀");
+};
+  
   window.goHome = () => {
 
   document.getElementById("createPostBox").style.display = "none";
