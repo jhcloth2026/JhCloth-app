@@ -1221,17 +1221,9 @@ onSnapshot(q, (snap) => {
 
 window.openVideos = async () => {
 
+  alert("Entró a videos");
+
   document.getElementById("videosPage").style.display = "block";
-
-  document.getElementById("createPostBox").style.display = "none";
-  document.getElementById("featuredPost").style.display = "none";
-  document.getElementById("feed").style.display = "none";
-
-  document.getElementById("profilePage").style.display = "none";
-  document.getElementById("searchPage").style.display = "none";
-  document.getElementById("activityPage").style.display = "none";
-  document.getElementById("messagesPage").style.display = "none";
-  document.getElementById("savedPostsPage").style.display = "none";
 
   let html = "";
 
@@ -1259,20 +1251,7 @@ window.openVideos = async () => {
           style="border-radius:15px;">
         </video>
 
-        <p>${p.text}</p>
-
-        <p>❤️ ${(p.likes || []).length}</p>
-
-      </div>
-      `;
-
-    }
-
-  });
-
-  document.getElementById("videosFeed").innerHTML = html;
-
-};
+        <
 
 /* =========================================================
    🎥 VIDEOS
