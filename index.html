@@ -1517,6 +1517,41 @@ video.style.display = "block";
 document.getElementById("previewImg").style.display = "none";
 
 });
+  window.openEditProfile = async () => {
+
+  const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  document.getElementById("profilePage").style.display = "none";
+  document.getElementById("editProfilePage").style.display = "block";
+
+  document.getElementById("editPhoto").value = data.photo || "";
+  document.getElementById("editUsername").value = data.username || "";
+  document.getElementById("editBio").value = data.bio || "";
+
+};
+
+window.closeEditProfile = () => {
+
+  document.getElementById("editProfilePage").style.display = "none";
+  document.getElementById("profilePage").style.display = "block";
+
+};
+
+window.saveProfileChanges = async () => {
+
+  await updateDoc(doc(db, "users", auth.currentUser.uid), {
+    photo: document.getElementById("editPhoto").value,
+    username: document.getElementById("editUsername").value,
+    bio: document.getElementById("editBio").value
+  });
+
+  closeEditProfile();
+  showProfile();
+
+};
   window.sharePost = async (id) => {
 
   const link = window.location.href + "#post-" + id;
