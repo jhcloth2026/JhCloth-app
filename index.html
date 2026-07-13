@@ -1219,22 +1219,19 @@ onSnapshot(q, (snap) => {
 });
   };
 
-window.closeMessages = () => {
-  
-  document.getElementById("createPostBox").style.display = "block";
-
-  document.getElementById("messagesPage").style.display = "none";
-
-  document.getElementById("feed").style.display = "block";
-  document.getElementById("featuredPost").style.display = "block";
-};
-
-
-  window.openVideos = async () => {
-
-  alert("Entró a videos");
+window.openVideos = async () => {
 
   document.getElementById("videosPage").style.display = "block";
+
+  document.getElementById("createPostBox").style.display = "none";
+  document.getElementById("featuredPost").style.display = "none";
+  document.getElementById("feed").style.display = "none";
+
+  document.getElementById("profilePage").style.display = "none";
+  document.getElementById("searchPage").style.display = "none";
+  document.getElementById("activityPage").style.display = "none";
+  document.getElementById("messagesPage").style.display = "none";
+  document.getElementById("savedPostsPage").style.display = "none";
 
   let html = "";
 
@@ -1282,7 +1279,13 @@ window.closeMessages = () => {
    Feed de videos • Reproducción
 ========================================================= */
 window.closeVideos = () => {
+
   document.getElementById("videosPage").style.display = "none";
+
+  document.getElementById("createPostBox").style.display = "none";
+  document.getElementById("featuredPost").style.display = "block";
+  document.getElementById("feed").style.display = "block";
+
 };
   
   /* =========================================================
