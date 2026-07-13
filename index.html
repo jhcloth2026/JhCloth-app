@@ -430,7 +430,6 @@ margin:10px 0;
 
 </div>
 
-<div class="nav">
   
   
 <div class="nav">
@@ -1561,7 +1560,11 @@ document.getElementById("previewImg").style.display = "none";
   window.openEditProfile = async () => {
     alert("Entró al editor");
 
-  const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+    const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+    ...
+};
+    
+
   if (!snap.exists()) return;
 
   const data = snap.data();
@@ -1578,7 +1581,7 @@ document.getElementById("previewImg").style.display = "none";
   const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
   if (!snap.exists()) return;
 
-  const data = snap.data();
+  
 
   document.getElementById("profilePage").style.display = "none";
   document.getElementById("editProfilePage").style.display = "block";
