@@ -388,6 +388,49 @@ text-align:center;
 </div>
 
 <div id="feed"></div>
+
+<div id="editProfilePage" style="
+display:none;
+background:#111;
+color:white;
+padding:20px;
+margin:10px;
+border-radius:15px;
+">
+
+<h2 style="text-align:center;color:#00e5ff;">
+✏️ Editar perfil
+</h2>
+
+<input id="editPhoto" placeholder="URL de la foto">
+
+<input id="editUsername" placeholder="Nombre de usuario">
+
+<textarea
+id="editBio"
+placeholder="Escribe tu biografía..."
+style="
+width:95%;
+height:120px;
+padding:10px;
+border-radius:10px;
+background:#222;
+color:white;
+border:none;
+margin:10px 0;
+"></textarea>
+
+<button onclick="saveProfileChanges()">
+💾 Guardar cambios
+</button>
+
+<button onclick="closeEditProfile()" style="background:#444;color:white;">
+❌ Cancelar
+</button>
+
+</div>
+
+<div class="nav">
   
   
 <div class="nav">
