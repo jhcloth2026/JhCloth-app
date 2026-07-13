@@ -1555,7 +1555,7 @@ window.savePost = async (id) => {
 window.openSavedPosts = async () => {
 
   alert("Entró a Publicaciones Guardadas");
-
+alert(document.getElementById("savedPostsPage"));
   document.getElementById("savedPostsPage").style.display = "block";
 
   document.getElementById("createPostBox").style.display = "none";
@@ -1625,6 +1625,7 @@ window.closeSavedPosts = () => {
   <h2 style="text-align:center;color:#00e5ff;">
     📚 Publicaciones guardadas </h2>
   <button
+  
 onclick="closeSavedPosts()"
 style="display:block;
 position:fixed;
