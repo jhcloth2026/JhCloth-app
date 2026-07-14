@@ -1560,15 +1560,24 @@ document.getElementById("previewImg").style.display = "none";
 });
   window.openEditProfile = async () => {
 
-  alert("Entró al editor");
+  alert("1");
 
   const snap = await getDoc(
     doc(db, "users", auth.currentUser.uid)
   );
 
-  if (!snap.exists()) return;
+  alert("2");
+
+  if (!snap.exists()) {
+    alert("No existe el usuario");
+    return;
+  }
+
+  alert("3");
 
   const data = snap.data();
+
+  alert("4");
 
   document.getElementById("profilePage").style.display = "none";
   document.getElementById("editProfilePage").style.display = "block";
@@ -1577,6 +1586,7 @@ document.getElementById("previewImg").style.display = "none";
   document.getElementById("editUsername").value = data.username || "";
   document.getElementById("editBio").value = data.bio || "";
 
+  alert("5");
 };
     
 
