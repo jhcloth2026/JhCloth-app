@@ -1580,32 +1580,7 @@ document.getElementById("previewImg").style.display = "none";
 };
     
 
-  if (!snap.exists()) return;
-
-  const data = snap.data();
-
-  document.getElementById("profilePage").style.display = "none";
-  document.getElementById("editProfilePage").style.display = "block";
-
-  document.getElementById("editPhoto").value = data.photo || "";
-  document.getElementById("editUsername").value = data.username || "";
-  document.getElementById("editBio").value = data.bio || "";
-
-};
-
-  const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
-  if (!snap.exists()) return;
-
   
-
-  document.getElementById("profilePage").style.display = "none";
-  document.getElementById("editProfilePage").style.display = "block";
-
-  document.getElementById("editPhoto").value = data.photo || "";
-  document.getElementById("editUsername").value = data.username || "";
-  document.getElementById("editBio").value = data.bio || "";
-
-};
 
 window.closeEditProfile = () => {
 
