@@ -1392,7 +1392,31 @@ onSnapshot(q, (snap) => {
   };
   window.openPostView = (id) => {
 
+  const p = window.postsCache[id];
+
+  if (!p) return;
+
   document.getElementById("postViewPage").style.display = "block";
+
+  document.getElementById("postViewContent").innerHTML = `
+
+    <h2>@${p.user.split("@")[0]}</h2>
+
+    <p>${p.text || ""}</p>
+
+    ${p.img ? `<img src="${p.img}" width="100%" style="border-radius:15px;">` : ""}
+
+    ${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:15px;"></video>` : ""}
+
+    <br><br>
+
+    ❤️ ${(p.likes || []).length} Me gusta
+
+    <br><br>
+
+    ${(p.comments || []).map(c => `<p>💬 ${c}</p>`).join("")}
+
+  `;
 
 };
 
