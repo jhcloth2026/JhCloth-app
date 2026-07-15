@@ -1294,8 +1294,27 @@ window.openVideos = async () => {
     query(collection(db, "posts"), orderBy("time", "desc"))
   );
 
-  snap.forEach((d) => {
+  
+   if (snap.empty) {
+  videosFeed.innerHTML = `
+    <div style="
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:80vh;
+      text-align:center;
+      color:white;
+    ">
+      <div>
+        <h2>🎥 Aún no hay videos</h2>
+        <p>Cuando los usuarios publiquen videos aparecerán aquí.</p>
+      </div>
+    </div>
+  `;
+  return;
+} 
 
+snap.forEach((d) => {
     const p = d.data();
 
     if (p.video) {
