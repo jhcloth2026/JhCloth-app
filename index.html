@@ -1301,35 +1301,71 @@ window.openVideos = async () => {
     if (p.video) {
 
       videosFeed.innerHTML += `
-        <div style="margin-bottom:25px;">
+<div style="
+position:relative;
+height:85vh;
+margin-bottom:20px;
+border-radius:20px;
+overflow:hidden;
+background:#111;
+">
 
-          <h3>@${p.user.split("@")[0]}</h3>
+<video
+src="${p.video}"
+controls
+autoplay
+muted
+width="100%"
+height="100%"
+style="
+object-fit:cover;
+background:black;
+">
+</video>
 
-          <video
-            src="${p.video}"
-            controls
-            autoplay
-            muted
-            width="100%"
-            style="border-radius:15px;">
-          </video>
+<div style="
+position:absolute;
+bottom:20px;
+left:20px;
+color:white;
+text-shadow:0 0 10px black;
+">
 
-          <p>${p.text || ""}</p>
+<h3 style="margin:0;">
+👤 @${p.user.split("@")[0]}
+</h3>
 
-          <p>❤️ ${(p.likes || []).length}</p>
+<p style="margin:8px 0;">
+${p.text || ""}
+</p>
 
-        </div>
-      `;
+</div>
 
-    }
+<div style="
+position:absolute;
+right:15px;
+bottom:30px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:18px;
+font-size:28px;
+color:white;
+text-shadow:0 0 10px black;
+">
 
-  });
+<div>❤️<br><small>${(p.likes || []).length}</small></div>
 
+<div>💬<br><small>0</small></div>
 
-  document.getElementById("mainHeader").style.display = "none";
-document.querySelector("[onclick='helpVenezuela()']").parentElement.style.display = "none";
-  
-};
+<div>📤</div>
+
+<div>🔖</div>
+
+</div>
+
+</div>
+`;
 
 /* =========================================================
    🎥 VIDEOS
