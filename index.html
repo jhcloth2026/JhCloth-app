@@ -1808,7 +1808,29 @@ window.closeSavedPosts = () => {
   document.getElementById("feed").style.display = "block";
 
 };
+  
+  
+history.pushState(null, "", location.href);
 
+window.addEventListener("popstate", () => {
+
+  if (document.getElementById("videosPage").style.display === "block") {
+    closeVideos();
+  } else if (document.getElementById("messagesPage").style.display === "block") {
+    closeMessages();
+  } else if (document.getElementById("profilePage").style.display === "block") {
+    closeProfile();
+  } else if (document.getElementById("searchPage").style.display === "block") {
+    closeSearch();
+  } else if (document.getElementById("activityPage").style.display === "block") {
+    closeActivity();
+  } else if (document.getElementById("savedPostsPage").style.display === "block") {
+    closeSavedPosts();
+  }
+
+  history.pushState(null, "", location.href);
+
+});
   </script>
 <div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
 
