@@ -1225,7 +1225,10 @@ let maxLikes = -1;
 }
 
     feed.innerHTML += `
-      <div class="post">
+      <div class="post"
+      onclick="openPostView('${d.id}')"
+      style="cursor:pointer;">
+      
 
  <div class="profile" style="
 display:flex;
