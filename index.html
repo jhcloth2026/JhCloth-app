@@ -1215,6 +1215,8 @@ onSnapshot(q, (snap) => {
 let maxLikes = -1;
   snap.forEach((d) => {
     const p = d.data();
+    window.postsCache = window.postsCache || {};
+window.postsCache[d.id] = p;
     const name = p.user.split("@")[0];
     const current = auth.currentUser?.email;
 
