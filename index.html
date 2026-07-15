@@ -1325,15 +1325,22 @@ window.openVideos = async () => {
 
   });
 
+
+  document.getElementById("mainHeader").style.display = "none";
+document.querySelector("[onclick='helpVenezuela()']").parentElement.style.display = "none";
+  
 };
 
 /* =========================================================
    🎥 VIDEOS
    Feed de videos • Reproducción
 ========================================================= */
-window.closeVideos = () => {
+  window.closeVideos = () => {
 
   document.getElementById("videosPage").style.display = "none";
+
+  document.getElementById("mainHeader").style.display = "flex";
+  document.querySelector("[onclick='helpVenezuela()']").parentElement.style.display = "block";
 
   document.getElementById("createPostBox").style.display = "none";
   document.getElementById("featuredPost").style.display = "block";
