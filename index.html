@@ -1311,8 +1311,12 @@ window.openVideos = async () => {
       </div>
     </div>
   `;
+
+  document.getElementById("mainHeader").style.display = "none";
+  document.querySelector("[onclick='helpVenezuela()']").parentElement.style.display = "none";
+
   return;
-} 
+}
 
 snap.forEach((d) => {
     const p = d.data();
