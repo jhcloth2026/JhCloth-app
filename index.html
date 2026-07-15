@@ -1388,6 +1388,17 @@ onSnapshot(q, (snap) => {
 
 });
   };
+  window.openPostView = (id) => {
+
+  document.getElementById("postViewPage").style.display = "block";
+
+};
+
+window.closePostView = () => {
+
+  document.getElementById("postViewPage").style.display = "none";
+
+};
 
 window.openVideos = async () => {
 
