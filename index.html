@@ -1736,7 +1736,29 @@ window.closeSavedPosts = () => {
 };
 
   </script>
+<div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
 
+  <h2 style="text-align:center;color:#00e5ff;">📚 Publicaciones guardadas</h2>
+
+  <button onclick="closeSavedPosts()">⬅️ Volver</button>
+
+  <div id="savedPostsFeed"></div>
+
+</div>
+
+<div id="videosPage" style="display:none; background:#000; color:white; min-height:100vh; padding:15px;">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+
+    <h2>🎥 JhCloth Videos</h2>
+
+    <button onclick="closeVideos()">✕</button>
+
+  </div>
+
+  <div id="videosFeed"></div>
+
+</div>
 </body>
 </html>
 
