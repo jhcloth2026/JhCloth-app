@@ -1243,34 +1243,44 @@ ${name === "soyjahir2006" ? " 👑" : ""}
 ${p.video ? `<video src="${p.video}" width="100%" controls style="border-radius:10px; margin-top:10px;"></video>` : ""}
         ${(p.comments || []).map(c => `<p style="font-size:12px">💬 ${c}</p>`).join("")}
 
-        <div class="actions">
+        <div class="actions" style="
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:15px;
+">
 
-          <button class="like ${isLiked ? 'active' : ''}" onclick="likePost('${d.id}')">
-            ❤️ ${(p.likes || []).length}
-          </button>
-
-          <input id="c-${d.id}" placeholder="Escribe comentario">
-
-          
-          <button onclick="commentPost('${d.id}')">
-  💬 Comentar (${(p.comments || []).length})
+<button class="like ${isLiked ? 'active' : ''}"
+onclick="likePost('${d.id}')">
+❤️ ${(p.likes || []).length}
 </button>
 
-   <button onclick="sharePost('${d.id}')">
-  📤 Compartir
-</button> 
+<button onclick="commentPost('${d.id}')">
+💬 ${(p.comments || []).length}
+</button>
+
+<button onclick="sharePost('${d.id}')">
+📤 Compartir
+</button>
+
 <button onclick="savePost('${d.id}')">
-  🔖 Guardar
+🔖 Guardar
 </button>
 
-          ${p.user === auth.currentUser.email ? `
-            <button class="delete-btn" onclick="deletePost('${d.id}')">
-              🗑️ Eliminar
-            </button>
-          ` : ""}
+${p.user === auth.currentUser.email ? `
+<button class="delete-btn"
+onclick="deletePost('${d.id}')">
+🗑️ Eliminar
+</button>
+` : ""}
 
-        </div>
-      </div>
+<input
+id="c-${d.id}"
+placeholder="Escribe un comentario..."
+style="grid-column:1/3;">
+
+</div>
+</div>
     `;
   });
   
@@ -1279,6 +1289,7 @@ if (bestPost) {
     <strong>@${bestPost.user.split("@")[0]}</strong><br><br>
     ${bestPost.text}<br><br>
     ❤️ ${(bestPost.likes || []).length} Me gusta
+    
   `;
 }
 });
