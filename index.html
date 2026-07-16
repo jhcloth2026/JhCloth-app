@@ -1294,31 +1294,32 @@ margin-top:15px;
 ">
 
 <button class="like ${isLiked ? 'active' : ''}"
-onclick="likePost('${d.id}')">
+onclick="event.stopPropagation(); likePost('${d.id}')">
 ❤️ ${(p.likes || []).length}
 </button>
 
-<button onclick="commentPost('${d.id}')">
+<button onclick="event.stopPropagation(); commentPost('${d.id}')">
 💬 ${(p.comments || []).length}
 </button>
 
-<button onclick="sharePost('${d.id}')">
+<button onclick="event.stopPropagation(); sharePost('${d.id}')">
 📤 Compartir
 </button>
 
-<button onclick="savePost('${d.id}')">
+<button onclick="event.stopPropagation(); savePost('${d.id}')">
 🔖 Guardar
 </button>
 
 ${p.user === auth.currentUser.email ? `
 <button class="delete-btn"
-onclick="deletePost('${d.id}')">
+onclick="event.stopPropagation(); deletePost('${d.id}')">
 🗑️ Eliminar
 </button>
 ` : ""}
 
 <input
 id="c-${d.id}"
+onclick="event.stopPropagation();"
 placeholder="Escribe un comentario..."
 style="grid-column:1/3;">
 
