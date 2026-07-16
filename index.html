@@ -1226,10 +1226,14 @@ window.postsCache[d.id] = p;
   bestPost = p;
 }
 
-    feed.innerHTML += `
-      <div class="post"
-      onclick="openPostView('${d.id}')"
-      style="cursor:pointer;">
+    <div class="post" style="
+background:#181818;
+border:1px solid #2a2a2a;
+border-radius:18px;
+padding:18px;
+margin-bottom:20px;
+box-shadow:0 4px 15px rgba(0,0,0,.35);
+">
       
 
  <div class="profile" style="
