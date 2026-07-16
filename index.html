@@ -1410,11 +1410,34 @@ onSnapshot(q, (snap) => {
 
     <br><br>
 
-    ❤️ ${(p.likes || []).length} Me gusta
+    <div style="
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:20px;
+">
 
-    <br><br>
+<button onclick="likePost('${id}')">
+❤️ ${(p.likes || []).length}
+</button>
 
-    ${(p.comments || []).map(c => `<p>💬 ${c}</p>`).join("")}
+<button>
+💬 ${(p.comments || []).length}
+</button>
+
+<button onclick="sharePost('${id}')">
+📤 Compartir
+</button>
+
+<button onclick="savePost('${id}')">
+🔖 Guardar
+</button>
+
+</div>
+
+<br><br>
+
+${(p.comments || []).map(c => `<p>💬 ${c}</p>`).join("")}
 
   `;
 
