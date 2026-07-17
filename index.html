@@ -836,7 +836,10 @@ window.helpVenezuela = () => {
   document.getElementById("featuredPost").style.display = "none";
   document.getElementById("feed").style.display = "none";
 
+  document.getElementById("searchInput").focus();
+
 };
+
 window.closeSearch = () => {
 
   document.getElementById("searchPage").style.display = "none";
@@ -844,6 +847,9 @@ window.closeSearch = () => {
   document.getElementById("createPostBox").style.display = "block";
   document.getElementById("featuredPost").style.display = "block";
   document.getElementById("feed").style.display = "block";
+
+  document.getElementById("searchInput").value = "";
+  document.getElementById("searchResults").innerHTML = "";
 
 };
   /* =========================================================
