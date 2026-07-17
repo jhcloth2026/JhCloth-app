@@ -2058,8 +2058,8 @@ window.addEventListener("popstate", () => {
 
 });
   </script>
-<div id="savedPostsPage" style="display:none; background:#111; color:white; min-height:100vh; padding:15px;">
-
+<div
+  
   <h2 style="text-align:center;color:#00e5ff;">📚 Publicaciones guardadas</h2>
 
   <button onclick="closeSavedPosts()">⬅️ Volver</button>
@@ -2068,19 +2068,81 @@ window.addEventListener("popstate", () => {
 
 </div>
 
-<div id="videosPage" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; color:white; padding:15px; overflow:auto; z-index:9999;">
+<div id="searchPage" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+color:white;
+padding:15px;
+overflow:auto;
+z-index:9999;
+box-sizing:border-box;
+">
 
-  <div style="display:flex;justify-content:space-between;align-items:center;">
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<h2>🔎 Buscar</h2>
 
-    <h2>🎥 JhCloth Videos</h2>
+<button onclick="closeSearch()"
+style="
+background:#222;
+color:white;
+border:none;
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
+">
+✕
+</button>
+</div>
 
-    <button onclick="closeVideos()">✕</button>
+<input
+id="searchInput"
+type="text"
+placeholder="Buscar usuarios, publicaciones..."
+style="
+width:100%;
+padding:12px;
+margin:15px 0;
+border:none;
+border-radius:12px;
+font-size:16px;
+box-sizing:border-box;
+">
 
-  </div>
-
-  <div id="videosFeed"></div>
+<div id="searchResults"></div>
 
 </div>
+
+<div id="videosPage" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+color:white;
+padding:15px;
+overflow:auto;
+z-index:9999;
+">
+
+<div style="display:flex;justify-content:space-between;align-items:center;">
+
+<h2>🎥 JhCloth Videos</h2>
+
+<button onclick="closeVideos()">✕</button>
+
+</div>
+
+<div id="videosFeed"></div>
+
+</div>
+
 </body>
 </html>
 
